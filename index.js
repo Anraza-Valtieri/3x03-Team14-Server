@@ -38,7 +38,8 @@ UsersRouter.routesConfig(app);
 app.use(morgan('combined'));
 
 app.set('port', process.env.PORT || 443);
-app.set('host', process.env.HOST || '0.0.0.0');
+// app.set('host', process.env.HOST || '0.0.0.0');
+app.set('host', '127.0.0.1');
 
 var httpServer = http.createServer(app);
 var httpsServer = https.createServer(options, app);
