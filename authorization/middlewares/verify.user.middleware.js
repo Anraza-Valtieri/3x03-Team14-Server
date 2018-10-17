@@ -2,6 +2,7 @@ const UserModel = require('../../users/models/users.model');
 const crypto = require('crypto');
 
 exports.hasAuthValidFields = (req, res, next) => {
+    "use strict";
     let errors = [];
 
     if (req.body) {
