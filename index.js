@@ -36,13 +36,19 @@ AuthorizationRouter.routesConfig(app);
 UsersRouter.routesConfig(app);
 
 app.use(morgan('combined'));
+
+app.set('port', process.env.PORT || 443);
+app.set('host', process.env.HOST || '0.0.0.0');
+
 var httpServer = http.createServer(app);
 var httpsServer = https.createServer(options, app);
 
 // For http
 // httpServer.listen(8080);
 // For https
-httpsServer.listen(443, "47.88.221.35");
+httpsServer.listen(app.get('port'), app.get('host'), function(){
+    console.log("Express server listening on port " + app.get('port'));
+});
 
 // app.listen(443, function () {
 //     console.log('app listening at port %s', config.port);
