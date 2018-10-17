@@ -1,0 +1,179 @@
+const UserModel = require('../models/users.model');
+const crypto = require('crypto');
+
+// const userSchema = new Schema({
+//     firstName: String,
+//     lastName: String,
+//     email: String,
+//     password: String,
+//     permissionLevel: Number,
+//     balanceAmount: Number
+// });
+
+exports.insert = (req, res) => {
+    let salt = crypto.randomBytes(16).toString('base64');
+    let hash = crypto.createHmac('sha512', salt).update(req.body.password).digest("base64");
+    req.body.password = salt + "$" + hash;
+    req.body.permissionLevel = 1;
+    UserModel.createUser(req.body)
+        .then((result) => {
+            if(!result || result === 0){res.status(400).send({error: "Number already exist"});}
+            else{
+                res.status(201).send({id: result._id});
+            }
+        });
+};
+
+exports.list = (req, res) => {
+    let limit = req.query.limit && req.query.limit <= 100 ? parseInt(req.query.limit) : 10;
+    let page = 0;
+    if (req.query) {
+        if (req.query.page) {
+            req.query.page = parseInt(req.query.page);
+            page = Number.isInteger(req.query.page) ? req.query.page : 0;
+        }
+    }
+    UserModel.list(limit, page)
+        .then((result) => {
+            res.status(200).send(result);
+        })
+};
+
+exports.getById = (req, res) => {
+    UserModel.findById(req.params.userId)
+        .then((result) => {
+            res.status(200).send(result);
+        });
+};
+
+exports.patchById = (req, res) => {
+    if (req.body.password) {
+        let salt = crypto.randomBytes(16).toString('base64');
+        let hash = crypto.createHmac('sha512', salt).update(req.body.password).digest("base64");
+        req.body.password = salt + "$" + hash;
+    }
+
+    UserModel.patchUser(req.params.userId, req.body)
+        .then((result) => {
+            res.status(204).send({});
+        });
+
+};
+
+exports.removeById = (req, res) => {
+    UserModel.removeById(req.params.userId)
+        .then((result)=>{
+            res.status(204).send({});
+        });
+};
+
+
+exports.getBankDetails = (req, res) => {
+    UserModel.findByPhone(req.body.phoneNo)
+        .then((result) => {
+            if (!result || result == null) {
+                res.status(200).send({error: "No User"});
+            } else {
+                console.log(result.firstName +" "+ result.lastName + " Requesting details");
+
+                UserModel.findTByPhone(result.phoneNo)
+                    .then((result2) => {
+                        UserModel.findTByPhone2(result.phoneNo)
+                            .then((result3) => {
+                                res.status(200).send({
+                                    firstName: result.firstName,
+                                    lastName: result.lastName,
+                                    email: result.email,
+                                    permissionLevel: result.permissionLevel,
+                                    balanceAmount: result.balanceAmount,
+                                    pendingTransactionRequest: result2,
+                                    pendingTransactionRequested: result3
+                                });
+                            });
+                    });
+            }
+        });
+};
+
+exports.topUp = (req, res) => {
+    if (req.body.topUpAmt != null) {
+        UserModel.findByPhone(req.body.phoneNo)
+            .then((result) => {
+                if (!result || result == null) {
+                    res.status(200).send({error: "No User"});
+                    return null;
+                } else {
+                    console.log(result.firstName +" "+ result.lastName + " Requesting a topup of "+req.body.topUpAmt);
+                    if(req.body.topUpAmt < 0){ return null; }
+                    else {
+                        var totalAmt = Number(result.balanceAmount)+Number(req.body.topUpAmt);
+                        // console.log(totalAmt+ " "+ result.id);
+                        UserModel.patchUser(result.id, {balanceAmount: totalAmt})
+                            .then(() => {
+                                res.status(200).send({status: "Success"});
+                            });
+                    }
+                }
+            });
+    }
+};
+
+exports.pay = (req, res) => {
+    if (req.body.amount != null) {
+        var q1 = null;
+        var q2 = null;
+        UserModel.findByPhone(req.body.payer) // Current User
+            .then((result) => {
+                UserModel.findByPhone(req.body.payee)
+                    .then((result2) => {
+                        if (!result || result == null) {
+                            res.status(200).send({error: "No User"});
+                            return null;
+                        }
+                        if (!result2 || result2 == null) {
+                            res.status(200).send({error: "No Payee"});
+                            return null;
+                        }
+                        else {
+                            if (req.body.amount < 0) {
+                                return null;
+                            }
+                            else {
+                                if (req.body.amount > result.balanceAmount) {
+                                    res.status(500).send({status: "Failed, Value too high"});
+                                    console.log("Sending amount too high!");
+                                    return null;
+                                }
+                                var totalAmt = Number(result2.balanceAmount)+Number(req.body.amount);
+                                var deductedAmt = Number(result.balanceAmount)-Number(req.body.amount);
+                                console.log(result.firstName + " " + result.lastName + " paying a "
+                                    + result2.firstName + " " + result2.lastName + " " +
+                                    +req.body.amount + " - Total: " + totalAmt);
+                                UserModel.patchUser(result.id, {balanceAmount: deductedAmt})
+                                    .then(() => {
+                                        UserModel.patchUser(result2.id, {balanceAmount: totalAmt})
+                                            .then(() => {
+                                                console.log("Transaction success!");
+                                                res.status(200).send({status: "Success"});
+                                            });
+                                    });
+                            }
+                        }
+                    });
+            });
+    }
+};
+
+exports.request = (req, res) => {
+    if (req.body.request != null) {
+        //req.body.amountPerPax;
+        var result = UserModel.createTrans(req);
+            // .then((result) =>{
+        console.log("result: %j", result);
+
+        res.status(200).send({status: "Success", result: result});
+                // console.log("Created request for "+req.body.requester+" from "+req.body.request[i]+ " amt: "+req.body.amountPerPax)
+            // });
+
+    }
+};
