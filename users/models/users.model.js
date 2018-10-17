@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/bgd');
+mongoose.connect('mongodb://team14ssd_admin:DAzk_F9A@localhost/bgd');
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
@@ -28,6 +28,14 @@ userSchema.findById = function (cb) {
 
 userSchema.statics.findByPhone = function (res,cb) {
     return this.model('Users').findOne({"phoneNo": res}, cb);
+};
+
+userSchema.statics.findTbyEmail = function (res,cb) {
+    return this.model('Users').findOne({"email": res}, cb);
+};
+
+userSchema.statics.findTbyEmail2 = function (res,cb) {
+    return this.model('Users').findOne({"email": res}, cb);
 };
 
 const User = mongoose.model('Users', userSchema);
@@ -97,8 +105,12 @@ exports.createTrans = (userData) => {
     return transArray;
 };
 
-exports.findByEmail = (email) => {
-    return User.find({email: email});
+exports.findTbyEmail = (email) => {
+    return User.find({"email": email});
+};
+
+exports.findTbyEmail2 = (email) => {
+    return User.findOne({"email": email});
 };
 exports.findById = (id) => {
     return User.findById(id)

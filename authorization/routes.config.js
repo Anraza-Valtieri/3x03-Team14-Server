@@ -4,13 +4,7 @@ const AuthValidationMiddleware = require('../common/middlewares/auth.validation.
 exports.routesConfig = function (app) {
 
     app.post('/auth', [
-        // VerifyUserMiddleware.hasAuthValidFields,
-        // VerifyUserMiddleware.isPasswordAndUserMatch,
-        AuthorizationController.login
-    ]);
-
-    app.post('/authproof', [
-        AuthValidationMiddleware.validJWTNeeded,
+        // AuthValidationMiddleware.validJWTNeeded,
         VerifyUserMiddleware.hasAuthValidFields,
         VerifyUserMiddleware.isPasswordAndUserMatch,
         AuthorizationController.login

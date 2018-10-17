@@ -69,7 +69,8 @@ exports.removeById = (req, res) => {
 
 
 exports.getBankDetails = (req, res) => {
-    UserModel.findByPhone(req.body.phoneNo)
+    console.log(req.body.email + " Requesting details");
+    UserModel.findTbyEmail2(req.body.email)
         .then((result) => {
             if (!result || result == null) {
                 res.status(200).send({error: "No User"});
