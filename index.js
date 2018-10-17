@@ -40,9 +40,9 @@ var httpServer = http.createServer(app);
 var httpsServer = https.createServer(options, app);
 
 // For http
-httpServer.listen(8080);
+// httpServer.listen(8080);
 // For https
-httpsServer.listen(443);
+httpsServer.listen(443, "47.88.221.35");
 
 // app.listen(443, function () {
 //     console.log('app listening at port %s', config.port);
