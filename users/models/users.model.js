@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://team14ssd_admin:DAzk_F9A@localhost/bgd');
+mongoose.connect('mongodb://team14ssd_admin:DAzk_F9A@127.0.0.1/bgd');
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
