@@ -33,10 +33,14 @@ exports.validJWTNeeded = (req, res, next) => {
                     "message": 'Error.'
                 });
             } else {
-                req.jwt = jwt.verify(authorization[1], secret);
+                // if(req.jwt.expirationTime >= )
+                req.jwt = jwt.verify(authorization[1], secret, function (err, decoded) {
+                    if (err) {
+                        return res.status(403).send(err);
+                    }
+                });
                 return next();
             }
-
         } catch (err) {
             return res.status(403).send({
                 "error": true,
