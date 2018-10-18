@@ -19,26 +19,26 @@ exports.routesConfig = function (app) {
         // UsersController.insert
         ValidationMiddleware.validJWTNeeded,
         UsersController.topUp,
-        UsersController.getBankDetails
+        // UsersController.getBankDetails
     ]);
 
     app.post('/pay', [
         // UsersController.insert
         ValidationMiddleware.validJWTNeeded,
         UsersController.pay,
-        UsersController.getBankDetails
+        // UsersController.getBankDetails
     ]);
 
     app.post('/request', [
         // UsersController.insert
         ValidationMiddleware.validJWTNeeded,
         UsersController.request,
-        UsersController.getBankDetails
+        // UsersController.getBankDetails
     ]);
 
     app.post('/users', [
-        ValidationMiddleware.validJWTNeeded,
-        PermissionMiddleware.minimumPermissionLevelRequired(ADMIN),
+        // ValidationMiddleware.validJWTNeeded,
+        // PermissionMiddleware.minimumPermissionLevelRequired(ADMIN),
         UsersController.insert
     ]);
     app.get('/users', [
