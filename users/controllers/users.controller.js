@@ -17,7 +17,8 @@ exports.insert = (req, res) => {
     req.body.permissionLevel = 1;
     UserModel.createUser(req.body)
         .then((result) => {
-            if(!result || result === 0){res.status(400).send({error: "Number already exist"});}
+            if(!result || result === 0){res.status(400).send({"error": true,
+                "message": 'Number already exist!'});}
             else{
                 res.status(201).send({id: result._id});
             }
@@ -73,7 +74,8 @@ exports.getBankDetails = (req, res) => {
     UserModel.findTbyEmail2(req.body.email)
         .then((result) => {
             if (!result || result == null) {
-                res.status(200).send({error: "No User"});
+                res.status(200).send({"error": true,
+                    "message": 'No user.'});
             } else {
                 console.log(result.firstName +" "+ result.lastName + " Requesting details");
 
@@ -102,7 +104,8 @@ exports.topUp = (req, res) => {
         UserModel.findByPhone(req.body.phoneNo)
             .then((result) => {
                 if (!result || result == null) {
-                    res.status(200).send({error: "No User"});
+                    res.status(200).send({"error": true,
+                        "message": 'No user.'});
                     return null;
                 } else {
                     console.log(result.firstName +" "+ result.lastName + " Requesting a topup of "+req.body.topUpAmt);
@@ -112,7 +115,8 @@ exports.topUp = (req, res) => {
                         // console.log(totalAmt+ " "+ result.id);
                         UserModel.patchUser(result.id, {balanceAmount: totalAmt})
                             .then(() => {
-                                res.status(200).send({status: "Success"});
+                                res.status(200).send({"error": false,
+                                    "message": 'Success.'});
                             });
                     }
                 }
@@ -129,11 +133,13 @@ exports.pay = (req, res) => {
                 UserModel.findByPhone(req.body.payee)
                     .then((result2) => {
                         if (!result || result == null) {
-                            res.status(200).send({error: "No User"});
+                            res.status(200).send({"error": true,
+                                "message": 'No user.'});
                             return null;
                         }
                         if (!result2 || result2 == null) {
-                            res.status(200).send({error: "No Payee"});
+                            res.status(200).send({"error": true,
+                                "message": 'No Payee.'});
                             return null;
                         }
                         else {
@@ -142,7 +148,8 @@ exports.pay = (req, res) => {
                             }
                             else {
                                 if (req.body.amount > result.balanceAmount) {
-                                    res.status(500).send({status: "Failed, Value too high"});
+                                    res.status(500).send({"error": true,
+                                        "message": 'Amount too high.'});
                                     console.log("Sending amount too high!");
                                     return null;
                                 }
@@ -156,7 +163,8 @@ exports.pay = (req, res) => {
                                         UserModel.patchUser(result2.id, {balanceAmount: totalAmt})
                                             .then(() => {
                                                 console.log("Transaction success!");
-                                                res.status(200).send({status: "Success"});
+                                                res.status(200).send({"error": false,
+                                                    "message": 'Success.'});
                                             });
                                     });
                             }
@@ -173,7 +181,9 @@ exports.request = (req, res) => {
             // .then((result) =>{
         console.log("result: %j", result);
 
-        res.status(200).send({status: "Success", result: result});
+        // res.status(200).send({status: "Success", result: result});
+        res.status(200).send({"error": false,
+            "message": 'Success.'})
                 // console.log("Created request for "+req.body.requester+" from "+req.body.request[i]+ " amt: "+req.body.amountPerPax)
             // });
 

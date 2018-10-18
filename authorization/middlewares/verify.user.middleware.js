@@ -14,12 +14,15 @@ exports.hasAuthValidFields = (req, res, next) => {
         }
 
         if (errors.length) {
-            return res.status(400).send({errors: errors.join(',')});
+            // return res.status(400).send({errors: errors.join(',')});
+            return res.status(400).send({"error": true,
+                "message": errors.join(',')})
         } else {
             return next();
         }
     } else {
-        return res.status(400).send({errors: 'Missing email and password fields'});
+        return res.status(400).send({"error": true,
+            "message": 'No email or password.'});
     }
 };
 
@@ -27,7 +30,8 @@ exports.isPasswordAndUserMatch = (req, res, next) => {
     UserModel.findTbyEmail(req.body.email)
         .then((user)=>{
             if(!user[0]){
-                res.status(404).send({errors: ['No user found?']});
+                res.status(404).send({"error": true,
+                    "message": 'No users found.'});
             }else{
                 let passwordFields = user[0].password.split('$');
                 let salt = passwordFields[0];
@@ -42,7 +46,8 @@ exports.isPasswordAndUserMatch = (req, res, next) => {
                     };
                     return next();
                 } else {
-                    return res.status(400).send({errors: ['Invalid e-mail or password']});
+                    return res.status(403).send({"error": true,
+                        "message": 'Invalid email or password.'});
                 }
             }
         });
