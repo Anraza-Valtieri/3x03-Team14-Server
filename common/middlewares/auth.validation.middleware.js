@@ -34,11 +34,12 @@ exports.validJWTNeeded = (req, res, next) => {
                 });
             } else {
                 // if(req.jwt.expirationTime >= )
-                req.jwt = jwt.verify(authorization[1], secret, function (err, decoded) {
+                jwt.verify(authorization[1], secret, function (err, decoded) {
                     if (err) {
                         return res.status(403).send(err);
                     }
                 });
+                req.jwt = jwt.verify(authorization[1], secret);
                 return next();
             }
         } catch (err) {
