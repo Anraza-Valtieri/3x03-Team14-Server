@@ -87,6 +87,7 @@ exports.getBankDetails = (req, res) => {
                                     email: result.email,
                                     permissionLevel: result.permissionLevel,
                                     balanceAmount: result.balanceAmount,
+                                    points: result.points,
                                     pendingTransactionRequest: result2,
                                     pendingTransactionRequested: result3
                                 });
