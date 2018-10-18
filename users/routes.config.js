@@ -17,39 +17,44 @@ exports.routesConfig = function (app) {
 
     app.post('/topup', [
         // UsersController.insert
+        ValidationMiddleware.validJWTNeeded,
         UsersController.topUp,
         UsersController.getBankDetails
     ]);
 
     app.post('/pay', [
         // UsersController.insert
+        ValidationMiddleware.validJWTNeeded,
         UsersController.pay,
         UsersController.getBankDetails
     ]);
 
     app.post('/request', [
         // UsersController.insert
+        ValidationMiddleware.validJWTNeeded,
         UsersController.request,
         UsersController.getBankDetails
     ]);
 
     app.post('/users', [
+        ValidationMiddleware.validJWTNeeded,
+        PermissionMiddleware.minimumPermissionLevelRequired(ADMIN),
         UsersController.insert
     ]);
     app.get('/users', [
         ValidationMiddleware.validJWTNeeded,
-        PermissionMiddleware.minimumPermissionLevelRequired(FREE),
+        PermissionMiddleware.minimumPermissionLevelRequired(ADMIN),
         UsersController.list
     ]);
     app.get('/users/:userId', [
         ValidationMiddleware.validJWTNeeded,
-        PermissionMiddleware.minimumPermissionLevelRequired(FREE),
+        PermissionMiddleware.minimumPermissionLevelRequired(ADMIN),
         PermissionMiddleware.onlySameUserOrAdminCanDoThisAction,
         UsersController.getById
     ]);
     app.patch('/users/:userId', [
         ValidationMiddleware.validJWTNeeded,
-        PermissionMiddleware.minimumPermissionLevelRequired(FREE),
+        PermissionMiddleware.minimumPermissionLevelRequired(ADMIN),
         PermissionMiddleware.onlySameUserOrAdminCanDoThisAction,
         UsersController.patchById
     ]);
