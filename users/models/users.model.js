@@ -13,7 +13,7 @@ const options = {
     socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
     family: 4 // Use IPv4, skip trying IPv6
 };
-mongoose.connect('mongodb://127.0.0.1:27017/bgd', options);
+mongoose.connect('mongodb://localhost:27017/bgd', options);
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
