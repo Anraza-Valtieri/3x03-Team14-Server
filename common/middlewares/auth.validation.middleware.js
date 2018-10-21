@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken'),
     secret = require('../config/env.config.js').jwt_secret,
     crypto = require('crypto');
+const AuthorizationController = require('../../authorization/controllers/authorization.controller');
 
 exports.verifyRefreshBodyField = (req, res, next) => {
     if (req.body && req.body.refresh_token) {
@@ -33,13 +34,13 @@ exports.validJWTNeeded = (req, res, next) => {
                     "message": 'Error.'
                 });
             } else {
-                // if(req.jwt.expirationTime >= )
                 jwt.verify(authorization[1], secret, function (err, decoded) {
                     if (err) {
+                        console.log("JWT invalid");
                         return res.status(403).send(err);
                     }
                 });
-                req.jwt = jwt.verify(authorization[1], secret);
+                // req.jwt = jwt.verify(authorization[1], secret);
                 return next();
             }
         } catch (err) {
