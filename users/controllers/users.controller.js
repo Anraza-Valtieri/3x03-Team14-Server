@@ -168,11 +168,11 @@ exports.pay = (req, res) => {
 
                                                 UserModel.findTByDetails(result2.phoneNo, result.phoneNo, req.body.amount)
                                                     .then((result4) => {
-                                                        if (!result4 || result4 == null) {
+                                                        if (!result4 || result4 === null) {
                                                             console.log("No relevant transaction found skip " + result2.phoneNo +
                                                                 " " + result.phoneNo +" " + req.body.amount);
                                                         }else{
-                                                            UserModel.patchUser(result4.id, {completed: true})
+                                                            UserModel.patchTransaction(result4.id, {completed: true})
                                                         }
                                                     });
                                                 res.status(200).send({"error": false,

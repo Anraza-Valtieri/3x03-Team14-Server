@@ -137,7 +137,7 @@ exports.createTrans = (userData) => {
         transactions.completed = false;
         transactions.save();
         transArray.push(userData.body.request[i]);
-        console.log("Created request for "+userData.requester+" from "+userData.body.request[i]+ " amt: "+userData.body.amountPerPax);
+        console.log("Created request for "+userData.body.requester+" from "+userData.body.request[i]+ " amt: "+userData.body.amountPerPax);
     }
     return transArray;
 };
@@ -229,6 +229,21 @@ exports.list = (perPage, page) => {
 exports.patchUser = (id, userData) => {
     return new Promise((resolve, reject) => {
         User.findById(id, function (err, user) {
+            if (err) reject(err);
+            for (let i in userData) {
+                user[i] = userData[i];
+            }
+            user.save(function (err, updatedUser) {
+                if (err) return reject(err);
+                resolve(updatedUser);
+            });
+        });
+    })
+};
+
+exports.patchTransaction = (id, userData) => {
+    return new Promise((resolve, reject) => {
+        Pending.findById(id, function (err, user) {
             if (err) reject(err);
             for (let i in userData) {
                 user[i] = userData[i];
