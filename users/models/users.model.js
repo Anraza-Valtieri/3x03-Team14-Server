@@ -73,6 +73,10 @@ pendingSchema.statics.findTByPhone = function (res,cb) {
 pendingSchema.statics.findTByPhone2 = function (res,cb) {
     return this.model('PendingTransactions').find({"toId": res}, cb);
 };
+
+pendingSchema.statics.findTByDetails = function (to, from, amt,cb) {
+    return this.model('PendingTransactions').findOne({"toId": to, "fromId": from, "amount": amt, "completed": false}, cb);
+};
 const Pending = mongoose.model('PendingTransactions', pendingSchema);
 
 exports.findTByPhone = (phone) => {
@@ -92,6 +96,21 @@ exports.findTByPhone = (phone) => {
 
 exports.findTByPhone2 = (phone) => {
     return Pending.findTByPhone2(phone)
+        .then((result) => {
+            if(result == null || !result || result.length <= 0){
+                return null;
+            }else {
+                // console.log("result: %j", result);
+                // result = result;
+                delete result._id;
+                delete result.__v;
+                return result;
+            }
+        });
+};
+
+exports.findTByDetails = (to, from, amt) => {
+    return Pending.findTByDetails(to, from, amt)
         .then((result) => {
             if(result == null || !result || result.length <= 0){
                 return null;
@@ -220,7 +239,6 @@ exports.patchUser = (id, userData) => {
             });
         });
     })
-
 };
 
 exports.removeById = (userId) => {
