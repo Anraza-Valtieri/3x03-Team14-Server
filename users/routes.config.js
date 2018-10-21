@@ -10,8 +10,8 @@ const FREE = config.permissionLevels.NORMAL_USER;
 exports.routesConfig = function (app) {
     app.post('/bank', [
         // UsersController.insert
-        ValidationMiddleware.validJWTNeeded,
         PermissionMiddleware.minimumPermissionLevelRequired(FREE),
+        ValidationMiddleware.validJWTNeeded,
         UsersController.getBankDetails
     ]);
 

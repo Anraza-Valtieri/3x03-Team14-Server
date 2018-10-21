@@ -116,6 +116,7 @@ exports.topUp = (req, res) => {
                         // console.log(totalAmt+ " "+ result.id);
                         UserModel.patchUser(result.id, {balanceAmount: totalAmt})
                             .then(() => {
+                                console.log("Top up completed for "+ result.firstName +" "+ result.lastName);
                                 res.status(200).send({"error": false,
                                     "message": 'Success.'});
                             });
@@ -127,8 +128,6 @@ exports.topUp = (req, res) => {
 
 exports.pay = (req, res) => {
     if (req.body.amount != null) {
-        var q1 = null;
-        var q2 = null;
         UserModel.findByPhone(req.body.payer) // Current User
             .then((result) => {
                 UserModel.findByPhone(req.body.payee)
@@ -156,13 +155,15 @@ exports.pay = (req, res) => {
                                 }
                                 var totalAmt = Number(result2.balanceAmount)+Number(req.body.amount);
                                 var deductedAmt = Number(result.balanceAmount)-Number(req.body.amount);
-                                console.log(result.firstName + " " + result.lastName + " paying a "
-                                    + result2.firstName + " " + result2.lastName + " " +
-                                    +req.body.amount + " - Total: " + totalAmt);
+
                                 UserModel.patchUser(result.id, {balanceAmount: deductedAmt})
                                     .then(() => {
                                         UserModel.patchUser(result2.id, {balanceAmount: totalAmt})
                                             .then(() => {
+                                                console.log(result.firstName + " " + result.lastName + " paying "
+                                                    + result2.firstName + " " + result2.lastName + " " +
+                                                    +req.body.amount + " - Payee new Total: " + totalAmt + " paying left "
+                                                + deductedAmt);
                                                 console.log("Transaction success!");
                                                 res.status(200).send({"error": false,
                                                     "message": 'Success.'});
