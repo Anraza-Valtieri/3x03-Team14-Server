@@ -101,10 +101,11 @@ exports.getBankDetails = (req, res) => {
 
 exports.topUp = (req, res) => {
     if (req.body.topUpAmt != null) {
-        UserModel.findByPhone(req.body.phoneNo)
+        console.log(req.body.email + " Requesting topup");
+        UserModel.findTbyEmail2(req.body.email)
             .then((result) => {
                 if (!result || result == null) {
-                    res.status(200).send({"error": true,
+                    res.status(404).send({"error": true,
                         "message": 'No user.'});
                     return null;
                 } else {
