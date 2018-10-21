@@ -102,7 +102,7 @@ exports.getBankDetails = (req, res) => {
 exports.topUp = (req, res) => {
     if (req.body.topUpAmt != null) {
         console.log(req.body.email + " Requesting topup");
-        UserModel.findTbyEmail2(req.body.email)
+        UserModel.findTbyEmail3(req.body.email)
             .then((result) => {
                 if (!result || result == null) {
                     res.status(404).send({"error": true,

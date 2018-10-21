@@ -52,6 +52,10 @@ userSchema.statics.findTbyEmail2 = function (res,cb) {
     return this.model('Users').findOne({"email": res}, cb);
 };
 
+userSchema.statics.findTbyEmail3 = function (res,cb) {
+    return this.model('Users').findOne({"email": res}, cb);
+};
+
 const User = mongoose.model('Users', userSchema);
 
 const pendingSchema = new Schema({
@@ -124,6 +128,10 @@ exports.findTbyEmail = (email) => {
 };
 
 exports.findTbyEmail2 = (email) => {
+    return User.findOne({"email": email});
+};
+
+exports.findTbyEmail3 = (email) => {
     return User.findOne({"email": email});
 };
 exports.findById = (id) => {
