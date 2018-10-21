@@ -137,7 +137,7 @@ exports.createTrans = (userData) => {
         transactions.completed = false;
         transactions.save();
         transArray.push(userData.body.request[i]);
-        console.log("Created request for "+userData.phoneNo+" from "+userData.body.request[i]+ " amt: "+userData.body.amountPerPax);
+        console.log("Created request for "+userData.requester+" from "+userData.body.request[i]+ " amt: "+userData.body.amountPerPax);
     }
     return transArray;
 };
