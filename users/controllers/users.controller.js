@@ -147,7 +147,7 @@ exports.pay = (req, res) => {
                     "message": 'No user.'
                 });
             }
-            if (req.body.payer !== jwtResult.phoneNo) {
+            if (req.body.payer.toString() !== jwtResult.phoneNo.toString()) {
                 console.log(req.body.payer + " " + jwtResult.phoneNo);
                 return res.status(403).send({
                     "error": true,
