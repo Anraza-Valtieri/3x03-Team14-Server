@@ -236,6 +236,12 @@ exports.rewards = (req, res) => {
         if (req.body.pointsDeducted != null) {
             if (req.body.cashback != null) {
                 console.log(jwtResult.email + " redeeming " +req.body.pointsDeducted+ " points for $" +req.body.cashback);
+                if(req.body.pointsDeducted < 0 || jwtResult.points < req.body.pointsDeducted){
+                    res.status(403).send({
+                        "error": true,
+                        "message": 'Not enough points.'
+                    });
+                }
                 var totalAmt = Number(jwtResult.balanceAmount) + Number(req.body.cashback);
                 UserModel.patchUser(jwtResult.id, {balanceAmount: totalAmt});
                 var totalPoints = Number(jwtResult.points) - Number(req.body.pointsDeducted);
