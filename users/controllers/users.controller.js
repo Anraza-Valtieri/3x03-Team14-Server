@@ -73,7 +73,7 @@ exports.removeById = (req, res) => {
 exports.getBankDetails = (req, res) => {
 
     console.log(req.body.email + " Requesting details");
-    console.log("JWT for "+req.body.email +" " + req.jwt);
+    console.log("JWT for "+req.body.email +" " + req.jwt.email);
     UserModel.findTbyEmail2(req.body.email)
         .then((result) => {
             if (!result || result == null) {
