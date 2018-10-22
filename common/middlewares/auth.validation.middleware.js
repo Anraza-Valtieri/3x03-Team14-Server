@@ -40,7 +40,7 @@ exports.validJWTNeeded = (req, res, next) => {
                         return res.status(403).send(err);
                     }
                 });
-                // req.jwt = jwt.verify(authorization[1], secret);
+                req.jwt = jwt.verify(authorization[1], secret);
                 return next();
             }
         } catch (err) {
