@@ -143,7 +143,7 @@ exports.createTrans = (userData) => {
 };
 
 exports.findTbyEmail = (email) => {
-    return User.find({"email": email});
+    return User.findOne({"email": email});
 };
 
 // exports.findTbyEmail2 = (email) => {
