@@ -1,6 +1,7 @@
 const UserModel = require('../models/users.model');
 const crypto = require('crypto');
-
+const jwtSecret = require('../../common/config/env.config.js').jwt_secret,
+    jwt = require('jsonwebtoken');
 // const userSchema = new Schema({
 //     firstName: String,
 //     lastName: String,
@@ -70,7 +71,9 @@ exports.removeById = (req, res) => {
 
 
 exports.getBankDetails = (req, res) => {
+
     console.log(req.body.email + " Requesting details");
+    console.log("JWT for "+req.body.email +" " + req.jwt);
     UserModel.findTbyEmail2(req.body.email)
         .then((result) => {
             if (!result || result == null) {
@@ -202,3 +205,6 @@ exports.request = (req, res) => {
 
     }
 };
+
+
+
