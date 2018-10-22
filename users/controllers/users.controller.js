@@ -71,8 +71,7 @@ exports.removeById = (req, res) => {
 
 exports.getBankDetails = (req, res) => {
     console.log(req.body.email + " Requesting details");
-    UserModel.findOne().where("email").byName(req.body.email)
-    // UserModel.findTbyEmail2(req.body.email)
+    UserModel.findTbyEmail2(req.body.email)
         .then((result) => {
             if (!result || result == null) {
                 res.status(200).send({"error": true,
@@ -80,11 +79,9 @@ exports.getBankDetails = (req, res) => {
             } else {
                 console.log(result.firstName +" "+ result.lastName + " Requesting details");
 
-                // UserModel.findTByPhone(result.phoneNo)
-                UserModel.findOne().where("fromId").byName(result.phoneNo)
+                UserModel.findTByPhone(result.phoneNo)
                     .then((result2) => {
-                        // UserModel.findTByPhone2(result.phoneNo)
-                        UserModel.findOne().where("toId").byName(req.body.email)
+                        UserModel.findTByPhone2(result.phoneNo)
                             .then((result3) => {
                                 res.status(200).send({
                                     firstName: result.firstName,
@@ -131,8 +128,7 @@ exports.topUp = (req, res) => {
 
 exports.pay = (req, res) => {
     if (req.body.amount != null) {
-        UserModel.findTbyEmail(req.body.email) // Current User
-        // UserModel.findOne().where("email").byName(req.body.email)
+        UserModel.findByPhone(req.body.payer) // Current User
             .then((result) => {
                 UserModel.findByPhone(req.body.payee)
                     .then((result2) => {
