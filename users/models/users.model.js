@@ -2,10 +2,10 @@ const mongoose = require('mongoose');
 const options = {
     useNewUrlParser: true,
     useCreateIndex: true,
-    useFindAndModify: false,
-    autoIndex: false, // Don't build indexes
+    // useFindAndModify: false,
+    autoIndex: true, // Don't build indexes
     reconnectTries: Number.MAX_VALUE, // Never stop trying to reconnect
-    reconnectInterval: 500, // Reconnect every 500ms
+    reconnectInterval: 3000, // Reconnect every 500ms
     poolSize: 10, // Maintain up to 10 socket connections
     // If not connected, return errors immediately rather than waiting for reconnect
     bufferMaxEntries: 0,
@@ -48,13 +48,13 @@ userSchema.statics.findTbyEmail = function (res,cb) {
     return this.model('Users').findOne({"email": res}, cb);
 };
 
-userSchema.statics.findTbyEmail2 = function (res,cb) {
-    return this.model('Users').findOne({"email": res}, cb);
-};
-
-userSchema.statics.findTbyEmail3 = function (res,cb) {
-    return this.model('Users').findOne({"email": res}, cb);
-};
+// userSchema.statics.findTbyEmail2 = function (res,cb) {
+//     return this.model('Users').findOne({"email": res}, cb);
+// };
+//
+// userSchema.statics.findTbyEmail3 = function (res,cb) {
+//     return this.model('Users').findOne({"email": res}, cb);
+// };
 
 const User = mongoose.model('Users', userSchema);
 
@@ -146,13 +146,13 @@ exports.findTbyEmail = (email) => {
     return User.find({"email": email});
 };
 
-exports.findTbyEmail2 = (email) => {
-    return User.findOne({"email": email});
-};
-
-exports.findTbyEmail3 = (email) => {
-    return User.findOne({"email": email});
-};
+// exports.findTbyEmail2 = (email) => {
+//     return User.findOne({"email": email});
+// };
+//
+// exports.findTbyEmail3 = (email) => {
+//     return User.findOne({"email": email});
+// };
 exports.findById = (id) => {
     return User.findById(id)
         .then((result) => {

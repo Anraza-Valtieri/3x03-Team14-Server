@@ -71,7 +71,7 @@ exports.removeById = (req, res) => {
 
 exports.getBankDetails = (req, res) => {
     console.log(req.body.email + " Requesting details");
-    UserModel.findTbyEmail2(req.body.email)
+    UserModel.findTbyEmail(req.body.email)
         .then((result) => {
             if (!result || result == null) {
                 res.status(200).send({"error": true,
