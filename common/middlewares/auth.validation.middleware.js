@@ -38,10 +38,11 @@ exports.validJWTNeeded = (req, res, next) => {
                     if (err) {
                         console.log("JWT invalid");
                         return res.status(403).send(err);
+                    }else{
+                        req.jwt = jwt.verify(authorization[1], secret);
+                        return next();
                     }
                 });
-                req.jwt = jwt.verify(authorization[1], secret);
-                return next();
             }
         } catch (err) {
             return res.status(403).send({
