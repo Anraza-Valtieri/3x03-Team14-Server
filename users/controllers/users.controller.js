@@ -140,70 +140,84 @@ exports.topUp = (req, res) => {
 
 exports.pay = (req, res) => {
     if (req.body.amount != null) {
-        let fromJWT = UserModel.findTbyEmail2(req.jwt.email);
-
-        if(req.body.payer !== fromJWT.phoneNo) {
-            console.log(req.body.payer + " " + fromJWT.phoneNo);
-            return res.status(403).send({
-                "error": true,
-                "message": 'Nice try MR cunning.'
-            });
-        }
-        UserModel.findByPhone(fromJWT.phoneNo) // Current User
-            .then((result) => {
-                UserModel.findByPhone(req.body.payee)
-                    .then((result2) => {
-                        if (!result || result == null) {
-                            res.status(200).send({"error": true,
-                                "message": 'No user.'});
-                            return null;
-                        }
-                        if (!result2 || result2 == null) {
-                            res.status(200).send({"error": true,
-                                "message": 'No Payee.'});
-                            return null;
-                        }
-                        else {
-                            if (req.body.amount < 0) {
+        UserModel.findTbyEmail2(req.jwt.email).then((jwtResult) => {
+            if(!jwtResult || jwtResult == null){
+                res.status(404).send({
+                    "error": true,
+                    "message": 'No user.'
+                });
+            }
+            if (req.body.payer !== jwtResult.phoneNo) {
+                console.log(req.body.payer + " " + jwtResult.phoneNo);
+                return res.status(403).send({
+                    "error": true,
+                    "message": 'Nice try MR cunning.'
+                });
+            }
+            UserModel.findByPhone(jwtResult.phoneNo) // Current User
+                .then((result) => {
+                    UserModel.findByPhone(req.body.payee)
+                        .then((result2) => {
+                            if (!result || result == null) {
+                                res.status(200).send({
+                                    "error": true,
+                                    "message": 'No user.'
+                                });
+                                return null;
+                            }
+                            if (!result2 || result2 == null) {
+                                res.status(200).send({
+                                    "error": true,
+                                    "message": 'No Payee.'
+                                });
                                 return null;
                             }
                             else {
-                                if (req.body.amount > result.balanceAmount) {
-                                    res.status(500).send({"error": true,
-                                        "message": 'Amount too high.'});
-                                    console.log("Sending amount too high!");
+                                if (req.body.amount < 0) {
                                     return null;
                                 }
-                                var totalAmt = Number(result2.balanceAmount)+Number(req.body.amount);
-                                var deductedAmt = Number(result.balanceAmount)-Number(req.body.amount);
+                                else {
+                                    if (req.body.amount > result.balanceAmount) {
+                                        res.status(500).send({
+                                            "error": true,
+                                            "message": 'Amount too high.'
+                                        });
+                                        console.log("Sending amount too high!");
+                                        return null;
+                                    }
+                                    var totalAmt = Number(result2.balanceAmount) + Number(req.body.amount);
+                                    var deductedAmt = Number(result.balanceAmount) - Number(req.body.amount);
 
-                                UserModel.patchUser(result.id, {balanceAmount: deductedAmt})
-                                    .then(() => {
-                                        UserModel.patchUser(result2.id, {balanceAmount: totalAmt})
-                                            .then(() => {
-                                                console.log(result.firstName + " " + result.lastName + " paying "
-                                                    + result2.firstName + " " + result2.lastName + " " +
-                                                    +req.body.amount + " - Payee new Total: " + totalAmt + " paying left "
-                                                + deductedAmt);
-                                                console.log("Transaction success!");
+                                    UserModel.patchUser(result.id, {balanceAmount: deductedAmt})
+                                        .then(() => {
+                                            UserModel.patchUser(result2.id, {balanceAmount: totalAmt})
+                                                .then(() => {
+                                                    console.log(result.firstName + " " + result.lastName + " paying "
+                                                        + result2.firstName + " " + result2.lastName + " " +
+                                                        +req.body.amount + " - Payee new Total: " + totalAmt + " paying left "
+                                                        + deductedAmt);
+                                                    console.log("Transaction success!");
 
-                                                UserModel.findTByDetails(result2.phoneNo, result.phoneNo, req.body.amount)
-                                                    .then((result4) => {
-                                                        if (!result4 || result4 === null) {
-                                                            console.log("No relevant transaction found skip " + result2.phoneNo +
-                                                                " " + result.phoneNo +" " + req.body.amount);
-                                                        }else{
-                                                            UserModel.patchTransaction(result4.id, {completed: true})
-                                                        }
+                                                    UserModel.findTByDetails(result2.phoneNo, result.phoneNo, req.body.amount)
+                                                        .then((result4) => {
+                                                            if (!result4 || result4 === null) {
+                                                                console.log("No relevant transaction found skip " + result2.phoneNo +
+                                                                    " " + result.phoneNo + " " + req.body.amount);
+                                                            } else {
+                                                                UserModel.patchTransaction(result4.id, {completed: true})
+                                                            }
+                                                        });
+                                                    res.status(200).send({
+                                                        "error": false,
+                                                        "message": 'Success.'
                                                     });
-                                                res.status(200).send({"error": false,
-                                                    "message": 'Success.'});
-                                            });
-                                    });
+                                                });
+                                        });
+                                }
                             }
-                        }
-                    });
-            });
+                        });
+                });
+        });
     }
 };
 
