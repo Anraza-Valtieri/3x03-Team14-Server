@@ -74,7 +74,14 @@ exports.getBankDetails = (req, res) => {
 
     console.log(req.body.email + " Requesting details");
     console.log("JWT for "+req.body.email +" " + req.jwt.email);
-    UserModel.findTbyEmail2(req.body.email)
+
+    if(req.jwt.email !== req.body.email)
+        return res.status(403).send({
+            "error": true,
+            "message": 'Nice try MR cunning.'
+        });
+
+    UserModel.findTbyEmail2(req.jwt.email)
         .then((result) => {
             if (!result || result == null) {
                 res.status(200).send({"error": true,
@@ -105,7 +112,7 @@ exports.getBankDetails = (req, res) => {
 
 exports.topUp = (req, res) => {
     if (req.body.topUpAmt != null) {
-        console.log(req.body.phoneNo + " Requesting topup");
+        console.log(req.jwt.email + " Requesting topup");
         UserModel.findTbyEmail2(req.jwt.email)
         // UserModel.findByPhone(req.body.phoneNo)
             .then((result) => {
@@ -133,7 +140,14 @@ exports.topUp = (req, res) => {
 
 exports.pay = (req, res) => {
     if (req.body.amount != null) {
-        UserModel.findByPhone(req.body.payer) // Current User
+        let fromJWT = UserModel.findTbyEmail2(req.jwt.email);
+
+        if(req.jwt.email !== fromJWT.email)
+            return res.status(403).send({
+                "error": true,
+                "message": 'Nice try MR cunning.'
+            });
+        UserModel.findByPhone(fromJWT.phoneNo) // Current User
             .then((result) => {
                 UserModel.findByPhone(req.body.payee)
                     .then((result2) => {
@@ -193,7 +207,14 @@ exports.pay = (req, res) => {
 
 exports.request = (req, res) => {
     if (req.body.request != null) {
-        //req.body.amountPerPax;
+
+        let fromJWT = UserModel.findTbyEmail2(req.jwt.email);
+        if(req.jwt.email !== fromJWT.email)
+            return res.status(403).send({
+                "error": true,
+                "message": 'Nice try MR cunning.'
+            });
+
         var result = UserModel.createTrans(req);
             // .then((result) =>{
         console.log("result: %j", result);
