@@ -143,6 +143,7 @@ exports.pay = (req, res) => {
         let fromJWT = UserModel.findTbyEmail2(req.jwt.email);
 
         if(req.body.payer !== fromJWT.phoneNo)
+            console.log(req.body.payer + " "+ fromJWT.phoneNo);
             return res.status(403).send({
                 "error": true,
                 "message": 'Nice try MR cunning.'
