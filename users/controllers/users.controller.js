@@ -90,6 +90,7 @@ exports.getBankDetails = (req, res) => {
                                     permissionLevel: result.permissionLevel,
                                     balanceAmount: result.balanceAmount,
                                     points: result.points,
+                                    phoneNo: result.phoneNo,
                                     pendingTransactionRequest: result2,
                                     pendingTransactionRequested: result3
                                 });
