@@ -106,7 +106,7 @@ exports.getBankDetails = (req, res) => {
 exports.topUp = (req, res) => {
     if (req.body.topUpAmt != null) {
         console.log(req.body.phoneNo + " Requesting topup");
-        UserModel.findTbyEmail(req.jwt.email)
+        UserModel.findTbyEmail2(req.jwt.email)
         // UserModel.findByPhone(req.body.phoneNo)
             .then((result) => {
                 if (!result || result == null) {
