@@ -142,7 +142,7 @@ exports.pay = (req, res) => {
     if (req.body.amount != null) {
         let fromJWT = UserModel.findTbyEmail2(req.jwt.email);
 
-        if(req.jwt.email !== fromJWT.email)
+        if(req.body.payer !== fromJWT.phoneNo)
             return res.status(403).send({
                 "error": true,
                 "message": 'Nice try MR cunning.'
@@ -209,7 +209,7 @@ exports.request = (req, res) => {
     if (req.body.request != null) {
 
         let fromJWT = UserModel.findTbyEmail2(req.jwt.email);
-        if(req.jwt.email !== fromJWT.email)
+        if(req.body.requester !== fromJWT.email)
             return res.status(403).send({
                 "error": true,
                 "message": 'Nice try MR cunning.'
