@@ -223,24 +223,35 @@ exports.pay = (req, res) => {
 
 exports.request = (req, res) => {
     if (req.body.request != null) {
+        UserModel.findTbyEmail2(req.jwt.email).then((jwtResult) => {
+            if (!jwtResult || jwtResult == null) {
+                res.status(404).send({
+                    "error": true,
+                    "message": 'No user.'
+                });
+            }
 
-        let fromJWT = UserModel.findTbyEmail2(req.jwt.email);
-        if(req.body.requester !== fromJWT.email)
-            return res.status(403).send({
-                "error": true,
-                "message": 'Nice try MR cunning.'
-            });
+            if (req.body.requester.toString() !== jwtResult.phoneNo.toString()) {
+                console.log(req.body.payer + " " + jwtResult.phoneNo);
+                return res.status(403).send({
+                    "error": true,
+                    "message": 'Nice try MR cunning.'
+                });
+            }
 
-        var result = UserModel.createTrans(req);
+            var result = UserModel.createTrans(req);
             // .then((result) =>{
-        console.log("result: %j", result);
+            console.log("result: %j", result);
 
-        // res.status(200).send({status: "Success", result: result});
-        res.status(200).send({"error": false,
-            "message": 'Success.'})
-                // console.log("Created request for "+req.body.requester+" from "+req.body.request[i]+ " amt: "+req.body.amountPerPax)
+            // res.status(200).send({status: "Success", result: result});
+            res.status(200).send({
+                "error": false,
+                "message": 'Success.'
+            })
+            // console.log("Created request for "+req.body.requester+" from "+req.body.request[i]+ " amt: "+req.body.amountPerPax)
             // });
 
+        });
     }
 };
 
