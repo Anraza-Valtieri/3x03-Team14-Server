@@ -40,24 +40,29 @@ userSchema.findById = function (cb) {
     return this.model('Users').find({id: this.id}, cb);
 };
 
-userSchema.statics.findByPhone = function (res,cb) {
-    return this.model('Users').findOne({"phoneNo": res}, cb);
+userSchema.query.byName = function(name) {
+    return this.find({ name: name });
 };
 
-userSchema.statics.findTbyEmail = function (res,cb) {
-    return this.model('Users').findOne({"email": res}, cb);
-};
+// userSchema.statics.findByPhone = function (res,cb) {
+//     return this.model('Users').findOne({"phoneNo": res}, cb);
+// };
 
-userSchema.statics.findTbyEmail2 = function (res,cb) {
-    return this.model('Users').findOne({"email": res}, cb);
-};
-
-userSchema.statics.findTbyEmail3 = function (res,cb) {
-    return this.model('Users').findOne({"email": res}, cb);
-};
+// userSchema.statics.findTbyEmail = function (res,cb) {
+//     return this.model('Users').findOne({"email": res}, cb);
+// };
+//
+// userSchema.statics.findTbyEmail2 = function (res,cb) {
+//     return this.model('Users').findOne({"email": res}, cb);
+// };
+//
+// userSchema.statics.findTbyEmail3 = function (res,cb) {
+//     return this.model('Users').findOne({"email": res}, cb);
+// };
 
 const User = mongoose.model('Users', userSchema);
 
+// console.log(User.findOne().where("email").byName("Anraza@gmail.com"));
 const pendingSchema = new Schema({
     fromId: String,
     toId: String,
@@ -66,17 +71,26 @@ const pendingSchema = new Schema({
     completed: Boolean,
     created: String
 });
-pendingSchema.statics.findTByPhone = function (res,cb) {
-    return this.model('PendingTransactions').find({"fromId": res}, cb);
+
+pendingSchema.query.byName = function(name) {
+    return this.find({ name: name });
 };
 
-pendingSchema.statics.findTByPhone2 = function (res,cb) {
-    return this.model('PendingTransactions').find({"toId": res}, cb);
+// pendingSchema.statics.findTByPhone = function (res,cb) {
+//     return this.model('PendingTransactions').find({"fromId": res}, cb);
+// };
+//
+// pendingSchema.statics.findTByPhone2 = function (res,cb) {
+//     return this.model('PendingTransactions').find({"toId": res}, cb);
+// };
+
+pendingSchema.query.byMultiName = function(to, from, amt) {
+    return this.findOne({"toId": to, "fromId": from, "amount": amt, "completed": false});
 };
 
-pendingSchema.statics.findTByDetails = function (to, from, amt,cb) {
-    return this.model('PendingTransactions').findOne({"toId": to, "fromId": from, "amount": amt, "completed": false}, cb);
-};
+// pendingSchema.statics.findTByDetails = function (to, from, amt,cb) {
+//     return this.model('PendingTransactions').findOne({"toId": to, "fromId": from, "amount": amt, "completed": false}, cb);
+// };
 const Pending = mongoose.model('PendingTransactions', pendingSchema);
 
 exports.findTByPhone = (phone) => {
@@ -122,24 +136,6 @@ exports.findTByDetails = (to, from, amt) => {
                 return result;
             }
         });
-};
-
-exports.createTrans = (userData) => {
-    // console.log("Create Account with Phone "+userData.phoneNo);
-    var transArray = [];
-    for (i in userData.body.request) {
-        const transactions = new Pending();
-        transactions.created = userData.body.requester;
-        transactions.fromId = userData.body.request[i];
-        transactions.toId = userData.body.requester;
-        transactions.amount = userData.body.amountPerPax;
-        transactions.dateTime = new Date;
-        transactions.completed = false;
-        transactions.save();
-        transArray.push(userData.body.request[i]);
-        console.log("Created request for "+userData.body.requester+" from "+userData.body.request[i]+ " amt: "+userData.body.amountPerPax);
-    }
-    return transArray;
 };
 
 exports.findTbyEmail = (email) => {
@@ -268,3 +264,20 @@ exports.removeById = (userId) => {
     });
 };
 
+exports.createTrans = (userData) => {
+    // console.log("Create Account with Phone "+userData.phoneNo);
+    var transArray = [];
+    for (i in userData.body.request) {
+        const transactions = new Pending();
+        transactions.created = userData.body.requester;
+        transactions.fromId = userData.body.request[i];
+        transactions.toId = userData.body.requester;
+        transactions.amount = userData.body.amountPerPax;
+        transactions.dateTime = new Date;
+        transactions.completed = false;
+        transactions.save();
+        transArray.push(userData.body.request[i]);
+        console.log("Created request for "+userData.body.requester+" from "+userData.body.request[i]+ " amt: "+userData.body.amountPerPax);
+    }
+    return transArray;
+};
