@@ -141,13 +141,15 @@ exports.topUp = (req, res) => {
 exports.pay = (req, res) => {
     if (req.body.amount != null) {
         let fromJWT = UserModel.findTbyEmail2(req.jwt.email);
-
-        if(req.body.payer !== fromJWT.phoneNo)
-            console.log(req.body.payer + " "+ fromJWT.phoneNo);
+        console.log(fromJWT);
+        if (req.body.payer !== fromJWT.phoneNo) {
+        }
+            console.log(req.body.payer + " " + fromJWT.phoneNo);
             return res.status(403).send({
                 "error": true,
                 "message": 'Nice try MR cunning.'
             });
+        }
         UserModel.findByPhone(fromJWT.phoneNo) // Current User
             .then((result) => {
                 UserModel.findByPhone(req.body.payee)
