@@ -221,6 +221,33 @@ exports.pay = (req, res) => {
     }
 };
 
+/*
+"pointsDeducted": 500,
+"cashback": 5
+ */
+exports.rewards = (req, res) => {
+    UserModel.findTbyEmail2(req.jwt.email).then((jwtResult) => {
+        if (!jwtResult || jwtResult == null) {
+            res.status(404).send({
+                "error": true,
+                "message": 'No user.'
+            });
+        }
+        if (req.body.pointsDeducted != null) {
+            if (req.body.cashback != null) {
+                console.log(jwtResult.email + " redeeming " +req.body.pointsDeducted+ " points for $" +req.body.cashback);
+                var totalAmt = Number(jwtResult.balanceAmount) + Number(req.body.cashback);
+                UserModel.patchUser(jwtResult.id, {balanceAmount: totalAmt});
+                var totalPoints = Number(jwtResult.points) - Number(req.body.pointsDeducted);
+                UserModel.patchUser(jwtResult.id, {balanceAmount: totalPoints});
+                res.status(200).send({
+                    "error": false,
+                    "message": 'Successful.'
+                });
+            }
+        }
+    });
+};
 exports.request = (req, res) => {
     if (req.body.request != null) {
         UserModel.findTbyEmail2(req.jwt.email).then((jwtResult) => {
