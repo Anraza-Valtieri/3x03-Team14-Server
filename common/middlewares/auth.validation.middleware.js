@@ -36,7 +36,7 @@ exports.validJWTNeeded = (req, res, next) => {
             } else {
                 jwt.verify(authorization[1], secret, function (err, decoded) {
                     if (err) {
-                        console.log("JWT invalid");
+                        console.error("JWT invalid");
                         return res.status(403).send(err);
                     }else{
                         req.jwt = jwt.verify(authorization[1], secret);
