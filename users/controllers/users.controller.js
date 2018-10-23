@@ -327,21 +327,19 @@ exports.request = (req, res) => {
                 });
                 counter.push(true);
                 if (counter.length === req.body.request.length) {
-                    if (k >= req.body.request.length) {
-                        console.log(transArray);
-                        if (transArray.length > 0) {
-                            return res.status(404).send({
-                                "error": true,
-                                "message": 'Some phone numbers does not exist.',
-                                "missingPhones": req.body.request[k]
-                            });
-                        } else {
-                            UserModel.createTrans(req);
-                            return res.status(200).send({
-                                "error": false,
-                                "message": 'Success.'
-                            })
-                        }
+                    console.log(transArray);
+                    if (transArray.length > 0) {
+                        return res.status(404).send({
+                            "error": true,
+                            "message": 'Some phone numbers does not exist.',
+                            "missingPhones": req.body.request[k]
+                        });
+                    } else {
+                        UserModel.createTrans(req);
+                        return res.status(200).send({
+                            "error": false,
+                            "message": 'Success.'
+                        })
                     }
                 }
             });
