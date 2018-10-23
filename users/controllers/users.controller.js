@@ -314,11 +314,12 @@ exports.request = (req, res) => {
             }
 
             var transArray = [];
-            for (i in req.body.request) {
+            for (k in req.body.request) {
                 // UserModel.findTByPhone2(req.body.request[i])
-                UserModel.findByPhone(req.body.request[i]).then((result) => {
+                console.log(req.body.request[k]);
+                UserModel.findByPhone(req.body.request[k].toString()).then((result) => {
                     if (!result || result === null) {
-                        transArray.push(req.body.request[i]);
+                        transArray.push(result.phoneNo.toString());
                     }
                 });
             }
