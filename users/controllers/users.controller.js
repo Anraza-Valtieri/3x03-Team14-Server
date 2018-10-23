@@ -269,9 +269,10 @@ exports.points = (req, res) => {
             "error": false,
             "totalPoints": totalAmt,
             "prices": [
-                [5, 200],
-                [10, 300],
-                [15, 500]]
+                [1, 10],
+                [15, 100],
+                [160, 1000],
+                [1700, 10000]]
         });
 
     });
@@ -314,31 +315,62 @@ exports.request = (req, res) => {
             }
 
             var transArray = [];
-            for (k = 0; k < req.body.request.length; k++) {
+            var counter = [];
+
+            req.body.request.forEach(function (name) {
                 UserModel.findByPhone(req.body.request[k].toString()).then((result) => {
                     if (result == null) {
-                        console.log("We are missing this number "+ req.body.request[k]);
+                        console.log("We are missing this number " + req.body.request[k]);
                         transArray.push(req.body.request[k]);
+
                     }
                 });
-                if (k >= req.body.request.length){
-                    console.log(transArray);
-                    if (transArray.length > 0){
-                        return res.status(404).send({
-                            "error": true,
-                            "message": 'Some phone numbers does not exist.',
-                            "missingPhones": req.body.request[k]
-                        });
-                    }else{
-                        UserModel.createTrans(req);
-                        return res.status(200).send({
-                            "error": false,
-                            "message": 'Success.'
-                        })
+                counter.push(true);
+                if (counter.length === req.body.request.length) {
+                    if (k >= req.body.request.length) {
+                        console.log(transArray);
+                        if (transArray.length > 0) {
+                            return res.status(404).send({
+                                "error": true,
+                                "message": 'Some phone numbers does not exist.',
+                                "missingPhones": req.body.request[k]
+                            });
+                        } else {
+                            UserModel.createTrans(req);
+                            return res.status(200).send({
+                                "error": false,
+                                "message": 'Success.'
+                            })
+                        }
                     }
                 }
-            }
+            });
         });
+        // for (k = 0; k < req.body.request.length; k++) {
+        //     UserModel.findByPhone(req.body.request[k].toString()).then((result) => {
+        //         if (result == null) {
+        //             console.log("We are missing this number "+ req.body.request[k]);
+        //             transArray.push(req.body.request[k]);
+        //         }
+        //     });
+        // }
+
+        // if (k >= req.body.request.length){
+        //     console.log(transArray);
+        //     if (transArray.length > 0){
+        //         return res.status(404).send({
+        //             "error": true,
+        //             "message": 'Some phone numbers does not exist.',
+        //             "missingPhones": req.body.request[k]
+        //         });
+        //     }else{
+        //         UserModel.createTrans(req);
+        //         return res.status(200).send({
+        //             "error": false,
+        //             "message": 'Success.'
+        //         })
+        //     }
+        // }
     }
 };
 
