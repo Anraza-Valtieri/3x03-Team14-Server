@@ -299,7 +299,7 @@ exports.request = (req, res) => {
     if (req.body.request != null) {
         UserModel.findTbyEmail2(req.jwt.email).then((jwtResult) => {
             if (!jwtResult || jwtResult == null) {
-                res.status(404).send({
+                return res.status(404).send({
                     "error": true,
                     "message": 'No user.'
                 });
@@ -316,25 +316,26 @@ exports.request = (req, res) => {
             var transArray = [];
             for (k in req.body.request) {
                 UserModel.findByPhone(req.body.request[k].toString()).then((result) => {
-                    console.log(result);
-                    if (!result || result == null || result.length <= 0) {
+                    if (result != null) {
+                        console.log("We have "+req.body.request[k].toString());
+                    }else{
                         transArray.push(req.body.request[k].toString());
                     }
                 });
             }
             console.log(transArray);
             if (transArray.length > 0){
-                res.status(404).send({
+                return res.status(404).send({
                     "error": true,
                     "message": 'Some phone numbers does not exist.',
                     "missingPhones": transArray
                 });
-                return null
+                return null;
             }else{
                 var result = UserModel.createTrans(req);
                 console.log("result: %j", result);
 
-                res.status(200).send({
+                return res.status(200).send({
                     "error": false,
                     "message": 'Success.'
                 })
