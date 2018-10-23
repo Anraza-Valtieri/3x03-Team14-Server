@@ -316,6 +316,7 @@ exports.request = (req, res) => {
             var transArray = [];
             for (k in req.body.request) {
                 UserModel.findByPhone(req.body.request[k].toString()).then((result) => {
+                    console.log(result);
                     if (!result || result == null || result.length <= 0) {
                         transArray.push(req.body.request[k].toString());
                     }
