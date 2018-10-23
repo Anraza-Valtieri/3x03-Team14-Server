@@ -317,12 +317,11 @@ exports.request = (req, res) => {
             var transArray = [];
             var counter = [];
 
-            req.body.request.forEach(function (name) {
-                UserModel.findByPhone(req.body.request[k].toString()).then((result) => {
+            req.body.request.forEach(function (number) {
+                UserModel.findByPhone(number).then((result) => {
                     if (result == null) {
-                        console.log("We are missing this number " + req.body.request[k]);
-                        transArray.push(req.body.request[k]);
-
+                        console.log("We are missing this number " + number);
+                        transArray.push(number);
                     }
                 });
                 counter.push(true);
