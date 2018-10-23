@@ -2,6 +2,8 @@ const UserModel = require('../models/users.model');
 const crypto = require('crypto');
 const jwtSecret = require('../../common/config/env.config.js').jwt_secret,
     jwt = require('jsonwebtoken');
+
+var async = require("async");
 // const userSchema = new Schema({
 //     firstName: String,
 //     lastName: String,
@@ -317,30 +319,29 @@ exports.request = (req, res) => {
             var transArray = [];
             var counter = [];
 
-            req.body.request.forEach(function (number) {
-                UserModel.findByPhone(number).then((result) => {
+            async.forEachOf(req.body.request, function (value, key, callback) {
+                UserModel.findByPhone(value).then((result) => {
                     if (result == null) {
-                        console.log("We are missing this number " + number);
-                        transArray.push(number);
+                        console.log("We are missing this number " + value);
+                        transArray.push(value);
                     }
-                    if (counter.length === req.body.request.length) {
-                        console.log(transArray);
-                        if (transArray.length > 0) {
-                            return res.status(404).send({
-                                "error": true,
-                                "message": 'Some phone numbers does not exist.',
-                                "missingPhones": req.body.request[k]
-                            });
-                        } else {
-                            UserModel.createTrans(req);
-                            return res.status(200).send({
-                                "error": false,
-                                "message": 'Success.'
-                            })
-                        }
-                    }
-                    counter.push(true);
+                    callback();
                 });
+            }, function (err) {
+                if (err) console.error(err.message);
+                if (transArray.length > 0) {
+                    return res.status(404).send({
+                        "error": true,
+                        "message": 'Some phone numbers does not exist.',
+                        "missingPhones": req.body.request[k]
+                    });
+                } else {
+                    UserModel.createTrans(req);
+                    return res.status(200).send({
+                        "error": false,
+                        "message": 'Success.'
+                    })
+                }
             });
         });
     }
