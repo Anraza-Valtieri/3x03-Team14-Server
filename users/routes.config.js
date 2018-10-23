@@ -36,6 +36,13 @@ exports.routesConfig = function (app) {
         // UsersController.getBankDetails
     ]);
 
+    app.post('/points', [
+        // UsersController.insert
+        ValidationMiddleware.validJWTNeeded,
+        UsersController.points,
+        // UsersController.getBankDetails
+    ]);
+
     app.post('/rewards', [
         // UsersController.insert
         ValidationMiddleware.validJWTNeeded,

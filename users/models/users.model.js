@@ -13,7 +13,7 @@ const options = {
     socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
     family: 4 // Use IPv4, skip trying IPv6
 };
-mongoose.connect('mongodb://localhost:27017/bgd', options);
+mongoose.connect('mongodb://team14ssd_admin:DAzk_F9A@localhost:27017/bgd', options);
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
@@ -183,6 +183,13 @@ exports.createUser = (userData) => {
                 console.log("CANNOT Account with Phone already exist " + userData.phoneNo);
                 return 0;
             }
+
+            User.findByEmail(userData.email).then((result) => {
+                console.log("result: %j", result);
+                if (result != null) {
+                    console.log("CANNOT Account with Phone already exist " + userData.email);
+                    return 0;
+                }});
             const user = new User(userData);
             // user._id = user.phoneNo;
             user.balanceAmount = 0;

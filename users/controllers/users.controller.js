@@ -71,10 +71,8 @@ exports.removeById = (req, res) => {
 
 
 exports.getBankDetails = (req, res) => {
-
     console.log(req.body.email + " Requesting details");
     console.log("JWT for "+req.body.email +" " + req.jwt.email);
-
     if(req.jwt.email !== req.body.email)
         return res.status(403).send({
             "error": true,
@@ -254,6 +252,30 @@ exports.rewards = (req, res) => {
         }
     });
 };
+
+
+exports.points = (req, res) => {
+    UserModel.findTbyEmail2(req.jwt.email).then((jwtResult) => {
+        if (!jwtResult || jwtResult == null) {
+            res.status(404).send({
+                "error": true,
+                "message": 'No user.'
+            });
+        }
+        var totalAmt = Number(jwtResult.balanceAmount);
+
+        res.status(200).send({
+            "error": false,
+            "totalPoints": totalAmt,
+            "prices": [
+                [5, 200],
+                [10, 300],
+                [15, 500]]
+        });
+
+    });
+};
+
 exports.request = (req, res) => {
     if (req.body.request != null) {
         UserModel.findTbyEmail2(req.jwt.email).then((jwtResult) => {
@@ -273,17 +295,12 @@ exports.request = (req, res) => {
             }
 
             var result = UserModel.createTrans(req);
-            // .then((result) =>{
             console.log("result: %j", result);
 
-            // res.status(200).send({status: "Success", result: result});
             res.status(200).send({
                 "error": false,
                 "message": 'Success.'
             })
-            // console.log("Created request for "+req.body.requester+" from "+req.body.request[i]+ " amt: "+req.body.amountPerPax)
-            // });
-
         });
     }
 };
