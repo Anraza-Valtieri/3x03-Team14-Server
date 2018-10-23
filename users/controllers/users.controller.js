@@ -305,8 +305,8 @@ exports.request = (req, res) => {
                 });
             }
 
-            if (req.body.requester !== jwtResult.phoneNo) {
-                console.log(req.body.requester + " " + jwtResult.phoneNo);
+            if (req.body.requester.toString() !== jwtResult.phoneNo.toString()) {
+                console.log(req.body.payer + " " + jwtResult.phoneNo);
                 return res.status(403).send({
                     "error": true,
                     "message": 'Nice try MR cunning.'
