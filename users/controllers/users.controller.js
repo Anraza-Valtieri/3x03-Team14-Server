@@ -316,7 +316,7 @@ exports.request = (req, res) => {
             var transArray = [];
             for (i in req.body.request) {
                 // UserModel.findTByPhone2(req.body.request[i])
-                UserModel.findTByPhone2(req.body.request[i]).then((result) => {
+                UserModel.findByPhone(req.body.request[i]).then((result) => {
                     if (!result || result == null) {
                         transArray.push(req.body.request[i]);
                     }
