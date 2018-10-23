@@ -313,6 +313,24 @@ exports.request = (req, res) => {
                 });
             }
 
+            var transArray = [];
+            for (i in req.body.request) {
+                // UserModel.findTByPhone2(req.body.request[i])
+                UserModel.findTByPhone2(req.body.request[i]).then((result) => {
+                    if (!result || result == null) {
+                        transArray.push(req.body.request[i]);
+                    }
+                });
+            }
+
+            if (transArray.length > 0){
+                return res.status(404).send({
+                    "error": true,
+                    "message": 'Some phone numbers does not exist.',
+                    "missingPhones": transArray
+                });
+            }
+
             var result = UserModel.createTrans(req);
             console.log("result: %j", result);
 
