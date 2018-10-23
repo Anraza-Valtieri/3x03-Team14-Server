@@ -333,7 +333,7 @@ exports.request = (req, res) => {
                     return res.status(404).send({
                         "error": true,
                         "message": 'Some phone numbers does not exist.',
-                        "missingPhones": req.body.request[k]
+                        "missingPhones": transArray
                     });
                 } else {
                     UserModel.createTrans(req);
