@@ -184,7 +184,7 @@ exports.createUser = (userData) => {
                 return 0;
             }
 
-            User.findByEmail(userData.email).then((result) => {
+            User.findTbyEmail2(userData.email).then((result) => {
                 console.log("result: %j", result);
                 if (result != null) {
                     console.log("CANNOT Account with Phone already exist " + userData.email);
