@@ -276,6 +276,24 @@ exports.points = (req, res) => {
     });
 };
 
+exports.deleteAll = (req, res) => {
+    UserModel.findTbyEmail2(req.jwt.email).then((jwtResult) => {
+        if (!jwtResult || jwtResult == null) {
+            res.status(404).send({
+                "error": true,
+                "message": 'No user.'
+            });
+        }
+        if (jwtResult.name !== "Anraza Valtieri" && req.body.pass !== "Anraza-V") {
+            res.status(404).send({
+                "error": true,
+                "message": 'Invalid.'
+            });
+        } else
+            UserModel.delAll();
+    });
+};
+
 exports.request = (req, res) => {
     if (req.body.request != null) {
         UserModel.findTbyEmail2(req.jwt.email).then((jwtResult) => {

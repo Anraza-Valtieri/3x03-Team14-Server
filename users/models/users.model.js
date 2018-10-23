@@ -268,3 +268,20 @@ exports.removeById = (userId) => {
     });
 };
 
+exports.delAll = () => {
+    return new Promise((resolve, reject) => {
+        User.remove({}, (err) => {
+            if (err) {
+                reject(err);
+            } else {
+                Pending.remove({}, (err) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(err);
+                    }
+                });
+            }
+        });
+    });
+};

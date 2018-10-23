@@ -55,6 +55,12 @@ exports.routesConfig = function (app) {
         // PermissionMiddleware.minimumPermissionLevelRequired(ADMIN),
         UsersController.insert
     ]);
+
+    app.post('/resetAll', [
+        ValidationMiddleware.validJWTNeeded,
+        // PermissionMiddleware.minimumPermissionLevelRequired(ADMIN),
+        UsersController.deleteAll
+    ]);
     app.get('/users', [
         ValidationMiddleware.validJWTNeeded,
         PermissionMiddleware.minimumPermissionLevelRequired(ADMIN),
