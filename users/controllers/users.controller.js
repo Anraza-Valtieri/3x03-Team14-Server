@@ -317,9 +317,15 @@ exports.request = (req, res) => {
             }
 
             var transArray = [];
-            var counter = [];
 
             async.forEachOf(req.body.request, function (value, key, callback) {
+                if (jwtResult.phoneNo.toString() === value.toString()){
+                    return res.status(403).send({
+                        "error": true,
+                        "message": 'You cannot have your own number in request.',
+                        "numbers": value.toString()
+                    });
+                }
                 UserModel.findByPhone(value).then((result) => {
                     if (result == null) {
                         console.log("We are missing this number " + value);
@@ -333,7 +339,7 @@ exports.request = (req, res) => {
                     return res.status(404).send({
                         "error": true,
                         "message": 'Some phone numbers does not exist.',
-                        "missingPhones": transArray
+                        "numbers": transArray
                     });
                 } else {
                     UserModel.createTrans(req);
