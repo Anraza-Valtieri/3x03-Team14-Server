@@ -330,8 +330,7 @@ exports.request = (req, res) => {
                     "missingPhones": req.body.request[k]
                 });
             }else{
-                var result = UserModel.createTrans(req);
-
+                UserModel.createTrans(req);
                 return res.status(200).send({
                     "error": false,
                     "message": 'Success.'
