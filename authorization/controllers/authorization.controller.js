@@ -9,7 +9,7 @@ exports.login = (req, res) => {
         console.log("AUTH: "+req.body.email);
 
         let token = jwt.sign(req.body, jwtSecret, { expiresIn: jwt_duration});
-        console.log("AUTH SEND: " + token);
+        // console.log("AUTH SEND: " + token);
         res.status(201).send({accessToken: token});
     } catch (err) {
         console.log(err);

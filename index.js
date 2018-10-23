@@ -19,7 +19,6 @@ var options = {
 
 app.use(morgan('combined'));
 app.use(function (req, res, next){
-    console.log(req.body);
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Credentials', 'true');
     // res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DEconstE');
