@@ -152,9 +152,9 @@ exports.pay = (req, res) => {
                     "message": 'Nice try MR cunning.'
                 });
             }
-            UserModel.findByPhone(jwtResult.phoneNo) // Current User
+            UserModel.findByPhone(jwtResult.phoneNo.toString()) // Current User
                 .then((result) => {
-                    UserModel.findByPhone(req.body.payee)
+                    UserModel.findByPhone(req.body.payee.toString())
                         .then((result2) => {
                             if (!result || result == null) {
                                 res.status(200).send({
