@@ -316,7 +316,7 @@ exports.request = (req, res) => {
             var transArray = [];
             for (k in req.body.request) {
                 UserModel.findByPhone(req.body.request[k].toString()).then((result) => {
-                    if (result == null) {
+                    if (!result || result == null || result.length <= 0) {
                         transArray.push(req.body.request[k].toString());
                     }
                 });
@@ -328,6 +328,7 @@ exports.request = (req, res) => {
                     "message": 'Some phone numbers does not exist.',
                     "missingPhones": transArray
                 });
+                return null
             }else{
                 var result = UserModel.createTrans(req);
                 console.log("result: %j", result);
