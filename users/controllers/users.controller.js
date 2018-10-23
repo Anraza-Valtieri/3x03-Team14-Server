@@ -324,20 +324,20 @@ exports.request = (req, res) => {
             }
 
             if (transArray.length > 0){
-                return res.status(404).send({
+                res.status(404).send({
                     "error": true,
                     "message": 'Some phone numbers does not exist.',
                     "missingPhones": transArray
                 });
+            }else{
+                var result = UserModel.createTrans(req);
+                console.log("result: %j", result);
+
+                res.status(200).send({
+                    "error": false,
+                    "message": 'Success.'
+                })
             }
-
-            var result = UserModel.createTrans(req);
-            console.log("result: %j", result);
-
-            res.status(200).send({
-                "error": false,
-                "message": 'Success.'
-            })
         });
     }
 };
