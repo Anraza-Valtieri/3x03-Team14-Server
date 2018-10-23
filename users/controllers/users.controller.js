@@ -320,6 +320,11 @@ exports.request = (req, res) => {
                         console.log("We have "+req.body.request[k].toString());
                     }else{
                         transArray.push(req.body.request[k].toString());
+                        return res.status(404).send({
+                            "error": true,
+                            "message": 'Some phone numbers does not exist.',
+                            "missingPhones": req.body.request[k]
+                        });
                     }
                 });
             }
@@ -328,12 +333,11 @@ exports.request = (req, res) => {
                 return res.status(404).send({
                     "error": true,
                     "message": 'Some phone numbers does not exist.',
-                    "missingPhones": transArray
+                    "missingPhones": req.body.request[k]
                 });
-                return null;
             }else{
                 var result = UserModel.createTrans(req);
-                console.log("result: %j", result);
+                // console.log("result: %j", result);
 
                 return res.status(200).send({
                     "error": false,
