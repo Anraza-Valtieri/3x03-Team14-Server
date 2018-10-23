@@ -322,7 +322,7 @@ exports.request = (req, res) => {
                     }
                 });
             }
-
+            console.log(transArray);
             if (transArray.length > 0){
                 res.status(404).send({
                     "error": true,
