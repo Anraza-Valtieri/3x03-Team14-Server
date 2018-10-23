@@ -314,7 +314,7 @@ exports.request = (req, res) => {
             }
 
             var transArray = [];
-            for (k in req.body.request) {
+            for (k = 0; k < req.body.request.length; k++) {
                 UserModel.findByPhone(req.body.request[k].toString()).then((result) => {
                     if (result == null) {
                         console.log("We are missing this number "+ req.body.request[k]);
