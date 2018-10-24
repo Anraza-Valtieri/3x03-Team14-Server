@@ -160,7 +160,7 @@ exports.pullOthers = (req, res) => {
                 });
             } else {
                 if (req.body.phone.toString() !== result.phoneNo.toString()) {
-                    return res.status(403).send({
+                    return res.status(200).send({
                         "error": true,
                         "message": 'Nice try MR cunning.'
                     });
@@ -168,7 +168,7 @@ exports.pullOthers = (req, res) => {
                 UserModel.findOtherTransFromWithType(result.phoneNo, 0)
                     .then((result2) => {
                         if (!result2 || result2 == null) {
-                            res.status(404).send({
+                            res.status(200).send({
                                 "error": true,
                                 "message": 'No Transaction.'
                             });
