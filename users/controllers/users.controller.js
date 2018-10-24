@@ -654,6 +654,7 @@ exports.payMerchant = (req, res) => {
                     // var resultI = new LINQ(merch).Any(row => row.includes(req.body.qrString));
                     var resultI = new LINQ(merch).Any(function (row) {
                         if(row.includes(req.body.qrString)){
+                            console.log(row);
                             return row;
                         }
                     });
