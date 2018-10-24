@@ -127,7 +127,7 @@ exports.findTransToWithType = (phone) => {
             if(result == null || !result || result.length <= 0){
                 return null;
             }else {
-                // console.log("result: %j", result);
+                console.log("result: %j", result);
                 // result = result;
                 // delete result._id;
                 delete result.__v;
@@ -233,7 +233,7 @@ exports.findById = (id) => {
             if(result == null || !result || result.length <= 0){
                 return null;
             }else {
-                console.log("result: %j", result);
+                // console.log("result: %j", result);
                 result = result.toJSON();
                 delete result._id;
                 delete result.__v;
@@ -248,7 +248,7 @@ exports.findByPhone = (phone) => {
             if(result == null || !result || result.length <= 0){
                 return null;
             }else {
-                console.log("result: %j", result);
+                // console.log("result: %j", result);
                 result = result.toJSON();
                 delete result._id;
                 delete result.__v;
@@ -259,14 +259,14 @@ exports.findByPhone = (phone) => {
 exports.createUser = (userData) => {
     return User.findByPhone(userData.phoneNo)
         .then((result) => {
-            console.log("result: %j", result);
+            // console.log("result: %j", result);
             if (result != null) {
                 console.log("CANNOT Account with Phone already exist " + userData.phoneNo);
                 return 0;
             }
 
             User.findTbyEmail2(userData.email).then((result) => {
-                console.log("result: %j", result);
+                // console.log("result: %j", result);
                 if (result != null) {
                     console.log("CANNOT Account with Phone already exist " + userData.email);
                     return 0;
