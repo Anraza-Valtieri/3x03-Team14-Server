@@ -408,6 +408,7 @@ exports.rewards = (req, res) => {
     });
 };
 exports.qrFunction = (req, res) => {
+    console.log(req.body.qrString);
     if(req.body.qrString != null) {
         UserModel.findTbyEmail2(req.jwt.email).then((jwtResult) => {
             if (!jwtResult || jwtResult == null) {
@@ -451,7 +452,7 @@ exports.qrFunction = (req, res) => {
             }
         });
     } else {
-        return res.status(200).send({
+        res.status(200).send({
         "error": true,
         "message": 'No QR.'
     });
