@@ -651,6 +651,7 @@ exports.payMerchant = (req, res) => {
                 }else{ // SPLIT bill
                     // for (let i = 0; i < merch.length; i++) {
                     merch.forEach(function(value){
+                        console.log(value[0]+" & "+req.body.qrString);
                         if (value[0] === req.body.qrString) {
                             if(req.body.splitBetween != null && req.body.splitBetween.length > 0) {
                                 if(req.body.splitAmount != null && req.body.splitAmount.length > 0) {
