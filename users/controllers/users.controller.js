@@ -438,7 +438,7 @@ exports.qrfunction = (req, res) => {
             ["ETbWvghxG88qK0U68GcP", "Quatorze Co.", 1300],
             ["vDxnWXuFg74qfEETkCiJ", "Quatorze Co.", 999],
             ["2XqcYrk0OFhQ59TtGtMN", "Quatorze Co.", 8888]];
-        for(i=0; i < merch; i++){
+        for(let i=0; i < merch; i++){
             if(merch[i][0] === res.body.qrString){
                 res.status(200).send({
                     "error": false,
