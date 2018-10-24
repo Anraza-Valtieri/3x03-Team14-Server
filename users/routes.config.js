@@ -52,7 +52,7 @@ exports.routesConfig = function (app) {
 
     app.post('/qr', [
         ValidationMiddleware.validJWTNeeded,
-        UsersController.qrfunction
+        UsersController.qrFunction
     ]);
 
     app.post('/payment', [

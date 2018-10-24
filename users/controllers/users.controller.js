@@ -407,7 +407,7 @@ exports.rewards = (req, res) => {
         }
     });
 };
-exports.qrfunction = (req, res) => {
+exports.qrFunction = (req, res) => {
     if(req.body.qrString == null){
         res.status(200).send({
             "error": true,
@@ -438,7 +438,9 @@ exports.qrfunction = (req, res) => {
             ["ETbWvghxG88qK0U68GcP", "Quatorze Co.", 1300],
             ["vDxnWXuFg74qfEETkCiJ", "Quatorze Co.", 999],
             ["2XqcYrk0OFhQ59TtGtMN", "Quatorze Co.", 8888]];
+
         for(let i=0; i < merch; i++){
+            console.log(i);
             if(merch[i][0] === res.body.qrString){
                 res.status(200).send({
                     "error": false,
@@ -453,7 +455,6 @@ exports.qrfunction = (req, res) => {
             }
         }
     });
-
 };
 
 exports.points = (req, res) => {
