@@ -396,7 +396,7 @@ exports.payment = (req, res) => {
                             "message": 'Not enough in balance to make payment.'
                         });
                     }
-                    var deductedAmt = Number(jwtResult.balanceAmount) - Number(trans.amount);
+                    let deductedAmt = Number(jwtResult.balanceAmount) - Number(trans.amount);
 
                     UserModel.patchUser(jwtResult.id, {balanceAmount: deductedAmt})
                         .then(() => {
@@ -675,6 +675,7 @@ exports.payMerchant = (req, res) => {
                                                 }
                                             }, function (err) {
                                                 if (err) console.error(err.message);
+                                                console.log("Checking transArray");
                                                 if (transArray.length > 0) {
                                                     return res.status(200).send({
                                                         "error": true,
@@ -682,16 +683,17 @@ exports.payMerchant = (req, res) => {
                                                         "numbers": transArray
                                                     });
                                                 } else {
-                                                    // var results = UserModel.createRequestTransaction(req);
+                                                    console.log("Checking transaction 8s");
                                                     var results = UserModel.createTransaction(jwtResult.phoneNo,
                                                         jwtResult.phoneNo, sum, 8, "");
                                                     let transArray2 = [];
-                                                    async.each(req.body.splitBetween, function (value, key, callback) {
+                                                    async.each(req.body.splitBetween, function (value, key, callback2) {
                                                         var results = UserModel.createTransaction(value,
                                                             jwtResult.phoneNo, req.body.splitAmount, 1, merch[i][0]);
                                                         transArray2.push(results);
-                                                        callback();
+                                                        callback2();
                                                     }, function (err) {
+                                                        console.log("Checking transArray2");
                                                         if (err) console.error(err.message);
                                                         if (transArray2.length > 0 && transArray2.length === req.body.splitBetween.length) {
                                                             return res.status(200).send({
