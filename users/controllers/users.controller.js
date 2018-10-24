@@ -117,10 +117,10 @@ exports.pullPending = (req, res) => {
                     });
                 };
                 console.log("Pullpending "+ result.phoneNo);
-                UserModel.findTransToWithType(req.body.phone, 0)
+                UserModel.findPendingTransFromWithType(req.body.phone)
                     .then((result2) => {
                         if (!result2 || result2 == null) {
-                            res.status(404).send({
+                            res.status(200).send({
                                 "error": true,
                                 "message": 'No Transaction.'
                             });
