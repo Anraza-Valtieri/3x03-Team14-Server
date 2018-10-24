@@ -657,21 +657,22 @@ exports.payMerchant = (req, res) => {
                                     if (sum === merch[i][2]) {
                                         if (jwtResult.balanceAmount > sum){
                                             let transArray = [];
-                                            async.each(req.body.splitBetween, function (value, key, callback) {
+                                            async.each(req.body.splitBetween, function (value, callback) {
                                                 if (jwtResult.phoneNo.toString() === value.toString()){
                                                     res.status(200).send({
                                                         "error": true,
                                                         "message": 'You cannot have your own number in request.'
                                                     });
                                                     callback("You cannot have your own number in request");
+                                                }else {
+                                                    UserModel.findByPhone(value).then((result) => {
+                                                        if (result == null) {
+                                                            console.log("We are missing this number " + value);
+                                                            transArray.push(value);
+                                                            callback();
+                                                        }
+                                                    });
                                                 }
-                                                UserModel.findByPhone(value).then((result) => {
-                                                    if (result == null) {
-                                                        console.log("We are missing this number " + value);
-                                                        transArray.push(value);
-                                                    }
-                                                    callback();
-                                                });
                                             }, function (err) {
                                                 if (err) {console.error(err.message); return;}
                                                 if (transArray.length > 0) {
