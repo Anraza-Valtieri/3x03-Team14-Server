@@ -51,7 +51,8 @@ exports.routesConfig = function (app) {
     ]);
 
     app.post('/pullPending', [
-        ValidationMiddleware.validJWTNeeded
+        ValidationMiddleware.validJWTNeeded,
+        UsersController.pullPending
     ]);
 
     app.post('/users', [
