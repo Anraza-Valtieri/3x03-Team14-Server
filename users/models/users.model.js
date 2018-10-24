@@ -78,8 +78,7 @@ transactionSchema.statics.findTByDetails = function (to, from, amt,cb) {
 };
 
 transactionSchema.statics.findTransToWithType = function (to, typeNo, cb) {
-    console.log("findTransToWithType: "+to+" type: "+typeNo);
-    return this.model('TransactionSchema').find({"toId": to, "type": 0}, cb);
+    return this.model('TransactionSchema').find({"toId": to, "type": typeNo}, cb);
 };
 
 transactionSchema.statics.findTransFromWithType = function (to, typeNo, cb) {
@@ -107,8 +106,8 @@ exports.findOtherTransFromWithType = (to) => {
         });
 };
 
-exports.findTransFromWithType = (phone) => {
-    return Pending.findTransFromWithType(phone)
+exports.findTransFromWithType = (phone, typeNo) => {
+    return Pending.findTransFromWithType(phone, typeNo)
         .then((result) => {
             if(result == null || !result || result.length <= 0){
                 return null;
@@ -122,8 +121,8 @@ exports.findTransFromWithType = (phone) => {
         });
 };
 
-exports.findTransToWithType = (phone) => {
-    return Pending.findTransToWithType(phone)
+exports.findTransToWithType = (phone, typeNo) => {
+    return Pending.findTransToWithType(phone, typeNo)
         .then((result) => {
             if(result == null || !result || result.length <= 0){
                 return null;
