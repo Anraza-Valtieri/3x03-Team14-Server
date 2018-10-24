@@ -433,6 +433,7 @@ exports.qrFunction = (req, res) => {
                     "message": 'No user.'
                 });
             }else {
+                console.log("WE EXIST SO NEXT");
                 for (let i = 0; i < merch; i++) {
                     console.log(i);
                     if (merch[i][0] === res.body.qrString) {
