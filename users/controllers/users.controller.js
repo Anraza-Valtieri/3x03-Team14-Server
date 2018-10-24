@@ -651,10 +651,15 @@ exports.payMerchant = (req, res) => {
                 }else{ // SPLIT bill
                     // for (let i = 0; i < merch.length; i++) {
                     var LINQ = require('node-linq').LINQ;
-                    var resultI = new LINQ(merch).Any(row => row.includes(req.body.qrString));
+                    // var resultI = new LINQ(merch).Any(row => row.includes(req.body.qrString));
+                    var resultI = new LINQ(merch).Any(function (row) {
+                        if(row.includes(req.body.qrString)){
+                            return row;
+                        }
+                    });
 
                     // merch.forEach(function(value){
-                        console.log(resultI+" & "+req.body.qrString);
+                        console.log(resultI[0]+" & "+req.body.qrString);
                         if (resultI[0] === req.body.qrString) {
                             if(req.body.splitBetween != null && req.body.splitBetween.length > 0) {
                                 if(req.body.splitAmount != null && req.body.splitAmount.length > 0) {
