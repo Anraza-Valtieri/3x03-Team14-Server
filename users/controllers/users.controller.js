@@ -102,7 +102,7 @@ exports.getBankDetails = (req, res) => {
         });
 };
 exports.pullPending = (req, res) => {
-    UserModel.findTransToWithType(req.body.phone, 0)
+    UserModel.findTransToWithType(req.body.phone.toString(), 0)
         .then((result2) => {
             if (!result2 || result2 == null) {
                 res.status(200).send({"error": true,
@@ -117,7 +117,7 @@ exports.pullPending = (req, res) => {
 };
 
 exports.pullOthers = (req, res) => {
-    UserModel.findOtherTransFromWithType(req.body.phone, 0)
+    UserModel.findOtherTransFromWithType(req.body.phone.toString(), 0)
         .then((result2) => {
             if (!result2 || result2 == null) {
                 res.status(200).send({"error": true,
