@@ -110,6 +110,12 @@ exports.pullPending = (req, res) => {
                     "message": 'No user.'
                 });
             } else {
+                if (req.body.phone.toString() !== result.phoneNo.toString()) {
+                    return res.status(403).send({
+                        "error": true,
+                        "message": 'Nice try MR cunning.'
+                    });
+                };
                 console.log("Pullpending "+ result.phoneNo);
                 UserModel.findTransToWithType(result.phoneNo, 0)
                     .then((result2) => {
@@ -138,6 +144,12 @@ exports.pullOthers = (req, res) => {
                     "message": 'No user.'
                 });
             } else {
+                if (req.body.phone.toString() !== result.phoneNo.toString()) {
+                    return res.status(403).send({
+                        "error": true,
+                        "message": 'Nice try MR cunning.'
+                    });
+                };
                 UserModel.findOtherTransFromWithType(result.phoneNo, 0)
                     .then((result2) => {
                         if (!result2 || result2 == null) {
@@ -181,6 +193,109 @@ exports.topUp = (req, res) => {
                     }
                 }
             });
+    }
+};
+
+/*
+request: "2"
+phone: "91234567"
+objectId: "?"
+ */
+exports.payment = (req, res) => {
+    if (req.body.objectId != null && req.body.request != null) {
+        UserModel.findTbyEmail2(req.jwt.email).then((jwtResult) => {
+            if (!jwtResult || jwtResult == null) {
+                res.status(404).send({
+                    "error": true,
+                    "message": 'No user.'
+                });
+            }
+            if (req.body.phone.toString() !== jwtResult.phoneNo.toString()) {
+                console.error(req.body.phone + " " + jwtResult.phoneNo);
+                return res.status(403).send({
+                    "error": true,
+                    "message": 'Nice try MR cunning.'
+                });
+            }
+            // CLIENT -> SERVER (Accept payment)
+            // Process payments here
+            if(req.body.request === 2) {
+                UserModel.findTransWithId(req.body.objectId).then((trans) => {
+                    if (jwtResult.balanceAmount < trans.amount) {
+                        return res.status(403).send({
+                            "error": true,
+                            "message": 'Not enough in balance to make payment.'
+                        });
+                    }
+                    var deductedAmt = Number(jwtResult.balanceAmount) - Number(trans.amount);
+                    UserModel.patchUser(jwtResult.id, {balanceAmount: deductedAmt})
+                        .then(() => {
+                            UserModel.patchTransaction((req.body.objectId, {type: req.body.request}));
+                            console.log("Transaction success!");
+                            return res.status(200).send({
+                                "error": false,
+                                "message": 'Transaction success.'
+                            });
+                        });
+                });
+            }
+            //// CLIENT -> SERVER (Reject payment)
+            if(req.body.request === 3) {
+                UserModel.patchTransaction((req.body.objectId, {type: req.body.request}));
+                console.log("Transaction success!");
+                return res.status(200).send({
+                    "error": false,
+                    "message": 'Transaction success.'
+                });
+            }
+            // CLIENT -> SERVER (Accept splitting bills)
+            if(req.body.request === 4) {
+                UserModel.findTransWithId(req.body.objectId).then((trans) => {
+                    if (jwtResult.balanceAmount < trans.amount) {
+                        return res.status(403).send({
+                            "error": true,
+                            "message": 'Not enough in balance to make payment.'
+                        });
+                    }
+                    var deductedAmt = Number(jwtResult.balanceAmount) - Number(trans.amount);
+
+                    UserModel.patchUser(jwtResult.id, {balanceAmount: deductedAmt})
+                        .then(() => {
+                            UserModel.findTransFromWithType(trans.fromId, 8).then((trans2) => {
+                                if (trans2 == null){
+                                    return res.status(404).send({
+                                        error: "true",
+                                        message: "transaction cancelled by initiator? doesn't exist anymore"
+                                });
+                                }
+                                var remainingAmt = Number(trans2.amount) - Number(trans.amount);
+                                UserModel.patchTransaction(trans2._id, {amount: remainingAmt });
+                                UserModel.patchTransaction(trans._id, {type: "1" });
+                            });
+                            // UserModel.patchTransaction((req.body.objectId, {type: req.body.request}));
+                            console.log("Transaction success!");
+                            return res.status(200).send({
+                                "error": false,
+                                "message": 'Transaction success.'
+                            });
+                        });
+                });
+            }
+            // CLIENT -> SERVER (Reject splitting bills)
+            if(req.body.request === 5) {
+                UserModel.findTransFromWithType(trans.fromId, 8).then((trans2) => {
+                    if (trans2 == null){
+                        return res.status(404).send({
+                            error: "true",
+                            message: "transaction cancelled by initiator? doesn't exist anymore"
+                        });
+                    }
+                    var remainingAmt = Number(trans2.amount) - Number(trans.amount);
+                    UserModel.patchTransaction(trans2._id, {amount: remainingAmt });
+                    UserModel.patchTransaction(trans._id, {type: "1" });
+                });
+            }
+        });
     }
 };
 
@@ -243,16 +358,6 @@ exports.pay = (req, res) => {
                                                         +req.body.amount + " - Payee new Total: " + totalAmt + " paying left "
                                                         + deductedAmt);
                                                     console.log("Transaction success!");
-
-                                                    UserModel.findTByDetails(result2.phoneNo, result.phoneNo, req.body.amount)
-                                                        .then((result4) => {
-                                                            if (!result4 || result4 === null) {
-                                                                console.log("No relevant transaction found skip " + result2.phoneNo +
-                                                                    " " + result.phoneNo + " " + req.body.amount);
-                                                            } else {
-                                                                UserModel.patchTransaction(result4.id, {completed: true})
-                                                            }
-                                                        });
                                                     res.status(200).send({
                                                         "error": false,
                                                         "message": 'Success.'
@@ -369,7 +474,7 @@ exports.request = (req, res) => {
 
             async.forEachOf(req.body.request, function (value, key, callback) {
                 if (jwtResult.phoneNo.toString() === value.toString()){
-                    return res.status(403).send({
+                    return res.status(200).send({
                         "error": true,
                         "message": 'You cannot have your own number in request.',
                         "numbers": value.toString()
@@ -385,7 +490,7 @@ exports.request = (req, res) => {
             }, function (err) {
                 if (err) console.error(err.message);
                 if (transArray.length > 0) {
-                    return res.status(404).send({
+                    return res.status(200).send({
                         "error": true,
                         "message": 'Some phone numbers does not exist.',
                         "numbers": transArray

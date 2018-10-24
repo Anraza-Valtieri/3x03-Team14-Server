@@ -50,6 +50,11 @@ exports.routesConfig = function (app) {
         // UsersController.getBankDetails
     ]);
 
+    app.post('/payment', [
+        ValidationMiddleware.validJWTNeeded,
+        UsersController.pullPending
+    ]);
+
     app.post('/pullPending', [
         ValidationMiddleware.validJWTNeeded,
         UsersController.pullPending

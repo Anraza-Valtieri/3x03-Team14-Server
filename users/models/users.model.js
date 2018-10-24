@@ -89,7 +89,26 @@ transactionSchema.statics.findOtherTransFromWithType = function (to, cb) {
     return this.model('TransactionSchema').find({ $or:[{"fromId": to, "type": 2, "read": false},
             {"toId": to, "type": 2, "read": false}, {"toId": to, "type": 6, "read": false}, {"toId": to, "type": 7, "read": false}] }, cb);
 };
+
+transactionSchema.statics.findTransWithId = function (id, cb) {
+    return this.model('TransactionSchema').find({"_id": id}, cb);
+};
 const Pending = mongoose.model('TransactionSchema', transactionSchema);
+
+exports.findTransWithId = (to) => {
+    return Pending.findTransWithId(to)
+        .then((result) => {
+            if(result == null || !result || result.length <= 0){
+                return null;
+            }else {
+                // console.log("result: %j", result);
+                // result = result;
+                // delete result._id;
+                delete result.__v;
+                return result;
+            }
+        });
+};
 
 exports.findOtherTransFromWithType = (to) => {
     return Pending.findOtherTransFromWithType(to)
