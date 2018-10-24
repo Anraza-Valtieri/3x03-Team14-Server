@@ -434,7 +434,7 @@ exports.qrFunction = (req, res) => {
                 });
             }else {
                 console.log("WE EXIST SO NEXT");
-                for (let i = 0; i < merch; i++) {
+                for (let i = 0; i < merch.length; i++) {
                     console.log(i);
                     if (merch[i][0] === res.body.qrString) {
                         res.status(200).send({
