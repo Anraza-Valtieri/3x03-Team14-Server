@@ -533,15 +533,16 @@ exports.rewards = (req, res) => {
                         "error": true,
                         "message": 'Not enough points.'
                     });
+                }else {
+                    var totalAmt = Number(jwtResult.balanceAmount) + Number(req.body.cashback);
+                    UserModel.patchUser(jwtResult.id, {balanceAmount: totalAmt});
+                    var totalPoints = Number(jwtResult.points) - Number(req.body.pointsDeducted);
+                    UserModel.patchUser(jwtResult.id, {balanceAmount: totalPoints});
+                    res.status(200).send({
+                        "error": false,
+                        "message": 'Successful.'
+                    });
                 }
-                var totalAmt = Number(jwtResult.balanceAmount) + Number(req.body.cashback);
-                UserModel.patchUser(jwtResult.id, {balanceAmount: totalAmt});
-                var totalPoints = Number(jwtResult.points) - Number(req.body.pointsDeducted);
-                UserModel.patchUser(jwtResult.id, {balanceAmount: totalPoints});
-                res.status(200).send({
-                    "error": false,
-                    "message": 'Successful.'
-                });
             }
         }
     });
