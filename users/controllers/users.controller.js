@@ -674,7 +674,7 @@ exports.payMerchant = (req, res) => {
                                                     });
                                                 }
                                             }, function (err) {
-                                                if (err) {console.error(err.message); return;}
+                                                if (err) console.error(err.message);
                                                 if (transArray.length > 0) {
                                                     return res.status(200).send({
                                                         "error": true,

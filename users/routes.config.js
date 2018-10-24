@@ -62,7 +62,7 @@ exports.routesConfig = function (app) {
 
     app.post('/payment', [
         ValidationMiddleware.validJWTNeeded,
-        UsersController.pullPending
+        UsersController.payment
     ]);
 
     app.post('/billConfirm', [
