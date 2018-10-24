@@ -434,7 +434,7 @@ exports.qrFunction = (req, res) => {
                 });
             }else {
                 for (let i = 0; i < merch.length; i++) {
-                    console.log(i);
+                    // console.log(i);
                     if (merch[i][0] === req.body.qrString) {
                         return res.status(200).send({
                             "error": false,
