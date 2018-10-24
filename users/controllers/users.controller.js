@@ -442,11 +442,10 @@ exports.qrFunction = (req, res) => {
                         });
                     }
                     if(i === merch.length){
-                        res.status(200).send({
+                        return res.status(200).send({
                             "error": true,
                             "message": "Merchant not found!"
                         });
-                        res.end();
                     }
                 }
             }
