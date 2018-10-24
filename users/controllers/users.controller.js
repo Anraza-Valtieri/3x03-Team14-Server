@@ -121,7 +121,7 @@ exports.getBankDetails = (req, res) => {
 exports.pullPending = (req, res) => {
     UserModel.findTransToWithType(req.body.phone, 0)
         .then((result2) => {
-            if (!result || result == null) {
+            if (!result2 || result2 == null) {
                 res.status(200).send({"error": true,
                     "message": 'No user.'});
             } else {
