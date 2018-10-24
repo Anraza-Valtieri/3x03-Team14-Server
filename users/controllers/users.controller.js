@@ -432,21 +432,21 @@ exports.qrFunction = (req, res) => {
                     "error": true,
                     "message": 'No user.'
                 });
-            }
-            
-            for (let i = 0; i < merch; i++) {
-                console.log(i);
-                if (merch[i][0] === res.body.qrString) {
-                    res.status(200).send({
-                        "error": false,
-                        "merchantName": merch[i][1],
-                        "price": merch[i][2]
-                    });
-                } else {
-                    res.status(200).send({
-                        "error": true,
-                        "message": "Merchant not found!"
-                    });
+            }else {
+                for (let i = 0; i < merch; i++) {
+                    console.log(i);
+                    if (merch[i][0] === res.body.qrString) {
+                        res.status(200).send({
+                            "error": false,
+                            "merchantName": merch[i][1],
+                            "price": merch[i][2]
+                        });
+                    } else {
+                        res.status(200).send({
+                            "error": true,
+                            "message": "Merchant not found!"
+                        });
+                    }
                 }
             }
         });
