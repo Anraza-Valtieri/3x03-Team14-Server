@@ -110,6 +110,7 @@ exports.pullPending = (req, res) => {
                     "message": 'No user.'
                 });
             } else {
+                console.log("Pullpending "+ result.phoneNo);
                 UserModel.findTransToWithType(result.phoneNo, 0)
                     .then((result2) => {
                         if (!result2 || result2 == null) {

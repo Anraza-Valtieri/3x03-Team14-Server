@@ -78,7 +78,7 @@ transactionSchema.statics.findTByDetails = function (to, from, amt,cb) {
 };
 
 transactionSchema.statics.findTransToWithType = function (to, type, cb) {
-    return this.model('TransactionSchema').find({toId: to, type: type}, cb);
+    return this.model('TransactionSchema').find({toId: to, type: type.castToNumber()}, cb);
 };
 
 transactionSchema.statics.findTransFromWithType = function (to, type, cb) {
