@@ -418,7 +418,7 @@ exports.qrFunction = (req, res) => {
                 });
             }
 
-            let merch = [
+            const merch = [
                 ["F2lQKZ15vPmF0N2r1pbf", "Ryan & Jerry's", 3.5],
                 ["2zJ5h5tShgkZSUwULCkf", "Ryan & Jerry's", 8],
                 ["uK31AH86ql5CXHudApOO", "Ryan & Jerry's", 6],
