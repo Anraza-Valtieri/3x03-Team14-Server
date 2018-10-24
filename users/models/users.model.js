@@ -66,30 +66,30 @@ const transactionSchema = new Schema({
     read: Boolean
 });
 transactionSchema.statics.findTransFromByPhone = function (res, cb) {
-    return this.model('PendingTransactions').find({"fromId": res}, cb);
+    return this.model('TransactionSchema').find({"fromId": res}, cb);
 };
 
 transactionSchema.statics.findTransToByPhone2 = function (res, cb) {
-    return this.model('PendingTransactions').find({"toId": res}, cb);
+    return this.model('TransactionSchema').find({"toId": res}, cb);
 };
 
 transactionSchema.statics.findTByDetails = function (to, from, amt,cb) {
-    return this.model('PendingTransactions').findOne({"toId": to, "fromId": from, "amount": amt, "completed": false}, cb);
+    return this.model('TransactionSchema').findOne({"toId": to, "fromId": from, "amount": amt, "completed": false}, cb);
 };
 
 transactionSchema.statics.findTransToWithType = function (to, type, cb) {
-    return this.model('PendingTransactions').find({"toId": to, "type": type}, cb);
+    return this.model('TransactionSchema').find({"toId": to, "type": type}, cb);
 };
 
 transactionSchema.statics.findTransFromWithType = function (to, type, cb) {
-    return this.model('PendingTransactions').find({"fromId": to, "type": type}, cb);
+    return this.model('TransactionSchema').find({"fromId": to, "type": type}, cb);
 };
 
 transactionSchema.statics.findOtherTransFromWithType = function (to, cb) {
-    return this.model('PendingTransactions').find({ $or:[{"fromId": to, "type": 2, "read": false},
+    return this.model('TransactionSchema').find({ $or:[{"fromId": to, "type": 2, "read": false},
             {"toId": to, "type": 2, "read": false}, {"toId": to, "type": 6, "read": false}, {"toId": to, "type": 7, "read": false}] }, cb);
 };
-const Pending = mongoose.model('PendingTransactions', transactionSchema);
+const Pending = mongoose.model('TransactionSchema', transactionSchema);
 
 exports.findOtherTransFromWithType = (to) => {
     return Pending.findOtherTransFromWithType(to)
@@ -191,7 +191,6 @@ exports.createRequestTransaction = (userData) => {
         transactions.toId = userData.body.requester;
         transactions.amount = userData.body.amountPerPax;
         transactions.dateTime = new Date;
-        transactions.completed = false;
         transactions.read = false;
         transactions.type = 0;
         transactions.save();

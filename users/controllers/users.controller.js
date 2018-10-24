@@ -102,10 +102,10 @@ exports.getBankDetails = (req, res) => {
         });
 };
 exports.pullPending = (req, res) => {
-    UserModel.findTransToWithType(req.body.phone.toString(), 0)
+    UserModel.findTransToWithType(req.body.phone.toString(), "0")
         .then((result2) => {
             if (!result2 || result2 == null) {
-                res.status(200).send({"error": true,
+                res.status(404).send({"error": true,
                     "message": 'No Transaction.'});
             } else {
                 res.status(200).send({
