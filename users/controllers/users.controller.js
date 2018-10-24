@@ -315,6 +315,10 @@ exports.deleteAll = (req, res) => {
             });
         } else
             UserModel.delAll();
+            res.status(200).send({
+                "error": false,
+                "message": 'IT IS SNAPPED.'
+            });
     });
 };
 
