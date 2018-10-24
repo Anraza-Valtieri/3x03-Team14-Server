@@ -724,17 +724,11 @@ exports.payMerchant = (req, res) => {
                                 }
                             }
                         }
-                        // if(i === 14){
-                        //     return res.status(200).send({
-                        //         "error": true,
-                        //         "message": "Merchant not found!"
-                        //     });
-                        // }
                     });
-                    return res.status(200).send({
-                        "error": true,
-                        "message": "Merchant not found!"
-                    });
+                    // return res.status(200).send({
+                    //     "error": true,
+                    //     "message": "Merchant not found!"
+                    // });
                 }
             }
         });
