@@ -362,10 +362,11 @@ exports.request = (req, res) => {
                         "numbers": transArray
                     });
                 } else {
-                    UserModel.createRequestTransaction(req);
+                    var results = UserModel.createRequestTransaction(req);
                     return res.status(200).send({
                         "error": false,
-                        "message": 'Success.'
+                        "message": 'Success.',
+                        "phone": results
                     })
                 }
             });
