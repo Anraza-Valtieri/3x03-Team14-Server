@@ -476,8 +476,7 @@ exports.request = (req, res) => {
                 if (jwtResult.phoneNo.toString() === value.toString()){
                     return res.status(200).send({
                         "error": true,
-                        "message": 'You cannot have your own number in request.',
-                        "numbers": value.toString()
+                        "message": 'You cannot have your own number in request.'
                     });
                 }
                 UserModel.findByPhone(value).then((result) => {
