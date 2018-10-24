@@ -117,7 +117,7 @@ exports.pullPending = (req, res) => {
                     });
                 };
                 console.log("Pullpending "+ result.phoneNo);
-                UserModel.findTransToWithType(result.phoneNo, 0)
+                UserModel.findTransToWithType(req.body.phone, 0)
                     .then((result2) => {
                         if (!result2 || result2 == null) {
                             res.status(404).send({
@@ -283,16 +283,18 @@ exports.payment = (req, res) => {
             }
             // CLIENT -> SERVER (Reject splitting bills)
             if(req.body.request === 5) {
-                UserModel.findTransFromWithType(trans.fromId, 8).then((trans2) => {
-                    if (trans2 == null){
-                        return res.status(404).send({
+                UserModel.findTransWithId(res.body.objectId).then((trans3) => {
+                    if (trans3 == null) {
+                        return res.status(200).send({
                             error: "true",
-                            message: "transaction cancelled by initiator? doesn't exist anymore"
+                            message: "(transaction cancelled by initiator? doesnt exist anymore)"
                         });
                     }
-                    var remainingAmt = Number(trans2.amount) - Number(trans.amount);
-                    UserModel.patchTransaction(trans2._id, {amount: remainingAmt });
-                    UserModel.patchTransaction(trans._id, {type: "1" });
+                    UserModel.patchTransaction(trans3._id, {type: 5});
+                    return res.status(200).send({
+                        "error": false,
+                        "message": 'Transaction success.'
+                    });
                 });
             }
         });
@@ -405,7 +407,28 @@ exports.rewards = (req, res) => {
         }
     });
 };
+exports.qrfunction = (req, res) => {
+    let merch = [
+        ["F2lQKZ15vPmF0N2r1pbf", "SOME MERCH", 100],
+        ["F2lQKZ15vPmF0N2r1pbf", "SOME MERCH", 100],
+        ["F2lQKZ15vPmF0N2r1pbf", "SOME MERCH", 100],
+        ["F2lQKZ15vPmF0N2r1pbf", "SOME MERCH", 100],
+        ["F2lQKZ15vPmF0N2r1pbf", "SOME MERCH", 100],
+        ["F2lQKZ15vPmF0N2r1pbf", "SOME MERCH", 100],
+        ["F2lQKZ15vPmF0N2r1pbf", "SOME MERCH", 100],
+        ["F2lQKZ15vPmF0N2r1pbf", "SOME MERCH", 100],
+        ["F2lQKZ15vPmF0N2r1pbf", "SOME MERCH", 100],
+        ["F2lQKZ15vPmF0N2r1pbf", "SOME MERCH", 100],
+        ["F2lQKZ15vPmF0N2r1pbf", "SOME MERCH", 100],
+        ["F2lQKZ15vPmF0N2r1pbf", "SOME MERCH", 100],
+        ["F2lQKZ15vPmF0N2r1pbf", "SOME MERCH", 100],
+        ["F2lQKZ15vPmF0N2r1pbf", "SOME MERCH", 100],
+        ["F2lQKZ15vPmF0N2r1pbf", "SOME MERCH", 100]];
 
+    for(i=0; i < merch; i++){
+
+    }
+};
 
 exports.points = (req, res) => {
     UserModel.findTbyEmail2(req.jwt.email).then((jwtResult) => {
