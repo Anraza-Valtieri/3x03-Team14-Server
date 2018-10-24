@@ -663,13 +663,13 @@ exports.payMerchant = (req, res) => {
                                                         "error": true,
                                                         "message": 'You cannot have your own number in request.'
                                                     });
-                                                    callback("You cannot have your own number in request");
+                                                    // callback("You cannot have your own number in request");
                                                 }else {
                                                     UserModel.findByPhone(value).then((result) => {
                                                         if (result == null) {
                                                             console.log("We are missing this number " + value);
                                                             transArray.push(value);
-                                                            callback();
+                                                            // callback();
                                                         }
                                                     });
                                                 }
@@ -691,7 +691,7 @@ exports.payMerchant = (req, res) => {
                                                         var results = UserModel.createTransaction(value,
                                                             jwtResult.phoneNo, req.body.splitAmount, 1, merch[i][0]);
                                                         transArray2.push(results);
-                                                        callback2();
+                                                        // callback2();
                                                     }, function (err) {
                                                         console.log("Checking transArray2");
                                                         if (err) console.error(err.message);
