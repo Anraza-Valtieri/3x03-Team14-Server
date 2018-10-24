@@ -626,12 +626,12 @@ exports.payMerchant = (req, res) => {
                     for (let i = 0; i < merch.length; i++) {
                         // console.log(i);
                         if (merch[i][0] === req.body.qrString) {
-                            if (merch[i][2] > jwtResult.balanceAmount) {
+                            if (merch[i][2].castToNumber() > jwtResult.balanceAmount) {
                                 res.status(200).send({
                                     "error": true,
                                     "message": 'You do not have enough.'
                                 });
-                                console.log("Sending amount too high!");
+                                console.log("Sending amount too high! "+merch[i][2]);
                                 return null;
                             }else{
                                 var totalAmt = Number(jwtResult.balanceAmount) - Number(merch[i][2]);
