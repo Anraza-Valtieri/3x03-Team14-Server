@@ -55,9 +55,19 @@ exports.routesConfig = function (app) {
         UsersController.qrFunction
     ]);
 
+    app.post('/payMerch', [
+        ValidationMiddleware.validJWTNeeded,
+        UsersController.payMerchant
+    ]);
+
     app.post('/payment', [
         ValidationMiddleware.validJWTNeeded,
         UsersController.pullPending
+    ]);
+
+    app.post('/billConfirm', [
+        ValidationMiddleware.validJWTNeeded,
+        UsersController.billConfirm
     ]);
 
     app.post('/pullPending', [

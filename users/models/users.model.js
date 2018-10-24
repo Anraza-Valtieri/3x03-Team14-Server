@@ -238,7 +238,7 @@ exports.createRequestTransaction = (userData) => {
     return transArray;
 };
 
-exports.createTransaction = (to, from, amount, type) => {
+exports.createTransaction = (to, from, amount, type, merch) => {
     // console.log("Create Account with Phone "+userData.phoneNo);
     var transArray = [];
     const transactions = new Pending();
@@ -247,7 +247,7 @@ exports.createTransaction = (to, from, amount, type) => {
     transactions.toId = to;
     transactions.amount = amount;
     transactions.dateTime = new Date;
-    transactions.completed = false;
+    transaction.merchantName = merch;
     transactions.read = false;
     transactions.type = type;
     transactions.save();

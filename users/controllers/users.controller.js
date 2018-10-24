@@ -88,15 +88,30 @@ exports.getBankDetails = (req, res) => {
                     "message": 'No user.'});
             } else {
                 console.log(result.firstName +" "+ result.lastName + " Requesting details");
-
-                res.status(200).send({
-                    firstName: result.firstName,
-                    lastName: result.lastName,
-                    email: result.email,
-                    permissionLevel: result.permissionLevel,
-                    balanceAmount: result.balanceAmount,
-                    points: result.points,
-                    phoneNo: result.phoneNo
+                UserModel.findTransFromWithType(jwtResult.phoneNo, 8).then((trans) => {
+                    if (trans != null) {
+                        res.status(200).send({
+                            firstName: result.firstName,
+                            lastName: result.lastName,
+                            email: result.email,
+                            permissionLevel: result.permissionLevel,
+                            balanceAmount: result.balanceAmount,
+                            points: result.points,
+                            phoneNo: result.phoneNo,
+                            ongoingSplit: true
+                        });
+                    } else {
+                        res.status(200).send({
+                            firstName: result.firstName,
+                            lastName: result.lastName,
+                            email: result.email,
+                            permissionLevel: result.permissionLevel,
+                            balanceAmount: result.balanceAmount,
+                            points: result.points,
+                            phoneNo: result.phoneNo,
+                            ongoingSplit: false
+                        });
+                    }
                 });
             }
         });
@@ -195,7 +210,131 @@ exports.topUp = (req, res) => {
             });
     }
 };
-
+exports.billConfirm = (req, res) => {
+    if (req.body.objectId != null && req.body.request != null) {
+        UserModel.findTbyEmail2(req.jwt.email).then((jwtResult) => {
+            if (!jwtResult || jwtResult == null) {
+                res.status(404).send({
+                    "error": true,
+                    "message": 'No user.'
+                });
+            }
+            if (req.body.phone.toString() !== jwtResult.phoneNo.toString()) {
+                console.error(req.body.phone + " " + jwtResult.phoneNo);
+                return res.status(403).send({
+                    "error": true,
+                    "message": 'Nice try MR cunning.'
+                });
+            }
+            // CLIENT -> SERVER (pull details of those who accepted the split)
+            if (req.body.request === 0) {
+                UserModel.findTransFromWithType(jwtResult.phoneNo, 4).then((trans) => {
+                    if (trans != null) {
+                        var list = [];
+                        var amt = [];
+                        for (var i = 0; i < trans.length; i++) {
+                            list.push(trans.toId);
+                            amt.push(trans.amount);
+                            if (i === trans.length - 1) {
+                                return res.status(200).send({
+                                    "error": false,
+                                    "accepted": list,
+                                    "splitAmount": amt
+                                });
+                            }
+                        }
+                        return res.status(403).send({
+                            "error": false,
+                            "message": 'Not enough in balance to make payment.'
+                        });
+                    }
+                })
+            }
+            // CLIENT -> SERVER (cancel payment)
+            if (req.body.request === 2){
+                console.log("CLIENT -> SERVER (cancel payment)");
+                UserModel.findTransFromWithType(jwtResult.phoneNo, 4).then((trans) => {
+                    if (trans != null) {
+                        let newAmt = Number(jwtResult.balanceAmount) + Number(trans.amount);
+                        UserModel.patchUser(jwtResult.id, {balanceAmount: newAmt})
+                            .then(() => {
+                                UserModel.patchTransaction(trans._id, {type: 7});
+                                UserModel.Pending.remove({"fromId": jwtResult.id, "type": 8}, (err) => {
+                                    if (err) {
+                                        console.error("SOMETHING WENT WRONG WHEN DELETING a type 8!");
+                                        return res.status(200).send({
+                                            "error": true,
+                                            "message": 'SOMETHING WENT WRONG WHEN DELETING a type 8!'
+                                        });
+                                    } else {
+                                        console.log("Deleted a type 8!");
+                                        UserModel.Pending.remove({"fromId": jwtResult.id, "type": 0}, (err2) => {
+                                            if(err2){
+                                                console.error("SOMETHING WENT WRON WHEN DELETING a type 0!");
+                                                return res.status(200).send({
+                                                    "error": true,
+                                                    "message": 'SOMETHING WENT WRONG WHEN DELETING a type 0!'
+                                                });
+                                            }else{
+                                                console.log("Transaction success!");
+                                                return res.status(200).send({
+                                                    "error": false
+                                                });
+                                            }
+                                        });
+                                    }
+                                });
+                            });
+                    }
+                });
+            }
+            // CLIENT -> SERVER (proceed to pay merchant)
+            if (req.body.request === 1) {
+                console.log("CLIENT -> SERVER (proceed to pay merchant)");
+                UserModel.findTransFromWithType(jwtResult.phoneNo, 4).then((trans) => {
+                    if (trans != null) {
+                        console.log(jwtResult.phoneNo + " " + 4 + " : " + trans);
+                        UserModel.findTransFromWithType(jwtResult.phoneNo, 8).then((trans2) => {
+                            console.log(jwtResult.phoneNo + " " + 8 + " : " + trans2);
+                            UserModel.patchTransaction(trans._id, {type: 6});
+                            console.log("Setting " + trans._id + " as type 6");
+                            let deductedAmt = Number(jwtResult.balanceAmount) - Number(trans2.amount);
+                            UserModel.patchUser(jwtResult.id, {balanceAmount: deductedAmt})
+                                .then(() => {
+                                    console.log("Deducted " + trans2.amount + " from " + jwtResult.phoneNo);
+                                    UserModel.Pending.remove({"fromId": jwtResult.id, "type": 8}, (err) => {
+                                        if (err) {
+                                            console.error("SOMETHING WENT WRONG WHEN DELETING a type 8!");
+                                            return res.status(200).send({
+                                                "error": true,
+                                                "message": 'SOMETHING WENT WRONG WHEN DELETING a type 8!'
+                                            });
+                                        } else {
+                                            console.log("Deleted a type 8!");
+                                            UserModel.Pending.remove({"fromId": jwtResult.id, "type": 0}, (err2) => {
+                                                if(err2){
+                                                    console.error("SOMETHING WENT WRON WHEN DELETING a type 0!");
+                                                    return res.status(200).send({
+                                                        "error": true,
+                                                        "message": 'SOMETHING WENT WRONG WHEN DELETING a type 0!'
+                                                    });
+                                                }else{
+                                                    console.log("Transaction success!");
+                                                    return res.status(200).send({
+                                                        "error": false
+                                                    });
+                                                }
+                                            });
+                                        }
+                                    });
+                                });
+                        });
+                    }
+                })
+            }
+        });
+    }
+};
 /*
 request: "2"
 phone: "91234567"
@@ -219,7 +358,7 @@ exports.payment = (req, res) => {
             }
             // CLIENT -> SERVER (Accept payment)
             // Process payments here
-            if(req.body.request === 2) {
+            if (req.body.request === 2) {
                 UserModel.findTransWithId(req.body.objectId).then((trans) => {
                     if (jwtResult.balanceAmount < trans.amount) {
                         return res.status(403).send({
@@ -455,8 +594,149 @@ exports.qrFunction = (req, res) => {
         res.status(200).send({
         "error": true,
         "message": 'No QR.'
-    });
+        });
+    }
+};
+
+/*
+{
+   qrString: "asdasdasdasd",
+   payer: "91234567"
 }
+
+{
+	qrString: "asdasdasdas",
+	initiator: "91234567",
+	splitBetween: ["91234567", "anotherNumber1", "anotherNumber2"]
+	splitAmount: ["amount", "amount1", "amount2"]
+}
+ */
+exports.payMerchant = (req, res) => {
+    console.log(req.body.qrString);
+    if(req.body.qrString != null) {
+        UserModel.findTbyEmail2(req.jwt.email).then((jwtResult) => {
+            if (!jwtResult || jwtResult == null) {
+                res.status(404).send({
+                    "error": true,
+                    "message": 'No user.'
+                });
+            }else {// Single Payment
+                if(req.body.initiator == null){
+                    for (let i = 0; i < merch.length; i++) {
+                        // console.log(i);
+                        if (merch[i][0] === req.body.qrString) {
+                            if (merch[i][2] > jwtResult.balanceAmount) {
+                                res.status(200).send({
+                                    "error": true,
+                                    "message": 'You do not have enough.'
+                                });
+                                console.log("Sending amount too high!");
+                                return null;
+                            }else{
+                                var totalAmt = Number(jwtResult.balanceAmount) - Number(merch[i][2]);
+                                UserModel.patchUser(jwtResult.id, {balanceAmount: totalAmt});
+                                return res.status(200).send({
+                                    "error": false,
+                                    "merchantName": merch[i][1],
+                                    "price": merch[i][2]
+                                });
+                            }
+
+                        }
+                        if(i === 14){
+                            return res.status(200).send({
+                                "error": true,
+                                "message": "Merchant not found!"
+                            });
+                        }
+                    }
+                }else{ // SPLIT bill
+                    for (let i = 0; i < merch.length; i++) {
+                        if (merch[i][0] === req.body.qrString) {
+                            if(req.body.splitBetween != null && req.body.splitBetween.length > 0) {
+                                if(req.body.splitAmount != null && req.body.splitAmount.length > 0) {
+                                    var sum = req.body.splitAmount.reduce((a, b) => a + b, 0);
+                                    if (sum === merch[i][2]) {
+                                        if (jwtResult.balanceAmount > sum){
+                                            let transArray = [];
+                                            async.forEachOf(req.body.splitBetween, function (value, key, callback) {
+                                                if (jwtResult.phoneNo.toString() === value.toString()){
+                                                    return res.status(200).send({
+                                                        "error": true,
+                                                        "message": 'You cannot have your own number in request.'
+                                                    });
+                                                }
+                                                UserModel.findByPhone(value).then((result) => {
+                                                    if (result == null) {
+                                                        console.log("We are missing this number " + value);
+                                                        transArray.push(value);
+                                                    }
+                                                    callback();
+                                                });
+                                            }, function (err) {
+                                                if (err) console.error(err.message);
+                                                if (transArray.length > 0) {
+                                                    return res.status(200).send({
+                                                        "error": true,
+                                                        "message": 'Some phone numbers does not exist.',
+                                                        "numbers": transArray
+                                                    });
+                                                } else {
+                                                    // var results = UserModel.createRequestTransaction(req);
+                                                    var results = UserModel.createTransaction(jwtResult.phoneNo,
+                                                        jwtResult.phoneNo, sum, 8, "");
+                                                    let transArray2 = [];
+                                                    async.forEachOf(req.body.splitBetween, function (value, key, callback) {
+                                                        var results = UserModel.createTransaction(value,
+                                                            jwtResult.phoneNo, req.body.splitAmount, 1, merch[i][0]);
+                                                        transArray2.push(results);
+                                                        callback();
+                                                    }, function (err) {
+                                                        if (err) console.error(err.message);
+                                                        if (transArray2.length > 0 && transArray2.length === req.body.splitBetween.length) {
+                                                            return res.status(200).send({
+                                                                "error": false
+                                                            });
+                                                        }else{
+                                                            return res.status(200).send({
+                                                                "error": true,
+                                                                "message": "Somehow we didn't make enough transaction!"
+                                                            });
+                                                        }
+                                                    });
+                                                }
+                                            });
+                                        }else{
+                                            return res.status(200).send({
+                                                "error": true,
+                                                "message": "You do not have enough to cover the whole price!"
+                                            });
+                                        }
+                                    }else{
+                                        return res.status(200).send({
+                                            "error": true,
+                                            "message": "Total amount is invalid!"
+                                        });
+                                    }
+                                }
+                            }
+                        }
+                        if(i === 14){
+                            return res.status(200).send({
+                                "error": true,
+                                "message": "Merchant not found!"
+                            });
+                        }
+                    }
+                }
+            }
+        });
+    } else {
+        res.status(200).send({
+            "error": true,
+            "message": 'No QR.'
+        });
+    }
 };
 
 exports.points = (req, res) => {
@@ -523,7 +803,6 @@ exports.request = (req, res) => {
             }
 
             var transArray = [];
-
             async.forEachOf(req.body.request, function (value, key, callback) {
                 if (jwtResult.phoneNo.toString() === value.toString()){
                     return res.status(200).send({
