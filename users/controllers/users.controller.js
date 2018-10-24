@@ -441,11 +441,12 @@ exports.qrFunction = (req, res) => {
                             "price": merch[i][2]
                         });
                     }
-                    if( i === merch.length){
+                    if(i === merch.length){
                         res.status(200).send({
                             "error": true,
                             "message": "Merchant not found!"
                         });
+                        res.end();
                     }
                 }
             }
