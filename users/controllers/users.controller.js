@@ -654,91 +654,91 @@ exports.payMerchant = (req, res) => {
                     // var resultI = new LINQ(merch).Any(row => row.includes(req.body.qrString));
                     var resultI = new LINQ(merch).Any(function (row) {
                         if(row.includes(req.body.qrString)){
-                            console.log(row);
-                            return row;
-                        }
-                    });
-
-                    // merch.forEach(function(value){
-                    console.log(resultI);
-                        console.log(resultI[0]+" & "+req.body.qrString);
-                        if (resultI[0] === req.body.qrString) {
-                            if(req.body.splitBetween != null && req.body.splitBetween.length > 0) {
-                                if(req.body.splitAmount != null && req.body.splitAmount.length > 0) {
-                                    var sum = req.body.splitAmount.reduce((a, b) => a + b, 0);
-                                    if (sum === resultI[2]) {
-                                        if (jwtResult.balanceAmount > sum){
-                                            let transArray = [];
-                                            async.each(req.body.splitBetween, function (value, callback) {
-                                                if (jwtResult.phoneNo.toString() === value.toString()) {
-                                                    return res.status(200).send({
-                                                        "error": true,
-                                                        "message": 'You cannot have your own number in request.'
-                                                    });
-                                                }
-                                                // callback("You cannot have your own number in request");
-                                                UserModel.findByPhone(value).then((result) => {
-                                                    if (result == null) {
-                                                        console.log("We are missing this number " + value);
-                                                        transArray.push(value);
-                                                        // callback();
+                            console.log(row[0]+" & "+req.body.qrString);
+                            if (row[0] === req.body.qrString) {
+                                if(req.body.splitBetween != null && req.body.splitBetween.length > 0) {
+                                    if(req.body.splitAmount != null && req.body.splitAmount.length > 0) {
+                                        var sum = req.body.splitAmount.reduce((a, b) => a + b, 0);
+                                        if (sum === row[2]) {
+                                            if (jwtResult.balanceAmount > sum){
+                                                let transArray = [];
+                                                async.each(req.body.splitBetween, function (value, callback) {
+                                                    if (jwtResult.phoneNo.toString() === value.toString()) {
+                                                        return res.status(200).send({
+                                                            "error": true,
+                                                            "message": 'You cannot have your own number in request.'
+                                                        });
                                                     }
-                                                });
-                                            }, function (err) {
-                                                if (err) console.error(err.message);
-                                                console.log("Checking transArray");
-                                                if (transArray.length > 0) {
-                                                    return res.status(200).send({
-                                                        "error": true,
-                                                        "message": 'Some phone numbers does not exist.',
-                                                        "numbers": transArray
-                                                    });
-                                                } else {
-                                                    console.log("Checking transaction 8s");
-                                                    var results = UserModel.createTransaction(jwtResult.phoneNo,
-                                                        jwtResult.phoneNo, sum, 8, "");
-                                                    let transArray2 = [];
-                                                    async.each(req.body.splitBetween, function (value, key, callback2) {
-                                                        var results = UserModel.createTransaction(value,
-                                                            jwtResult.phoneNo, req.body.splitAmount, 1, value[0]);
-                                                        transArray2.push(results);
-                                                        // callback2();
-                                                    }, function (err) {
-                                                        console.log("Checking transArray2");
-                                                        if (err) console.error(err.message);
-                                                        if (transArray2.length > 0 && transArray2.length === req.body.splitBetween.length) {
-                                                            return res.status(200).send({
-                                                                "error": false
-                                                            });
-                                                        }else{
-                                                            return res.status(200).send({
-                                                                "error": true,
-                                                                "message": "Somehow we didn't make enough transaction!"
-                                                            });
+                                                    // callback("You cannot have your own number in request");
+                                                    UserModel.findByPhone(value).then((result) => {
+                                                        if (result == null) {
+                                                            console.log("We are missing this number " + value);
+                                                            transArray.push(value);
+                                                            // callback();
                                                         }
                                                     });
-                                                }
-                                            });
+                                                }, function (err) {
+                                                    if (err) console.error(err.message);
+                                                    console.log("Checking transArray");
+                                                    if (transArray.length > 0) {
+                                                        return res.status(200).send({
+                                                            "error": true,
+                                                            "message": 'Some phone numbers does not exist.',
+                                                            "numbers": transArray
+                                                        });
+                                                    } else {
+                                                        console.log("Checking transaction 8s");
+                                                        var results = UserModel.createTransaction(jwtResult.phoneNo,
+                                                            jwtResult.phoneNo, sum, 8, "");
+                                                        let transArray2 = [];
+                                                        async.each(req.body.splitBetween, function (value, key, callback2) {
+                                                            var results = UserModel.createTransaction(value,
+                                                                jwtResult.phoneNo, req.body.splitAmount, 1, value[0]);
+                                                            transArray2.push(results);
+                                                            // callback2();
+                                                        }, function (err) {
+                                                            console.log("Checking transArray2");
+                                                            if (err) console.error(err.message);
+                                                            if (transArray2.length > 0 && transArray2.length === req.body.splitBetween.length) {
+                                                                return res.status(200).send({
+                                                                    "error": false
+                                                                });
+                                                            }else{
+                                                                return res.status(200).send({
+                                                                    "error": true,
+                                                                    "message": "Somehow we didn't make enough transaction!"
+                                                                });
+                                                            }
+                                                        });
+                                                    }
+                                                });
+                                            }else{
+                                                return res.status(200).send({
+                                                    "error": true,
+                                                    "message": "You do not have enough to cover the whole price!"
+                                                });
+                                            }
                                         }else{
                                             return res.status(200).send({
                                                 "error": true,
-                                                "message": "You do not have enough to cover the whole price!"
+                                                "message": "Total amount is invalid!"
                                             });
                                         }
-                                    }else{
-                                        return res.status(200).send({
-                                            "error": true,
-                                            "message": "Total amount is invalid!"
-                                        });
                                     }
                                 }
                             }
                         }
+                    });
+
+                    // merch.forEach(function(value){
+
                     // });
-                    // return res.status(200).send({
-                    //     "error": true,
-                    //     "message": "Merchant not found!"
-                    // });
+                    if(resultI === false) {
+                        return res.status(200).send({
+                            "error": true,
+                            "message": "Merchant not found!"
+                        });
+                    }
                 }
             }
         });
