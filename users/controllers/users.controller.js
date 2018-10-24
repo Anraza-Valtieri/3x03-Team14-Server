@@ -650,31 +650,33 @@ exports.payMerchant = (req, res) => {
                     }
                 }else{ // SPLIT bill
                     // for (let i = 0; i < merch.length; i++) {
-                    merch.forEach(function(value){
-                        console.log(value[0]+" & "+req.body.qrString);
-                        if (value[0] === req.body.qrString) {
+                    var LINQ = require('node-linq').LINQ;
+                    var resultI = new LINQ(merch).Any(row => row.includes(req.body.qrString));
+
+                    // merch.forEach(function(value){
+                        console.log(resultI[0]+" & "+req.body.qrString);
+                        if (resultI[0] === req.body.qrString) {
                             if(req.body.splitBetween != null && req.body.splitBetween.length > 0) {
                                 if(req.body.splitAmount != null && req.body.splitAmount.length > 0) {
                                     var sum = req.body.splitAmount.reduce((a, b) => a + b, 0);
-                                    if (sum === value[2]) {
+                                    if (sum === resultI[2]) {
                                         if (jwtResult.balanceAmount > sum){
                                             let transArray = [];
                                             async.each(req.body.splitBetween, function (value, callback) {
-                                                if (jwtResult.phoneNo.toString() === value.toString()){
+                                                if (jwtResult.phoneNo.toString() === value.toString()) {
                                                     return res.status(200).send({
                                                         "error": true,
                                                         "message": 'You cannot have your own number in request.'
                                                     });
-                                                    // callback("You cannot have your own number in request");
-                                                }else {
-                                                    UserModel.findByPhone(value).then((result) => {
-                                                        if (result == null) {
-                                                            console.log("We are missing this number " + value);
-                                                            transArray.push(value);
-                                                            // callback();
-                                                        }
-                                                    });
                                                 }
+                                                // callback("You cannot have your own number in request");
+                                                UserModel.findByPhone(value).then((result) => {
+                                                    if (result == null) {
+                                                        console.log("We are missing this number " + value);
+                                                        transArray.push(value);
+                                                        // callback();
+                                                    }
+                                                });
                                             }, function (err) {
                                                 if (err) console.error(err.message);
                                                 console.log("Checking transArray");
@@ -725,7 +727,7 @@ exports.payMerchant = (req, res) => {
                                 }
                             }
                         }
-                    });
+                    // });
                     // return res.status(200).send({
                     //     "error": true,
                     //     "message": "Merchant not found!"
