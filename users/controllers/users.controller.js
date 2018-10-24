@@ -408,53 +408,54 @@ exports.rewards = (req, res) => {
     });
 };
 exports.qrFunction = (req, res) => {
-    if(req.body.qrString == null){
-        res.status(200).send({
-            "error": true,
-            "message": 'No QR.'
-        });
-    }
-    UserModel.findTbyEmail2(req.jwt.email).then((jwtResult) => {
-        if (!jwtResult || jwtResult == null) {
-            res.status(404).send({
-                "error": true,
-                "message": 'No user.'
-            });
-        }
-
-        let merch = [
-            ["F2lQKZ15vPmF0N2r1pbf", "Ryan & Jerry's", 3.5],
-            ["2zJ5h5tShgkZSUwULCkf", "Ryan & Jerry's", 8],
-            ["uK31AH86ql5CXHudApOO", "Ryan & Jerry's", 6],
-            ["ReBPKyFUpyckozetP2ut", "Ryan & Jerry's", 7.5],
-            ["pbMIdgJjoxCUKISkxme5", "Ryan & Jerry's", 4.5],
-            ["LfWEgsaQQxoPmYfUN7UO", "BING Arcade", 10],
-            ["MV1guPtiow1vm4ur1ePH", "BING Arcade", 20],
-            ["xQvHpTp6ZuPAobz1Btdv", "BING Arcade", 30],
-            ["nUntb7RTAyvJBe6JZJk2", "BING Arcade", 59.9],
-            ["7p8XRqsHqknIiwHVPZQh", "BING Arcade", 39.9],
-            ["dEnAJHzKKsKrVqo6OEt9", "Quatorze Co.", 555],
-            ["1cjnYJBjmqfy6hgonRA8", "Quatorze Co.", 2660.5],
-            ["ETbWvghxG88qK0U68GcP", "Quatorze Co.", 1300],
-            ["vDxnWXuFg74qfEETkCiJ", "Quatorze Co.", 999],
-            ["2XqcYrk0OFhQ59TtGtMN", "Quatorze Co.", 8888]];
-
-        for(let i=0; i < merch; i++){
-            console.log(i);
-            if(merch[i][0] === res.body.qrString){
-                res.status(200).send({
-                    "error": false,
-                    "merchantName": merch[i][1],
-                    "price": merch[i][2]
-                });
-            }else{
-                res.status(200).send({
+    if(req.body.qrString != null) {
+        UserModel.findTbyEmail2(req.jwt.email).then((jwtResult) => {
+            if (!jwtResult || jwtResult == null) {
+                res.status(404).send({
                     "error": true,
-                    "message": "Merchant not found!"
+                    "message": 'No user.'
                 });
             }
-        }
+
+            let merch = [
+                ["F2lQKZ15vPmF0N2r1pbf", "Ryan & Jerry's", 3.5],
+                ["2zJ5h5tShgkZSUwULCkf", "Ryan & Jerry's", 8],
+                ["uK31AH86ql5CXHudApOO", "Ryan & Jerry's", 6],
+                ["ReBPKyFUpyckozetP2ut", "Ryan & Jerry's", 7.5],
+                ["pbMIdgJjoxCUKISkxme5", "Ryan & Jerry's", 4.5],
+                ["LfWEgsaQQxoPmYfUN7UO", "BING Arcade", 10],
+                ["MV1guPtiow1vm4ur1ePH", "BING Arcade", 20],
+                ["xQvHpTp6ZuPAobz1Btdv", "BING Arcade", 30],
+                ["nUntb7RTAyvJBe6JZJk2", "BING Arcade", 59.9],
+                ["7p8XRqsHqknIiwHVPZQh", "BING Arcade", 39.9],
+                ["dEnAJHzKKsKrVqo6OEt9", "Quatorze Co.", 555],
+                ["1cjnYJBjmqfy6hgonRA8", "Quatorze Co.", 2660.5],
+                ["ETbWvghxG88qK0U68GcP", "Quatorze Co.", 1300],
+                ["vDxnWXuFg74qfEETkCiJ", "Quatorze Co.", 999],
+                ["2XqcYrk0OFhQ59TtGtMN", "Quatorze Co.", 8888]];
+
+            for (let i = 0; i < merch; i++) {
+                console.log(i);
+                if (merch[i][0] === res.body.qrString) {
+                    res.status(200).send({
+                        "error": false,
+                        "merchantName": merch[i][1],
+                        "price": merch[i][2]
+                    });
+                } else {
+                    res.status(200).send({
+                        "error": true,
+                        "message": "Merchant not found!"
+                    });
+                }
+            }
+        });
+    } else {
+        return res.status(200).send({
+        "error": true,
+        "message": 'No QR.'
     });
+}
 };
 
 exports.points = (req, res) => {
