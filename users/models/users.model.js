@@ -225,8 +225,8 @@ exports.createRequestTransaction = (userData) => {
     for (i in userData.body.request) {
         const transactions = new Pending();
         transactions.created = userData.body.requester;
-        transactions.fromId = userData.body.request[i];
-        transactions.toId = userData.body.requester;
+        transactions.fromId = userData.body.requester;
+        transactions.toId = userData.body.request[i];
         transactions.amount = userData.body.amountPerPax;
         transactions.dateTime = new Date;
         transactions.read = false;
