@@ -136,7 +136,7 @@ exports.pullPending = (req, res) => {
                     .then((result2) => {
                         if (!result2 || result2 == null) {
                             res.status(200).send({
-                                "error": true,
+                                "error": false,
                                 "message": 'No Transaction.'
                             });
                         } else {
@@ -169,7 +169,7 @@ exports.pullOthers = (req, res) => {
                     .then((result2) => {
                         if (!result2 || result2 == null) {
                             res.status(200).send({
-                                "error": true,
+                                "error": false,
                                 "message": 'No Transaction.'
                             });
                         } else {
