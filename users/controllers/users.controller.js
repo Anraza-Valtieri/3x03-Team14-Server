@@ -435,12 +435,13 @@ exports.qrFunction = (req, res) => {
             }else {
                 for (let i = 0; i < merch.length; i++) {
                     if (merch[i][0] === req.body.qrString) {
-                        res.status(200).send({
+                        return res.status(200).send({
                             "error": false,
                             "merchantName": merch[i][1],
                             "price": merch[i][2]
                         });
-                    } else {
+                    }
+                    if( i === merch.length){
                         res.status(200).send({
                             "error": true,
                             "message": "Merchant not found!"
