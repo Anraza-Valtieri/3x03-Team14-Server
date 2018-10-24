@@ -659,10 +659,11 @@ exports.payMerchant = (req, res) => {
                                             let transArray = [];
                                             async.each(req.body.splitBetween, function (value, key, callback) {
                                                 if (jwtResult.phoneNo.toString() === value.toString()){
-                                                    return res.status(200).send({
+                                                    res.status(200).send({
                                                         "error": true,
                                                         "message": 'You cannot have your own number in request.'
                                                     });
+                                                    callback("You cannot have your own number in request");
                                                 }
                                                 UserModel.findByPhone(value).then((result) => {
                                                     if (result == null) {
@@ -672,7 +673,7 @@ exports.payMerchant = (req, res) => {
                                                     callback();
                                                 });
                                             }, function (err) {
-                                                if (err) console.error(err.message);
+                                                if (err) {console.error(err.message); return;}
                                                 if (transArray.length > 0) {
                                                     return res.status(200).send({
                                                         "error": true,
