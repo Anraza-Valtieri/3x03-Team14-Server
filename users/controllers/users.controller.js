@@ -649,17 +649,18 @@ exports.payMerchant = (req, res) => {
                         }
                     }
                 }else{ // SPLIT bill
-                    for (let i = 0; i < merch.length; i++) {
-                        if (merch[i][0] === req.body.qrString) {
+                    // for (let i = 0; i < merch.length; i++) {
+                    merch.forEach(function(value){
+                        if (value[0] === req.body.qrString) {
                             if(req.body.splitBetween != null && req.body.splitBetween.length > 0) {
                                 if(req.body.splitAmount != null && req.body.splitAmount.length > 0) {
                                     var sum = req.body.splitAmount.reduce((a, b) => a + b, 0);
-                                    if (sum === merch[i][2]) {
+                                    if (sum === value[2]) {
                                         if (jwtResult.balanceAmount > sum){
                                             let transArray = [];
                                             async.each(req.body.splitBetween, function (value, callback) {
                                                 if (jwtResult.phoneNo.toString() === value.toString()){
-                                                    res.status(200).send({
+                                                    return res.status(200).send({
                                                         "error": true,
                                                         "message": 'You cannot have your own number in request.'
                                                     });
@@ -689,7 +690,7 @@ exports.payMerchant = (req, res) => {
                                                     let transArray2 = [];
                                                     async.each(req.body.splitBetween, function (value, key, callback2) {
                                                         var results = UserModel.createTransaction(value,
-                                                            jwtResult.phoneNo, req.body.splitAmount, 1, merch[i][0]);
+                                                            jwtResult.phoneNo, req.body.splitAmount, 1, value[0]);
                                                         transArray2.push(results);
                                                         // callback2();
                                                     }, function (err) {
@@ -723,13 +724,17 @@ exports.payMerchant = (req, res) => {
                                 }
                             }
                         }
-                        if(i === 14){
-                            return res.status(200).send({
-                                "error": true,
-                                "message": "Merchant not found!"
-                            });
-                        }
-                    }
+                        // if(i === 14){
+                        //     return res.status(200).send({
+                        //         "error": true,
+                        //         "message": "Merchant not found!"
+                        //     });
+                        // }
+                    });
+                    return res.status(200).send({
+                        "error": true,
+                        "message": "Merchant not found!"
+                    });
                 }
             }
         });
