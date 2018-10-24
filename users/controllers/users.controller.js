@@ -102,31 +102,55 @@ exports.getBankDetails = (req, res) => {
         });
 };
 exports.pullPending = (req, res) => {
-    UserModel.findTransToWithType(req.body.phone.toString(), 0)
-        .then((result2) => {
-            if (!result2 || result2 == null) {
-                res.status(404).send({"error": true,
-                    "message": 'No Transaction.'});
-            } else {
+    UserModel.findTbyEmail2(req.jwt.email)
+        .then((result) => {
+            if (!result || result == null) {
                 res.status(200).send({
-                    "error": false,
-                    "pending": result2
+                    "error": true,
+                    "message": 'No user.'
                 });
+            } else {
+                UserModel.findTransToWithType(result.phoneNo, 0)
+                    .then((result2) => {
+                        if (!result2 || result2 == null) {
+                            res.status(404).send({
+                                "error": true,
+                                "message": 'No Transaction.'
+                            });
+                        } else {
+                            res.status(200).send({
+                                "error": false,
+                                "pending": result2
+                            });
+                        }
+                    });
             }
         });
 };
 
 exports.pullOthers = (req, res) => {
-    UserModel.findOtherTransFromWithType(req.body.phone.toString(), 0)
-        .then((result2) => {
-            if (!result2 || result2 == null) {
-                res.status(200).send({"error": true,
-                    "message": 'No Transaction.'});
-            } else {
+    UserModel.findTbyEmail2(req.jwt.email)
+        .then((result) => {
+            if (!result || result == null) {
                 res.status(200).send({
-                    "error": false,
-                    "pending": result2
+                    "error": true,
+                    "message": 'No user.'
                 });
+            } else {
+                UserModel.findOtherTransFromWithType(result.phoneNo, 0)
+                    .then((result2) => {
+                        if (!result2 || result2 == null) {
+                            res.status(404).send({
+                                "error": true,
+                                "message": 'No Transaction.'
+                            });
+                        } else {
+                            res.status(200).send({
+                                "error": false,
+                                "pending": result2
+                            });
+                        }
+                    });
             }
         });
 };
