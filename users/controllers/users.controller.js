@@ -89,27 +89,49 @@ exports.getBankDetails = (req, res) => {
             } else {
                 console.log(result.firstName +" "+ result.lastName + " Requesting details");
 
-                UserModel.findTByPhone(result.phoneNo)
-                    .then((result2) => {
-                        UserModel.findTByPhone2(result.phoneNo)
-                            .then((result3) => {
-                                res.status(200).send({
-                                    firstName: result.firstName,
-                                    lastName: result.lastName,
-                                    email: result.email,
-                                    permissionLevel: result.permissionLevel,
-                                    balanceAmount: result.balanceAmount,
-                                    points: result.points,
-                                    phoneNo: result.phoneNo,
-                                    pendingTransactionRequest: result2,
-                                    pendingTransactionRequested: result3
-                                });
-                            });
-                    });
+                res.status(200).send({
+                    firstName: result.firstName,
+                    lastName: result.lastName,
+                    email: result.email,
+                    permissionLevel: result.permissionLevel,
+                    balanceAmount: result.balanceAmount,
+                    points: result.points,
+                    phoneNo: result.phoneNo
+                });
+                // UserModel.findTransFromByPhone(result.phoneNo)
+                //     .then((result2) => {
+                //         UserModel.findTransToByPhone2(result.phoneNo)
+                //             .then((result3) => {
+                //                 res.status(200).send({
+                //                     firstName: result.firstName,
+                //                     lastName: result.lastName,
+                //                     email: result.email,
+                //                     permissionLevel: result.permissionLevel,
+                //                     balanceAmount: result.balanceAmount,
+                //                     points: result.points,
+                //                     phoneNo: result.phoneNo,
+                //                     pendingTransactionRequest: result2,
+                //                     pendingTransactionRequested: result3
+                //                 });
+                //             });
+                //     });
             }
         });
 };
-
+exports.pullPending = (req, res) => {
+    UserModel.findPendingByDetailsWithType(req.body.phone, 0)
+        .then((result2) => {
+            if (!result || result == null) {
+                res.status(200).send({"error": true,
+                    "message": 'No user.'});
+            } else {
+                res.status(200).send({
+                    "error": false,
+                    pendings: result2
+                });
+            }
+        });
+}
 exports.topUp = (req, res) => {
     if (req.body.topUpAmt != null) {
         console.log(req.jwt.email + " Requesting topup");
@@ -342,7 +364,7 @@ exports.request = (req, res) => {
                         "numbers": transArray
                     });
                 } else {
-                    UserModel.createTrans(req);
+                    UserModel.createRequestTransaction(req);
                     return res.status(200).send({
                         "error": false,
                         "message": 'Success.'

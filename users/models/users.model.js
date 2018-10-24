@@ -13,6 +13,8 @@ const options = {
     socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
     family: 4 // Use IPv4, skip trying IPv6
 };
+
+var async = require("async");
 mongoose.connect('mongodb://localhost:27017/bgd', options);
 const Schema = mongoose.Schema;
 
@@ -54,36 +56,56 @@ userSchema.statics.findTbyEmail2 = function (res,cb) {
 
 const User = mongoose.model('Users', userSchema);
 
-const pendingSchema = new Schema({
+const transactionSchema = new Schema({
+    type: Number,
     fromId: String,
     toId: String,
     amount: Number,
+    merchantName: String,
     dateTime: Date,
-    completed: Boolean,
-    created: String
+    read: Boolean
 });
-pendingSchema.statics.findTByPhone = function (res,cb) {
+transactionSchema.statics.findTransFromByPhone = function (res, cb) {
     return this.model('PendingTransactions').find({"fromId": res}, cb);
 };
 
-pendingSchema.statics.findTByPhone2 = function (res,cb) {
+transactionSchema.statics.findTransToByPhone2 = function (res, cb) {
     return this.model('PendingTransactions').find({"toId": res}, cb);
 };
 
-pendingSchema.statics.findTByDetails = function (to, from, amt,cb) {
+transactionSchema.statics.findTByDetails = function (to, from, amt,cb) {
     return this.model('PendingTransactions').findOne({"toId": to, "fromId": from, "amount": amt, "completed": false}, cb);
 };
-const Pending = mongoose.model('PendingTransactions', pendingSchema);
 
-exports.findTByPhone = (phone) => {
-    return Pending.findTByPhone(phone)
+transactionSchema.statics.findPendingByDetailsWithType = function (to,type,cb) {
+    return this.model('PendingTransactions').find({"toId": to, "type": type}, cb);
+};
+const Pending = mongoose.model('PendingTransactions', transactionSchema);
+
+exports.findPendingByDetailsWithType = (phone) => {
+    return Pending.findPendingByDetailsWithType(phone)
         .then((result) => {
             if(result == null || !result || result.length <= 0){
                 return null;
             }else {
                 // console.log("result: %j", result);
                 // result = result;
-                delete result._id;
+                // delete result._id;
+                delete result.__v;
+                return result;
+            }
+        });
+};
+
+exports.findTByPhone = (phone) => {
+    return Pending.findTransFromByPhone(phone)
+        .then((result) => {
+            if(result == null || !result || result.length <= 0){
+                return null;
+            }else {
+                // console.log("result: %j", result);
+                // result = result;
+                // delete result._id;
                 delete result.__v;
                 return result;
             }
@@ -91,14 +113,14 @@ exports.findTByPhone = (phone) => {
 };
 
 exports.findTByPhone2 = (phone) => {
-    return Pending.findTByPhone2(phone)
+    return Pending.findTransToByPhone2(phone)
         .then((result) => {
             if(result == null || !result || result.length <= 0){
                 return null;
             }else {
                 // console.log("result: %j", result);
                 // result = result;
-                delete result._id;
+                // delete result._id;
                 delete result.__v;
                 return result;
             }
@@ -113,14 +135,14 @@ exports.findTByDetails = (to, from, amt) => {
             }else {
                 // console.log("result: %j", result);
                 // result = result;
-                delete result._id;
+                // delete result._id;
                 delete result.__v;
                 return result;
             }
         });
 };
 
-exports.createTrans = (userData) => {
+exports.createRequestTransaction = (userData) => {
     // console.log("Create Account with Phone "+userData.phoneNo);
     var transArray = [];
     for (i in userData.body.request) {
@@ -131,10 +153,30 @@ exports.createTrans = (userData) => {
         transactions.amount = userData.body.amountPerPax;
         transactions.dateTime = new Date;
         transactions.completed = false;
+        transactions.read = false;
+        transactions.type = 0;
         transactions.save();
         transArray.push(userData.body.request[i]);
-        console.log("Created request for "+userData.body.requester+" from "+userData.body.request[i]+ " amt: "+userData.body.amountPerPax);
+        console.log("Created request transaction for "+userData.body.requester+" from "+userData.body.request[i]+ " amt: "+userData.body.amountPerPax);
     }
+    return transArray;
+};
+
+exports.createTransaction = (to, from, amount, type) => {
+    // console.log("Create Account with Phone "+userData.phoneNo);
+    var transArray = [];
+    const transactions = new Pending();
+    transactions.created = from;
+    transactions.fromId = from;
+    transactions.toId = to;
+    transactions.amount = amount;
+    transactions.dateTime = new Date;
+    transactions.completed = false;
+    transactions.read = false;
+    transactions.type = type;
+    transactions.save();
+    transArray.push(userData.body.request[i]);
+    console.log("Created transaction("+type+") for "+to+" from "+from+ " amt: "+amount);
     return transArray;
 };
 
@@ -197,17 +239,8 @@ exports.createUser = (userData) => {
 
             const nUser = user.save();
             console.log("Create Account with Phone "+userData.phoneNo);
-            const transactions = new Pending();
-            transactions.created = userData.phoneNo;
-            transactions.fromId = userData.phoneNo;
-            transactions.toId = userData.phoneNo;
-            transactions.amount = 0;
-            transactions.dateTime = new Date;
-            transactions.completed = true;
-            const nTrans = transactions.save();
 
             return nUser;
-            // return user.save();
         });
 };
 

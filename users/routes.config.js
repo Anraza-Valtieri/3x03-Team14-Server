@@ -50,6 +50,10 @@ exports.routesConfig = function (app) {
         // UsersController.getBankDetails
     ]);
 
+    app.post('/pullPending', [
+        ValidationMiddleware.validJWTNeeded
+    ]);
+
     app.post('/users', [
         // ValidationMiddleware.validJWTNeeded,
         // PermissionMiddleware.minimumPermissionLevelRequired(ADMIN),
