@@ -55,6 +55,11 @@ exports.routesConfig = function (app) {
         UsersController.pullPending
     ]);
 
+    app.post('/pullOthers', [
+        ValidationMiddleware.validJWTNeeded,
+        UsersController.pullOthers
+    ]);
+
     app.post('/users', [
         // ValidationMiddleware.validJWTNeeded,
         // PermissionMiddleware.minimumPermissionLevelRequired(ADMIN),

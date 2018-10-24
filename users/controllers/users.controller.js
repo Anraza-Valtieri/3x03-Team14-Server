@@ -98,23 +98,6 @@ exports.getBankDetails = (req, res) => {
                     points: result.points,
                     phoneNo: result.phoneNo
                 });
-                // UserModel.findTransFromByPhone(result.phoneNo)
-                //     .then((result2) => {
-                //         UserModel.findTransToByPhone2(result.phoneNo)
-                //             .then((result3) => {
-                //                 res.status(200).send({
-                //                     firstName: result.firstName,
-                //                     lastName: result.lastName,
-                //                     email: result.email,
-                //                     permissionLevel: result.permissionLevel,
-                //                     balanceAmount: result.balanceAmount,
-                //                     points: result.points,
-                //                     phoneNo: result.phoneNo,
-                //                     pendingTransactionRequest: result2,
-                //                     pendingTransactionRequested: result3
-                //                 });
-                //             });
-                //     });
             }
         });
 };
@@ -123,15 +106,30 @@ exports.pullPending = (req, res) => {
         .then((result2) => {
             if (!result2 || result2 == null) {
                 res.status(200).send({"error": true,
-                    "message": 'No user.'});
+                    "message": 'No Transaction.'});
             } else {
                 res.status(200).send({
                     "error": false,
-                    pendings: result2
+                    "pending": result2
                 });
             }
         });
-}
+};
+
+exports.pullOthers = (req, res) => {
+    UserModel.findOtherTransFromWithType(req.body.phone, 0)
+        .then((result2) => {
+            if (!result2 || result2 == null) {
+                res.status(200).send({"error": true,
+                    "message": 'No Transaction.'});
+            } else {
+                res.status(200).send({
+                    "error": false,
+                    "pending": result2
+                });
+            }
+        });
+};
 exports.topUp = (req, res) => {
     if (req.body.topUpAmt != null) {
         console.log(req.jwt.email + " Requesting topup");
