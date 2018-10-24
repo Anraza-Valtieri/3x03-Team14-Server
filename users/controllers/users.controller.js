@@ -660,6 +660,7 @@ exports.payMerchant = (req, res) => {
                     });
 
                     // merch.forEach(function(value){
+                    console.log(resultI);
                         console.log(resultI[0]+" & "+req.body.qrString);
                         if (resultI[0] === req.body.qrString) {
                             if(req.body.splitBetween != null && req.body.splitBetween.length > 0) {
