@@ -626,7 +626,7 @@ exports.payMerchant = (req, res) => {
                     for (let i = 0; i < merch.length; i++) {
                         // console.log(i);
                         if (merch[i][0] === req.body.qrString) {
-                            if (merch[i][2].castToNumber() > jwtResult.balanceAmount) {
+                            if (parseFloat(merch[i][2]).toFixed(2) > parseFloat(jwtResult.balanceAmount).toFixed(2)) {
                                 res.status(200).send({
                                     "error": true,
                                     "message": 'You do not have enough.'
@@ -634,7 +634,7 @@ exports.payMerchant = (req, res) => {
                                 console.log("Sending amount too high! "+merch[i][2]);
                                 return null;
                             }else{
-                                var totalAmt = Number(jwtResult.balanceAmount) - Number(merch[i][2]);
+                                var totalAmt = Number(jwtResult.balanceAmount) - parseFloat(Number(merch[i][2]).toFixed(2));
                                 UserModel.patchUser(jwtResult.id, {balanceAmount: totalAmt});
                                 return res.status(200).send({
                                     "error": false,
