@@ -119,7 +119,7 @@ exports.getBankDetails = (req, res) => {
         });
 };
 exports.pullPending = (req, res) => {
-    UserModel.findPendingByDetailsWithType(req.body.phone, 0)
+    UserModel.findTransToWithType(req.body.phone, 0)
         .then((result2) => {
             if (!result || result == null) {
                 res.status(200).send({"error": true,

@@ -77,13 +77,32 @@ transactionSchema.statics.findTByDetails = function (to, from, amt,cb) {
     return this.model('PendingTransactions').findOne({"toId": to, "fromId": from, "amount": amt, "completed": false}, cb);
 };
 
-transactionSchema.statics.findPendingByDetailsWithType = function (to,type,cb) {
+transactionSchema.statics.findTransToWithType = function (to, type, cb) {
     return this.model('PendingTransactions').find({"toId": to, "type": type}, cb);
+};
+
+transactionSchema.statics.findTransFromWithType = function (to, type, cb) {
+    return this.model('PendingTransactions').find({"fromId": to, "type": type}, cb);
 };
 const Pending = mongoose.model('PendingTransactions', transactionSchema);
 
-exports.findPendingByDetailsWithType = (phone) => {
-    return Pending.findPendingByDetailsWithType(phone)
+exports.findTransFromWithType = (phone) => {
+    return Pending.findTransFromWithType(phone)
+        .then((result) => {
+            if(result == null || !result || result.length <= 0){
+                return null;
+            }else {
+                // console.log("result: %j", result);
+                // result = result;
+                // delete result._id;
+                delete result.__v;
+                return result;
+            }
+        });
+};
+
+exports.findTransToWithType = (phone) => {
+    return Pending.findTransToWithType(phone)
         .then((result) => {
             if(result == null || !result || result.length <= 0){
                 return null;
