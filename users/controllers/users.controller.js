@@ -627,19 +627,16 @@ exports.payMerchant = (req, res) => {
                         // console.log(i);
                         if (merch[i][0] === req.body.qrString) {
                             if (parseFloat(merch[i][2].toFixed(2)) > parseFloat(jwtResult.balanceAmount.toFixed(2))) {
-                                res.status(200).send({
+                                console.log("Sending amount too high! "+merch[i][2]);
+                                return res.status(200).send({
                                     "error": true,
                                     "message": 'You do not have enough.'
                                 });
-                                console.log("Sending amount too high! "+merch[i][2]);
-                                return null;
                             }else{
                                 let totalAmt = parseFloat(Number(jwtResult.balanceAmount).toFixed(2)) - parseFloat(merch[i][2].toFixed(2));
                                 UserModel.patchUser(jwtResult.id, {balanceAmount: totalAmt});
                                 return res.status(200).send({
-                                    "error": false,
-                                    "merchantName": merch[i][1],
-                                    "price": merch[i][2]
+                                    "error": false
                                 });
                             }
 
@@ -660,7 +657,7 @@ exports.payMerchant = (req, res) => {
                                     if (sum === merch[i][2]) {
                                         if (jwtResult.balanceAmount > sum){
                                             let transArray = [];
-                                            async.forEachOf(req.body.splitBetween, function (value, key, callback) {
+                                            async.each(req.body.splitBetween, function (value, key, callback) {
                                                 if (jwtResult.phoneNo.toString() === value.toString()){
                                                     return res.status(200).send({
                                                         "error": true,
@@ -687,7 +684,7 @@ exports.payMerchant = (req, res) => {
                                                     var results = UserModel.createTransaction(jwtResult.phoneNo,
                                                         jwtResult.phoneNo, sum, 8, "");
                                                     let transArray2 = [];
-                                                    async.forEachOf(req.body.splitBetween, function (value, key, callback) {
+                                                    async.each(req.body.splitBetween, function (value, key, callback) {
                                                         var results = UserModel.createTransaction(value,
                                                             jwtResult.phoneNo, req.body.splitAmount, 1, merch[i][0]);
                                                         transArray2.push(results);
