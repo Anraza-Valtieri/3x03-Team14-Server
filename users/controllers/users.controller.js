@@ -668,7 +668,7 @@ exports.payMerchant = (req, res) => {
                                                         // callback();
                                                     }
                                                 });
-                                                if (z === req.body.splitBetween - 1) {
+                                                if (z === req.body.splitBetween.length - 1) {
                                                     console.log("Z-1");
                                                     if (transArray.length > 0) {
                                                         return res.status(200).send({
