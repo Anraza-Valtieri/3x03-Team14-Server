@@ -65,6 +65,13 @@ const transactionSchema = new Schema({
     dateTime: Date,
     read: Boolean
 });
+transactionSchema.virtual('id').get(function () {
+    return this._id.toHexString();
+});
+
+transactionSchema.findById = function (cb) {
+    return this.model('TransactionSchema').find({id: this.id}, cb);
+};
 transactionSchema.statics.findTransFromByPhone = function (res, cb) {
     return this.model('TransactionSchema').find({"fromId": res}, cb);
 };
