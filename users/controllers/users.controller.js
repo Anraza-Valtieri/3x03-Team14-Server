@@ -341,7 +341,7 @@ phone: "91234567"
 objectId: "?"
  */
 exports.payment = (req, res) => {
-    if (req.body.objectId != null && req.body.request != null) {
+    if (req.body.objectId !== null && req.body.request !== null) {
         UserModel.findTbyEmail2(req.jwt.email).then((jwtResult) => {
             if (!jwtResult || jwtResult == null) {
                 res.status(404).send({
@@ -368,7 +368,7 @@ exports.payment = (req, res) => {
                         });
                     }else {
                         let deductedAmt = Number(jwtResult.balanceAmount) - Number(trans.amount);
-                        UserModel.patchUser(jwtResult.id, {balanceAmount: deductedAmt})
+                        UserModel.patchUser(jwtResult.id, {"balanceAmount": deductedAmt})
                             .then(() => {
                                 UserModel.patchTransaction((req.body.objectId, {type: req.body.request}));
                                 console.log("Transaction success!");
