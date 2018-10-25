@@ -96,9 +96,15 @@ transactionSchema.statics.findPendingTransFromWithType = function (to, cb) {
     return this.model('TransactionSchema').find({ $or:[{"toId": to, "type": 0}, {"toId": to, "type": 1}] }, cb);
 };
 
-transactionSchema.statics.findOtherTransFromWithType = function (to, cb) {
+transactionSchema.statics.findOtherTransFrom = function (to, cb) {
+    return this.model('TransactionSchema').find({ $or:[{"fromId": to, "type": 2, "read": false}, {"toId": to, "type": 4, "read": false},
+            {"toId": to, "type": 6, "read": false}, {"toId": to, "type": 7, "read": false}] }, cb);
+};
+
+transactionSchema.statics.findOtherTransFromToClear = function (to, cb) {
     return this.model('TransactionSchema').find({ $or:[{"fromId": to, "type": 2, "read": false},
-            {"toId": to, "type": 2, "read": false}, {"toId": to, "type": 6, "read": false}, {"toId": to, "type": 7, "read": false}] }, cb);
+            {"toId": to, "type": 2, "read": false},
+            {"toId": to, "type": 6, "read": false}, {"toId": to, "type": 7, "read": false}] }, cb);
 };
 
 transactionSchema.statics.findTransWithId = function (id, cb) {
@@ -106,15 +112,30 @@ transactionSchema.statics.findTransWithId = function (id, cb) {
 };
 const Pending = mongoose.model('TransactionSchema', transactionSchema);
 
-exports.findPendingTransFromWithType = (to) => {
-    return Pending.findPendingTransFromWithType(to)
+exports.findOtherTransFromToClear = (to) => {
+    return Pending.findOtherTransFromToClear(to)
         .then((result) => {
             if(result == null || !result || result.length <= 0){
                 return null;
             }else {
                 // console.log("result: %j", result);
                 // result = result;
-                // delete result._id;
+                delete result._id;
+                delete result.__v;
+                return result;
+            }
+        });
+};
+
+exports.findOtherTransFrom = (to) => {
+    return Pending.findOtherTransFrom(to)
+        .then((result) => {
+            if(result == null || !result || result.length <= 0){
+                return null;
+            }else {
+                // console.log("result: %j", result);
+                // result = result;
+                delete result._id;
                 delete result.__v;
                 return result;
             }

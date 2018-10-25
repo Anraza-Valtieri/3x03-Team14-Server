@@ -165,7 +165,7 @@ exports.pullOthers = (req, res) => {
                         "message": 'Nice try MR cunning.'
                     });
                 };
-                UserModel.findOtherTransFromWithType(result.phoneNo, 0)
+                UserModel.findOtherTransFrom(result.phoneNo)
                     .then((result2) => {
                         if (!result2 || result2 == null) {
                             res.status(200).send({
@@ -173,6 +173,20 @@ exports.pullOthers = (req, res) => {
                                 "message": 'No Transaction.'
                             });
                         } else {
+                            UserModel.findOtherTransFromToClear(result.phoneNo)
+                                .then((result3) => {
+                                    if (!result3 || result3 == null) {
+                                        res.status(200).send({
+                                            "error": false,
+                                            "message": 'No Transaction.'
+                                        });
+                                    }else{
+                                        for(let i = 0; i < result3.length; i++){
+                                            console.log("Setting "+result3[i]._id +" as read true");
+                                            UserModel.patchTransaction(result3[i]._id, {read: true});
+                                        }
+                                    }
+                                });
                             res.status(200).send({
                                 "error": false,
                                 "pending": result2
@@ -372,7 +386,7 @@ exports.payment = (req, res) => {
                         console.log(deductedAmt + " "+ jwtResult.balanceAmount + " "+trans[0].amount );
                         UserModel.patchUser(jwtResult.id, {"balanceAmount": deductedAmt})
                             .then(() => {
-                                UserModel.patchTransaction(req.body.objectId, {type: req.body.request});
+                                // UserModel.patchTransaction(req.body.objectId, {type: req.body.request, read: true});
                                 console.log("Transaction success!");
                                 // UserModel.patchTransaction(req.body.objectId, {type: 2});
                                 return res.status(200).send({
@@ -584,7 +598,7 @@ exports.qrFunction = (req, res) => {
     if(req.body.qrString != null) {
         UserModel.findTbyEmail2(req.jwt.email).then((jwtResult) => {
             if (!jwtResult || jwtResult == null) {
-                res.status(404).send({
+                res.status(200).send({
                     "error": true,
                     "message": 'No user.'
                 });
