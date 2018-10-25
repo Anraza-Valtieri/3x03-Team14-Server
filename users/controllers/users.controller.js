@@ -681,13 +681,11 @@ exports.payMerchant = (req, res) => {
                                                         var results = UserModel.createTransaction(jwtResult.phoneNo,
                                                             jwtResult.phoneNo, sum, 8, "");
                                                         let transArray2 = [];
-                                                        while(transArray2.length < req.body.splitBetween) {
-                                                            let createTrans = new LINQ(req.body.splitBetween).Any(function (row2) {
-                                                                var results = UserModel.createTransaction(row2,
-                                                                    jwtResult.phoneNo, req.body.splitAmount[0], 1, detail.name);
-                                                                transArray2.push(results);
-                                                            });
-                                                        }
+                                                        let createTrans = new LINQ(req.body.splitBetween).Any(function (row2) {
+                                                            var results = UserModel.createTransaction(row2,
+                                                                jwtResult.phoneNo, req.body.splitAmount[0], 1, detail.name);
+                                                            transArray2.push(results);
+                                                        });
                                                         return res.status(200).send({
                                                             "error": false
                                                         });
