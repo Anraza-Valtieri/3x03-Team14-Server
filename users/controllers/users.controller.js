@@ -655,10 +655,10 @@ exports.payMerchant = (req, res) => {
                                                 return false;
                                             }
 
-                                            UserModel.findByPhone(row2[0]).then((result) => {
+                                            UserModel.findByPhone(row2).then((result) => {
                                                 if (result == null) {
-                                                    console.log("We are missing this number " + value);
-                                                    transArray.push(value);
+                                                    console.log("We are missing this number " + row2);
+                                                    transArray.push(row2);
                                                     // callback();
                                                 }
                                             });
@@ -682,8 +682,8 @@ exports.payMerchant = (req, res) => {
                                                     jwtResult.phoneNo, sum, 8, "");
                                                 let transArray2 = [];
                                                 let createTrans = new LINQ(req.body.splitBetween).Any(function (row2) {
-                                                    var results = UserModel.createTransaction(value,
-                                                        jwtResult.phoneNo, req.body.splitAmount, 1, value[0]);
+                                                    var results = UserModel.createTransaction(row2,
+                                                        jwtResult.phoneNo, req.body.splitAmount, 1, detail.cost);
                                                     transArray2.push(results);
                                                 });
 
