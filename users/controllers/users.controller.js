@@ -659,7 +659,7 @@ exports.payMerchant = (req, res) => {
                                             });
                                         }else {
                                             console.log("req.body.splitBetween.includes(jwtResult.phoneNo.toString() FALSE");
-                                            for (let z = 0; z < req.body.splitBetween; z++) {
+                                            for (let z = 0; z < req.body.splitBetween.length; z++) {
                                                 console.log(z);
                                                 UserModel.findByPhone(req.body.splitBetween[z]).then((result) => {
                                                     if (result == null) {
