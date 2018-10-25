@@ -70,7 +70,7 @@ transactionSchema.virtual('id').get(function () {
 });
 
 transactionSchema.findById = function (cb) {
-    return this.model('TransactionSchema').find({id: this.id}, cb);
+    return this.model('TransactionSchema').find({"_id": this.id}, cb);
 };
 transactionSchema.statics.findTransFromByPhone = function (res, cb) {
     return this.model('TransactionSchema').find({"fromId": res}, cb);
@@ -277,7 +277,7 @@ exports.findById = (id) => {
             if(result == null || !result || result.length <= 0){
                 return null;
             }else {
-                // console.log("result: %j", result);
+                console.log("result: %j", result);
                 result = result.toJSON();
                 delete result._id;
                 delete result.__v;
