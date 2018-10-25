@@ -610,6 +610,11 @@ exports.qrFunction = (req, res) => {
                         "merchantName": detail.name,
                         "price": detail.cost
                     });
+                }else {
+                    res.status(200).send({
+                        "error": true,
+                        "message": 'No QR.'
+                    });
                 }
             }
         });
