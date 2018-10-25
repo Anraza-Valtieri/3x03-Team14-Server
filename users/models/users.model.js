@@ -247,7 +247,7 @@ exports.createTransaction = (to, from, amount, type, merch) => {
     transactions.toId = to;
     transactions.amount = amount;
     transactions.dateTime = new Date;
-    transaction.merchantName = merch;
+    transactions.merchantName = merch;
     transactions.read = false;
     transactions.type = type;
     transactions.save();
