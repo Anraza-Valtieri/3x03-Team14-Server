@@ -649,6 +649,12 @@ exports.payMerchant = (req, res) => {
                         }
                     }
                 }else{ // SPLIT bill
+
+                    if (merch.includes(req.body.qrString)){
+                        const index = merch.findIndex(qr => qr === req.body.qrString);
+                        console.log(merch[index]); // blueberries
+                    }
+
                     return res.status(200).send({
                         "error": true,
                         "message": "BROKEN API! WIP! - Jerry"
