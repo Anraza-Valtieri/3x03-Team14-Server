@@ -251,7 +251,7 @@ exports.createTransaction = (to, from, amount, type, merch) => {
     transactions.read = false;
     transactions.type = type;
     transactions.save();
-    transArray.push(userData.body.request[i]);
+    transArray.push(transactions);
     console.log("Created transaction("+type+") for "+to+" from "+from+ " amt: "+amount);
     return transArray;
 };
