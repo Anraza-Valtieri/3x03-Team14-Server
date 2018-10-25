@@ -372,7 +372,7 @@ exports.payment = (req, res) => {
                         console.log(deductedAmt + " "+ jwtResult.balanceAmount + " "+trans[0].amount );
                         UserModel.patchUser(jwtResult.id, {"balanceAmount": deductedAmt})
                             .then(() => {
-                                UserModel.patchTransaction((req.body.objectId, {type: req.body.request}));
+                                UserModel.patchTransaction(req.body.objectId, {type: req.body.request});
                                 console.log("Transaction success!");
                                 // UserModel.patchTransaction(req.body.objectId, {type: 2});
                                 return res.status(200).send({

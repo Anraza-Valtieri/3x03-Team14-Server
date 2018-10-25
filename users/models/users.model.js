@@ -277,7 +277,7 @@ exports.findById = (id) => {
             if(result == null || !result || result.length <= 0){
                 return null;
             }else {
-                console.log("result: %j", result);
+                // console.log("result: %j", result);
                 result = result.toJSON();
                 delete result._id;
                 delete result.__v;
