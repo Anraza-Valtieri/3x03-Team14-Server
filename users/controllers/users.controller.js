@@ -652,13 +652,14 @@ exports.payMerchant = (req, res) => {
 
                     if (merch.includes(req.body.qrString)){
                         const index = merch.findIndex(qr => qr === req.body.qrString);
-                        console.log(merch[index]); // blueberries
+                        console.log(index); // blueberries
+                        return res.status(200).send({
+                            "error": true,
+                            "message": "BROKEN API! WIP! - Jerry"
+                        });
                     }
 
-                    return res.status(200).send({
-                        "error": true,
-                        "message": "BROKEN API! WIP! - Jerry"
-                    });
+
                     // for (let i = 0; i < merch.length; i++) {
             //         let LINQ = require('node-linq').LINQ;
             //         let resultI = new LINQ(merch).Any(function (row) {
