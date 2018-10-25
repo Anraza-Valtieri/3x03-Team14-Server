@@ -111,6 +111,20 @@ transactionSchema.statics.findTransWithId = function (id, cb) {
     return this.model('TransactionSchema').find({"_id": id}, cb);
 };
 const Pending = mongoose.model('TransactionSchema', transactionSchema);
+exports.findPendingTransFromWithType = (to) => {
+    return Pending.findPendingTransFromWithType(to)
+        .then((result) => {
+            if(result == null || !result || result.length <= 0){
+                return null;
+            }else {
+                // console.log("result: %j", result);
+                // result = result;
+                delete result._id;
+                delete result.__v;
+                return result;
+            }
+        });
+};
 
 exports.findOtherTransFromToClear = (to) => {
     return Pending.findOtherTransFromToClear(to)
