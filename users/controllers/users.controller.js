@@ -400,7 +400,7 @@ exports.payment = (req, res) => {
             //// CLIENT -> SERVER (Reject payment)
             if(req.body.request === 3) {
                 console.log("req.body.request === 3");
-                UserModel.patchTransaction((req.body.objectId, {type: req.body.request}));
+                UserModel.patchTransaction(req.body.objectId, {type: req.body.request});
                 console.log("Transaction success!");
                 return res.status(200).send({
                     "error": false,
