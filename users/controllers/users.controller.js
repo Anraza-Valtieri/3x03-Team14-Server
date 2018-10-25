@@ -656,51 +656,50 @@ exports.payMerchant = (req, res) => {
                                                 "error": true,
                                                 "message": 'You cannot have your own number in request.'
                                             });
-                                        }
+                                        }else {
+                                            for (let z = 0; z < req.body.splitBetween; z++) {
+                                                console.log(z);
+                                                UserModel.findByPhone(req.body.splitBetween[z]).then((result) => {
+                                                    if (result == null) {
+                                                        console.log("We are missing this number " + req.body.splitBetween[z]);
+                                                        transArray.push(req.body.splitBetween[z]);
+                                                        // callback();
+                                                    }
+                                                });
+                                                if (z === req.body.splitBetween - 1) {
+                                                    console.log("Z-1");
+                                                    if (transArray.length > 0) {
+                                                        return res.status(200).send({
+                                                            "error": true,
+                                                            "message": 'Some phone numbers does not exist.',
+                                                            "numbers": transArray
+                                                        });
+                                                    } else {
+                                                        console.log("Checking transaction 8s");
+                                                        var results = UserModel.createTransaction(jwtResult.phoneNo,
+                                                            jwtResult.phoneNo, sum, 8, "");
+                                                        let transArray2 = [];
+                                                        let createTrans = new LINQ(req.body.splitBetween).Any(function (row2) {
+                                                            var results = UserModel.createTransaction(row2,
+                                                                jwtResult.phoneNo, req.body.splitAmount, 1, detail.cost);
+                                                            transArray2.push(results);
+                                                        });
 
-                                        for (let z = 0; z < req.body.splitBetween;){
-                                            console.log(z);
-                                            UserModel.findByPhone(req.body.splitBetween[z]).then((result) => {
-                                                if (result == null) {
-                                                    console.log("We are missing this number " + req.body.splitBetween[z]);
-                                                    transArray.push(req.body.splitBetween[z]);
-                                                    // callback();
-                                                }
-                                            });
-                                            if(z === req.body.splitBetween-1){
-                                                console.log("Z-1");
-                                                if (transArray.length > 0){
-                                                    return res.status(200).send({
-                                                        "error": true,
-                                                        "message": 'Some phone numbers does not exist.',
-                                                        "numbers": transArray
-                                                    });
-                                                }else{
-                                                    console.log("Checking transaction 8s");
-                                                    var results = UserModel.createTransaction(jwtResult.phoneNo,
-                                                        jwtResult.phoneNo, sum, 8, "");
-                                                    let transArray2 = [];
-                                                    let createTrans = new LINQ(req.body.splitBetween).Any(function (row2) {
-                                                        var results = UserModel.createTransaction(row2,
-                                                            jwtResult.phoneNo, req.body.splitAmount, 1, detail.cost);
-                                                        transArray2.push(results);
-                                                    });
-
-                                                    if(createTrans){
-                                                        if (transArray2.length > 0 && transArray2.length === req.body.splitBetween.length) {
-                                                            return res.status(200).send({
-                                                                "error": false
-                                                            });
-                                                        }else{
-                                                            return res.status(200).send({
-                                                                "error": true,
-                                                                "message": "Somehow we didn't make enough transaction!"
-                                                            });
+                                                        if (createTrans) {
+                                                            if (transArray2.length > 0 && transArray2.length === req.body.splitBetween.length) {
+                                                                return res.status(200).send({
+                                                                    "error": false
+                                                                });
+                                                            } else {
+                                                                return res.status(200).send({
+                                                                    "error": true,
+                                                                    "message": "Somehow we didn't make enough transaction!"
+                                                                });
+                                                            }
                                                         }
                                                     }
                                                 }
                                             }
-                                            z++
                                         }
                                     }else{
                                         return res.status(200).send({
