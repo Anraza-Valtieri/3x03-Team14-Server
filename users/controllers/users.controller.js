@@ -368,7 +368,7 @@ exports.payment = (req, res) => {
                         });
                     }else {
                         let deductedAmt = parseFloat(jwtResult.balanceAmount).toFixed(2) - parseFloat(trans.amount).toFixed(2);
-                        console.log(deductedAmt);
+                        console.log(deductedAmt + " "+ jwtResult.balanceAmount + " "+trans.amount );
                         UserModel.patchUser(jwtResult.id, {"balanceAmount": deductedAmt})
                             .then(() => {
                                 UserModel.patchTransaction((req.body.objectId, {type: req.body.request}));
