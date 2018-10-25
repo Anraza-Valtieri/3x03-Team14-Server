@@ -361,6 +361,7 @@ exports.payment = (req, res) => {
             if (req.body.request === 2) {
                 console.log("req.body.request === 2");
                 UserModel.findTransWithId(req.body.objectId).then((trans) => {
+                    console.log(trans);
                     if (jwtResult.balanceAmount < trans.amount) {
                         return res.status(403).send({
                             "error": true,
