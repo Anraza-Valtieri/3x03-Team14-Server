@@ -547,22 +547,28 @@ exports.rewards = (req, res) => {
         }
     });
 };
-const merch = [
-    ["F2lQKZ15vPmF0N2r1pbf", "Ryan & Jerry's", 3.5],
-    ["2zJ5h5tShgkZSUwULCkf", "Ryan & Jerry's", 8],
-    ["uK31AH86ql5CXHudApOO", "Ryan & Jerry's", 6],
-    ["ReBPKyFUpyckozetP2ut", "Ryan & Jerry's", 7.5],
-    ["pbMIdgJjoxCUKISkxme5", "Ryan & Jerry's", 4.5],
-    ["LfWEgsaQQxoPmYfUN7UO", "BING Arcade", 10],
-    ["MV1guPtiow1vm4ur1ePH", "BING Arcade", 20],
-    ["xQvHpTp6ZuPAobz1Btdv", "BING Arcade", 30],
-    ["nUntb7RTAyvJBe6JZJk2", "BING Arcade", 59.9],
-    ["7p8XRqsHqknIiwHVPZQh", "BING Arcade", 39.9],
-    ["dEnAJHzKKsKrVqo6OEt9", "Quatorze Co.", 555],
-    ["1cjnYJBjmqfy6hgonRA8", "Quatorze Co.", 2660.5],
-    ["ETbWvghxG88qK0U68GcP", "Quatorze Co.", 1300],
-    ["vDxnWXuFg74qfEETkCiJ", "Quatorze Co.", 999],
-    ["2XqcYrk0OFhQ59TtGtMN", "Quatorze Co.", 8888]];
+var Shop = function(identifier, name, cost) {
+    this.identifier = identifier;
+    this.name = name;
+    this.cost = cost;
+};
+let ArrShop = [];
+ArrShop.push(new Shop("F2lQKZ15vPmF0N2r1pbf", "Ryan & Jerry's", 3.5));
+ArrShop.push(new Shop("2zJ5h5tShgkZSUwULCkf", "Ryan & Jerry's", 8));
+ArrShop.push(new Shop("uK31AH86ql5CXHudApOO", "Ryan & Jerry's", 6));
+ArrShop.push(new Shop("ReBPKyFUpyckozetP2ut", "Ryan & Jerry's", 7.5));
+ArrShop.push(new Shop("pbMIdgJjoxCUKISkxme5", "Ryan & Jerry's", 4.5));
+ArrShop.push(new Shop("LfWEgsaQQxoPmYfUN7UO", "BING Arcade", 10));
+ArrShop.push(new Shop("MV1guPtiow1vm4ur1ePH", "BING Arcade", 20));
+ArrShop.push(new Shop("xQvHpTp6ZuPAobz1Btdv", "BING Arcade", 30));
+ArrShop.push(new Shop("nUntb7RTAyvJBe6JZJk2", "BING Arcade", 59.9));
+ArrShop.push(new Shop("7p8XRqsHqknIiwHVPZQh", "BING Arcade", 39.9));
+ArrShop.push(new Shop("dEnAJHzKKsKrVqo6OEt9", "Quatorze Co.", 555));
+ArrShop.push(new Shop("1cjnYJBjmqfy6hgonRA8", "Quatorze Co.", 2660.5));
+ArrShop.push(new Shop("ETbWvghxG88qK0U68GcP", "Quatorze Co.", 1300));
+ArrShop.push(new Shop("vDxnWXuFg74qfEETkCiJ", "Quatorze Co.", 999));
+ArrShop.push(new Shop("2XqcYrk0OFhQ59TtGtMN", "Quatorze Co.", 8888));
+
 exports.qrFunction = (req, res) => {
     console.log(req.body.qrString);
     if(req.body.qrString != null) {
@@ -573,22 +579,30 @@ exports.qrFunction = (req, res) => {
                     "message": 'No user.'
                 });
             }else {
-                for (let i = 0; i < merch.length; i++) {
-                    // console.log(i);
-                    if (merch[i][0] === req.body.qrString) {
-                        return res.status(200).send({
-                            "error": false,
-                            "merchantName": merch[i][1],
-                            "price": merch[i][2]
-                        });
-                    }
-                    if(i === 14){
-                        return res.status(200).send({
-                            "error": true,
-                            "message": "Merchant not found!"
-                        });
-                    }
+                let detail = ArrShop.find(p=>p.identifier===req.body.qrString);
+                if (detail !== undefined){
+                    return res.status(200).send({
+                        "error": false,
+                        "merchantName": detail.name,
+                        "price": detail.cost
+                    });
                 }
+                // for (let i = 0; i < merch.length; i++) {
+                //     // console.log(i);
+                //     if (merch[i][0] === req.body.qrString) {
+                //         return res.status(200).send({
+                //             "error": false,
+                //             "merchantName": merch[i][1],
+                //             "price": merch[i][2]
+                //         });
+                //     }
+                //     if(i === 14){
+                //         return res.status(200).send({
+                //             "error": true,
+                //             "message": "Merchant not found!"
+                //         });
+                //     }
+                // }
             }
         });
     } else {
@@ -623,36 +637,28 @@ exports.payMerchant = (req, res) => {
                 });
             }else {// Single Payment
                 if(req.body.initiator == null){
-                    for (let i = 0; i < merch.length; i++) {
-                        // console.log(i);
-                        if (merch[i][0] === req.body.qrString) {
-                            if (parseFloat(merch[i][2].toFixed(2)) > parseFloat(jwtResult.balanceAmount.toFixed(2))) {
-                                console.log("Sending amount too high! "+merch[i][2]);
-                                return res.status(200).send({
-                                    "error": true,
-                                    "message": 'You do not have enough.'
-                                });
-                            }else{
-                                let totalAmt = parseFloat(Number(jwtResult.balanceAmount).toFixed(2)) - parseFloat(merch[i][2].toFixed(2));
-                                UserModel.patchUser(jwtResult.id, {balanceAmount: totalAmt});
-                                return res.status(200).send({
-                                    "error": false
-                                });
-                            }
-
-                        }
-                        if(i === 14){
+                    // console.log(i);
+                    let detail = ArrShop.find(p=>p.identifier===req.body.qrString);
+                    if (detail !== undefined) {
+                        if (parseFloat(detail.cost.toFixed(2)) > parseFloat(jwtResult.balanceAmount.toFixed(2))) {
+                            console.log("Sending amount too high! "+detail.cost);
                             return res.status(200).send({
                                 "error": true,
-                                "message": "Merchant not found!"
+                                "message": 'You do not have enough.'
+                            });
+                        }else{
+                            let totalAmt = parseFloat(Number(jwtResult.balanceAmount).toFixed(2)) - parseFloat(detail.cost.toFixed(2));
+                            UserModel.patchUser(jwtResult.id, {balanceAmount: totalAmt});
+                            return res.status(200).send({
+                                "error": false
                             });
                         }
+
                     }
                 }else{ // SPLIT bill
-
-                    if (merch.includes(req.body.qrString)){
-                        const index = merch.findIndex(qr => qr === req.body.qrString);
-                        console.log(index); // blueberries
+                    let detail = ArrShop.find(p=>p.identifier===req.body.qrString);
+                    if (detail !== undefined){
+                        console.log(detail); // blueberries
                         return res.status(200).send({
                             "error": true,
                             "message": "BROKEN API! WIP! - Jerry"
