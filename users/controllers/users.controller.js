@@ -652,11 +652,13 @@ exports.payMerchant = (req, res) => {
                                         let transArray = [];
                                         console.log("jwtResult.balanceAmount > sum");
                                         if (req.body.splitBetween.includes(jwtResult.phoneNo.toString())){
+                                            console.log("req.body.splitBetween.includes(jwtResult.phoneNo.toString() TRUE");
                                             return res.status(200).send({
                                                 "error": true,
                                                 "message": 'You cannot have your own number in request.'
                                             });
                                         }else {
+                                            console.log("req.body.splitBetween.includes(jwtResult.phoneNo.toString() FALSE");
                                             for (let z = 0; z < req.body.splitBetween; z++) {
                                                 console.log(z);
                                                 UserModel.findByPhone(req.body.splitBetween[z]).then((result) => {
