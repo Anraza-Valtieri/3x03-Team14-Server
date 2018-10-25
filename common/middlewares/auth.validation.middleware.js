@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken'),
     secret = require('../config/env.config.js').jwt_secret,
     crypto = require('crypto');
-const AuthorizationController = require('../../authorization/controllers/authorization.controller');
 
 exports.verifyRefreshBodyField = (req, res, next) => {
     if (req.body && req.body.refresh_token) {
