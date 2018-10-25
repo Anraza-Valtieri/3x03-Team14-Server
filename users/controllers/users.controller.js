@@ -646,7 +646,7 @@ exports.payMerchant = (req, res) => {
                         if(req.body.splitBetween != null && req.body.splitBetween.length > 0) {
                             if(req.body.splitAmount != null && req.body.splitAmount.length > 0) {
                                 let sum = req.body.splitAmount.reduce((a, b) => a + b, 0);
-                                if (sum === detail.cost) {
+                                if (parseFloat(sum) === parseFloat(detail.cost)) {
                                     if (jwtResult.balanceAmount > sum){
                                         let transArray = [];
                                         let ownNumber = new LINQ(req.body.splitBetween).Any(function (row2) {
