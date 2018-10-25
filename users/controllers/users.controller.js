@@ -388,7 +388,7 @@ exports.payment = (req, res) => {
                             .then(() => {
                                 // UserModel.patchTransaction(req.body.objectId, {type: req.body.request, read: true});
                                 console.log("Transaction success!");
-                                // UserModel.patchTransaction(req.body.objectId, {type: 2});
+                                UserModel.patchTransaction(req.body.objectId, {type: 2});
                                 return res.status(200).send({
                                     "error": false,
                                     "message": 'Transaction success.'
