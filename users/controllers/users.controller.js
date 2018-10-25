@@ -587,22 +587,6 @@ exports.qrFunction = (req, res) => {
                         "price": detail.cost
                     });
                 }
-                // for (let i = 0; i < merch.length; i++) {
-                //     // console.log(i);
-                //     if (merch[i][0] === req.body.qrString) {
-                //         return res.status(200).send({
-                //             "error": false,
-                //             "merchantName": merch[i][1],
-                //             "price": merch[i][2]
-                //         });
-                //     }
-                //     if(i === 14){
-                //         return res.status(200).send({
-                //             "error": true,
-                //             "message": "Merchant not found!"
-                //         });
-                //     }
-                // }
             }
         });
     } else {
@@ -659,10 +643,77 @@ exports.payMerchant = (req, res) => {
                     let detail = ArrShop.find(p=>p.identifier===req.body.qrString);
                     if (detail !== undefined){
                         console.log(detail); // blueberries
-                        return res.status(200).send({
-                            "error": true,
-                            "message": "BROKEN API! WIP! - Jerry"
-                        });
+                        if(req.body.splitBetween != null && req.body.splitBetween.length > 0) {
+                            if(req.body.splitAmount != null && req.body.splitAmount.length > 0) {
+                                let sum = req.body.splitAmount.reduce((a, b) => a + b, 0);
+                                if (sum === detail.cost) {
+                                    if (jwtResult.balanceAmount > sum){
+                                        let transArray = [];
+                                        let ownNumber = new LINQ(req.body.splitBetween).Any(function (row2) {
+                                            if (row2.includes(jwtResult.phoneNo.toString())){
+                                                return false;
+                                            }
+
+                                            UserModel.findByPhone(row2[0]).then((result) => {
+                                                if (result == null) {
+                                                    console.log("We are missing this number " + value);
+                                                    transArray.push(value);
+                                                    // callback();
+                                                }
+                                            });
+                                        });
+
+                                        if (ownNumber === false){
+                                            return res.status(200).send({
+                                                "error": true,
+                                                "message": 'You cannot have your own number in request.'
+                                            });
+                                        }else{
+                                            if (transArray.length > 0){
+                                                return res.status(200).send({
+                                                    "error": true,
+                                                    "message": 'Some phone numbers does not exist.',
+                                                    "numbers": transArray
+                                                });
+                                            }else{
+                                                console.log("Checking transaction 8s");
+                                                var results = UserModel.createTransaction(jwtResult.phoneNo,
+                                                    jwtResult.phoneNo, sum, 8, "");
+                                                let transArray2 = [];
+                                                let createTrans = new LINQ(req.body.splitBetween).Any(function (row2) {
+                                                    var results = UserModel.createTransaction(value,
+                                                        jwtResult.phoneNo, req.body.splitAmount, 1, value[0]);
+                                                    transArray2.push(results);
+                                                });
+
+                                                if(createTrans){
+                                                    if (transArray2.length > 0 && transArray2.length === req.body.splitBetween.length) {
+                                                        return res.status(200).send({
+                                                            "error": false
+                                                        });
+                                                    }else{
+                                                        return res.status(200).send({
+                                                            "error": true,
+                                                            "message": "Somehow we didn't make enough transaction!"
+                                                        });
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }else{
+                                        return res.status(200).send({
+                                            "error": true,
+                                            "message": "You do not have enough to cover the whole price!"
+                                        });
+                                    }
+                                }else{
+                                    return res.status(200).send({
+                                        "error": true,
+                                        "message": "Total amount is invalid!"
+                                    });
+                                }
+                            }
+                        }
                     }
 
 
