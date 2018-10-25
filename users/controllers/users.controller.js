@@ -367,7 +367,7 @@ exports.payment = (req, res) => {
                             "message": 'Not enough in balance to make payment.'
                         });
                     }else {
-                        let deductedAmt = Number(jwtResult.balanceAmount) - Number(trans.amount);
+                        let deductedAmt = parseFloat(jwtResult.balanceAmount).toFixed(2) - parseFloat(trans.amount).toFixed(2);
                         UserModel.patchUser(jwtResult.id, {"balanceAmount": deductedAmt})
                             .then(() => {
                                 UserModel.patchTransaction((req.body.objectId, {type: req.body.request}));
