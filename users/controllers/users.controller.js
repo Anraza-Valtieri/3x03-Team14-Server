@@ -650,7 +650,7 @@ exports.payMerchant = (req, res) => {
                                 if (parseFloat(sum) === parseFloat(detail.cost)) {
                                     if (jwtResult.balanceAmount > sum){
                                         let transArray = [];
-
+                                        console.log("jwtResult.balanceAmount > sum");
                                         if (req.body.splitBetween.includes(jwtResult.phoneNo.toString())){
                                             return res.status(200).send({
                                                 "error": true,
@@ -659,6 +659,7 @@ exports.payMerchant = (req, res) => {
                                         }
 
                                         for (let z = 0; z < req.body.splitBetween;){
+                                            console.log(z);
                                             UserModel.findByPhone(req.body.splitBetween[z]).then((result) => {
                                                 if (result == null) {
                                                     console.log("We are missing this number " + req.body.splitBetween[z]);
@@ -667,6 +668,7 @@ exports.payMerchant = (req, res) => {
                                                 }
                                             });
                                             if(z === req.body.splitBetween-1){
+                                                console.log("Z-1");
                                                 if (transArray.length > 0){
                                                     return res.status(200).send({
                                                         "error": true,
