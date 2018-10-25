@@ -362,14 +362,14 @@ exports.payment = (req, res) => {
                 console.log("req.body.request === 2");
                 UserModel.findTransWithId(req.body.objectId).then((trans) => {
                     console.log(trans);
-                    if (jwtResult.balanceAmount < trans.amount) {
+                    if (jwtResult.balanceAmount < trans[0].amount) {
                         return res.status(403).send({
                             "error": true,
                             "message": 'Not enough in balance to make payment.'
                         });
                     }else {
-                        let deductedAmt = parseFloat(jwtResult.balanceAmount).toFixed(2) - parseFloat(trans.amount).toFixed(2);
-                        console.log(deductedAmt + " "+ jwtResult.balanceAmount + " "+trans.amount );
+                        let deductedAmt = parseFloat(jwtResult.balanceAmount).toFixed(2) - parseFloat(trans[0].amount).toFixed(2);
+                        console.log(deductedAmt + " "+ jwtResult.balanceAmount + " "+trans[0].amount );
                         UserModel.patchUser(jwtResult.id, {"balanceAmount": deductedAmt})
                             .then(() => {
                                 UserModel.patchTransaction((req.body.objectId, {type: req.body.request}));
@@ -396,26 +396,26 @@ exports.payment = (req, res) => {
             if(req.body.request === 4) {
                 console.log("req.body.request === 4");
                 UserModel.findTransWithId(req.body.objectId).then((trans) => {
-                    if (jwtResult.balanceAmount < trans.amount) {
+                    if (jwtResult.balanceAmount < trans[0].amount) {
                         return res.status(403).send({
                             "error": true,
                             "message": 'Not enough in balance to make payment.'
                         });
                     }else {
-                        let deductedAmt = Number(jwtResult.balanceAmount) - Number(trans.amount);
+                        let deductedAmt = Number(jwtResult.balanceAmount) - Number(trans[0].amount);
 
                         UserModel.patchUser(jwtResult.id, {balanceAmount: deductedAmt})
                             .then(() => {
-                                UserModel.findTransFromWithType(trans.fromId, 8).then((trans2) => {
+                                UserModel.findTransFromWithType(trans[0].fromId, 8).then((trans2) => {
                                     if (trans2 == null) {
                                         return res.status(404).send({
                                             error: "true",
                                             message: "transaction cancelled by initiator? doesn't exist anymore"
                                         });
                                     }
-                                    var remainingAmt = Number(trans2.amount) - Number(trans.amount);
-                                    UserModel.patchTransaction(trans2._id, {amount: remainingAmt});
-                                    UserModel.patchTransaction(trans._id, {type: "1"});
+                                    var remainingAmt = Number(trans2[0].amount) - Number(trans[0].amount);
+                                    UserModel.patchTransaction(trans2[0]._id, {amount: remainingAmt});
+                                    UserModel.patchTransaction(trans[0]._id, {type: "1"});
                                 });
                                 // UserModel.patchTransaction((req.body.objectId, {type: req.body.request}));
                                 console.log("Transaction success!");
@@ -437,7 +437,7 @@ exports.payment = (req, res) => {
                             message: "(transaction cancelled by initiator? doesnt exist anymore)"
                         });
                     }else {
-                        UserModel.patchTransaction(trans3._id, {type: 5});
+                        UserModel.patchTransaction(trans3[0]._id, {type: 5});
                         return res.status(200).send({
                             "error": false,
                             "message": 'Transaction success.'
