@@ -359,27 +359,30 @@ exports.payment = (req, res) => {
             // CLIENT -> SERVER (Accept payment)
             // Process payments here
             if (req.body.request === 2) {
+                console.log("req.body.request === 2");
                 UserModel.findTransWithId(req.body.objectId).then((trans) => {
                     if (jwtResult.balanceAmount < trans.amount) {
                         return res.status(403).send({
                             "error": true,
                             "message": 'Not enough in balance to make payment.'
                         });
-                    }
-                    var deductedAmt = Number(jwtResult.balanceAmount) - Number(trans.amount);
-                    UserModel.patchUser(jwtResult.id, {balanceAmount: deductedAmt})
-                        .then(() => {
-                            UserModel.patchTransaction((req.body.objectId, {type: req.body.request}));
-                            console.log("Transaction success!");
-                            return res.status(200).send({
-                                "error": false,
-                                "message": 'Transaction success.'
+                    }else {
+                        let deductedAmt = Number(jwtResult.balanceAmount) - Number(trans.amount);
+                        UserModel.patchUser(jwtResult.id, {balanceAmount: deductedAmt})
+                            .then(() => {
+                                UserModel.patchTransaction((req.body.objectId, {type: req.body.request}));
+                                console.log("Transaction success!");
+                                return res.status(200).send({
+                                    "error": false,
+                                    "message": 'Transaction success.'
+                                });
                             });
-                        });
+                    }
                 });
             }
             //// CLIENT -> SERVER (Reject payment)
             if(req.body.request === 3) {
+                console.log("req.body.request === 3");
                 UserModel.patchTransaction((req.body.objectId, {type: req.body.request}));
                 console.log("Transaction success!");
                 return res.status(200).send({
@@ -389,51 +392,55 @@ exports.payment = (req, res) => {
             }
             // CLIENT -> SERVER (Accept splitting bills)
             if(req.body.request === 4) {
+                console.log("req.body.request === 4");
                 UserModel.findTransWithId(req.body.objectId).then((trans) => {
                     if (jwtResult.balanceAmount < trans.amount) {
                         return res.status(403).send({
                             "error": true,
                             "message": 'Not enough in balance to make payment.'
                         });
-                    }
-                    let deductedAmt = Number(jwtResult.balanceAmount) - Number(trans.amount);
+                    }else {
+                        let deductedAmt = Number(jwtResult.balanceAmount) - Number(trans.amount);
 
-                    UserModel.patchUser(jwtResult.id, {balanceAmount: deductedAmt})
-                        .then(() => {
-                            UserModel.findTransFromWithType(trans.fromId, 8).then((trans2) => {
-                                if (trans2 == null){
-                                    return res.status(404).send({
-                                        error: "true",
-                                        message: "transaction cancelled by initiator? doesn't exist anymore"
+                        UserModel.patchUser(jwtResult.id, {balanceAmount: deductedAmt})
+                            .then(() => {
+                                UserModel.findTransFromWithType(trans.fromId, 8).then((trans2) => {
+                                    if (trans2 == null) {
+                                        return res.status(404).send({
+                                            error: "true",
+                                            message: "transaction cancelled by initiator? doesn't exist anymore"
+                                        });
+                                    }
+                                    var remainingAmt = Number(trans2.amount) - Number(trans.amount);
+                                    UserModel.patchTransaction(trans2._id, {amount: remainingAmt});
+                                    UserModel.patchTransaction(trans._id, {type: "1"});
                                 });
-                                }
-                                var remainingAmt = Number(trans2.amount) - Number(trans.amount);
-                                UserModel.patchTransaction(trans2._id, {amount: remainingAmt });
-                                UserModel.patchTransaction(trans._id, {type: "1" });
+                                // UserModel.patchTransaction((req.body.objectId, {type: req.body.request}));
+                                console.log("Transaction success!");
+                                return res.status(200).send({
+                                    "error": false,
+                                    "message": 'Transaction success.'
+                                });
                             });
-                            // UserModel.patchTransaction((req.body.objectId, {type: req.body.request}));
-                            console.log("Transaction success!");
-                            return res.status(200).send({
-                                "error": false,
-                                "message": 'Transaction success.'
-                            });
-                        });
+                    }
                 });
             }
             // CLIENT -> SERVER (Reject splitting bills)
             if(req.body.request === 5) {
+                console.log("req.body.request === 5");
                 UserModel.findTransWithId(res.body.objectId).then((trans3) => {
                     if (trans3 == null) {
                         return res.status(200).send({
                             error: "true",
                             message: "(transaction cancelled by initiator? doesnt exist anymore)"
                         });
+                    }else {
+                        UserModel.patchTransaction(trans3._id, {type: 5});
+                        return res.status(200).send({
+                            "error": false,
+                            "message": 'Transaction success.'
+                        });
                     }
-                    UserModel.patchTransaction(trans3._id, {type: 5});
-                    return res.status(200).send({
-                        "error": false,
-                        "message": 'Transaction success.'
-                    });
                 });
             }
         });
