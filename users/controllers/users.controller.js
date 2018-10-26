@@ -203,10 +203,7 @@ exports.pullOthers = (req, res) => {
                             UserModel.findOtherTransFromToClear(result.phoneNo)
                                 .then((result3) => {
                                     if (!result3 || result3 == null) {
-                                        res.status(200).send({
-                                            "error": false,
-                                            "message": 'No Transaction.'
-                                        });
+                                        
                                     }else{
                                         for(let i = 0; i < result3.length; i++){
                                             console.log("Setting "+result3[i]._id +" as read true");
