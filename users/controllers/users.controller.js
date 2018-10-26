@@ -263,29 +263,40 @@ exports.billConfirm = (req, res) => {
                         let list = [];
                         let amt = [];
                         if (trans != null) {
-                            for (let i = 0; i < trans.length; i++) {
-                                list.push(trans.toId);
-                                amt.push(trans.amount);
-                                if (trans.length > 1 && i === trans.length - 1) {
-                                    return res.status(200).send({
-                                        "error": false,
-                                        "accepted": list,
-                                        "splitAmount": amt
-                                    });
-                                }else{
-                                    return res.status(200).send({
-                                        "error": false,
-                                        "accepted": trans.toId,
-                                        "splitAmount": trans.amount
-                                    });
-                                }
+                            for (var numbers in trans) {
+                                // if(numbers.hasOwnProperty("toId"))
+                                list.push(numbers.toId);
+                                amt.push(numbers.amount);
                             }
 
-                        }else{
                             return res.status(200).send({
                                 "error": false,
                                 "accepted": list,
                                 "splitAmount": amt
+                            });
+                            // for (var i = 0; i < trans.length; i++) {
+                            //     list.push(trans.toId);
+                            //     amt.push(trans.amount);
+                            //     if (trans.length > 1 && i === trans.length - 1) {
+                            //         return res.status(200).send({
+                            //             "error": false,
+                            //             "accepted": list,
+                            //             "splitAmount": amt
+                            //         });
+                            //     }else{
+                            //         return res.status(200).send({
+                            //             "error": false,
+                            //             "accepted": trans.toId,
+                            //             "splitAmount": trans.amount
+                            //         });
+                            //     }
+                            // }
+
+                        }else{
+                            return res.status(200).send({
+                                "error": false,
+                                "accepted": [],
+                                "splitAmount": []
                             });
                         }
                     });
