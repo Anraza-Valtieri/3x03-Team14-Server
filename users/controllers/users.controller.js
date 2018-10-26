@@ -770,7 +770,7 @@ exports.payMerchant = (req, res) => {
                                                         let transArray2 = [];
                                                         let createTrans = new LINQ(req.body.splitBetween).Any(function (row2) {
                                                             var results = UserModel.createTransaction(row2,
-                                                                jwtResult.phoneNo,  Number(sum)/Number(req.body.splitBetween), 1, detail.name);
+                                                                jwtResult.phoneNo,  Number(sum)/Number(req.body.splitBetween.length), 1, detail.name);
                                                             transArray2.push(results);
                                                         });
                                                         return res.status(200).send({
