@@ -24,7 +24,7 @@ exports.validRefreshNeeded = (req, res, next) => {
 
 
 exports.validJWTNeeded = (req, res, next) => {
-    if (req.headers['user-agent'].contains("Dalvik") && req.headers['user-agent'].contains("Android")) {
+    if (req.headers['user-agent'].toString().contains("Dalvik") && req.headers['user-agent'].toString().contains("Android")) {
         if (req.headers['authorization']) {
             try {
                 let authorization = req.headers['authorization'].split(' ');
