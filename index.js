@@ -13,9 +13,10 @@ app.use(helmet());
 const AuthorizationRouter = require('./authorization/routes.config');
 const UsersRouter = require('./users/routes.config');
 
+
 var options = {
-    key: fs.readFileSync('./keys/OLD/server-key.pem'),
-    cert: fs.readFileSync('./keys/OLD/server-cert.pem')
+    key: fs.readFileSync('./keys/privkey.pem'),
+    cert: fs.readFileSync('./keys/fullchain.pem')
 };
 
 app.use(morgan('combined'));
@@ -43,12 +44,12 @@ app.set('port', process.env.PORT || 3000);
 // app.set('host', process.env.HOST || '0.0.0.0');
 app.set('host', process.env.HOST || '0.0.0.0');
 
-var httpServer = http.createServer(app);
-// var httpsServer = https.createServer(options, app);
+// var httpServer = http.createServer(app);
+var httpsServer = https.createServer(options, app);
 
 // For http
-httpServer.listen(80);
+// httpServer.listen(8080);
 // For https
-// httpsServer.listen(app.get('port'), app.get('host'), function(){
-//     console.log("Express server listening on port " + app.get('port'));
-// });
+httpsServer.listen(app.get('port'), app.get('host'), function(){
+    console.log("Express server listening on port " + app.get('port'));
+});
