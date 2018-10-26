@@ -593,7 +593,7 @@ exports.rewards = (req, res) => {
             });
         }else {
             if (req.body.reward != null) {
-                if (req.body.reward >= 0 && req.body.reward < prices.length) {
+                if (Number(req.body.reward) >= 0 && Number(req.body.reward) < prices.length) {
                     console.log(jwtResult.email + " redeeming " + prices[req.body.reward][1] + " points for $" + prices[req.body.reward][0]);
                     if (jwtResult.points < prices[req.body.reward][1]) {
                         return res.status(200).send({
@@ -770,7 +770,7 @@ exports.payMerchant = (req, res) => {
                                                         let transArray2 = [];
                                                         let createTrans = new LINQ(req.body.splitBetween).Any(function (row2) {
                                                             var results = UserModel.createTransaction(row2,
-                                                                jwtResult.phoneNo, req.body.splitAmount[0], 1, detail.name);
+                                                                jwtResult.phoneNo,  Number(sum)/Number(req.body.splitBetween), 1, detail.name);
                                                             transArray2.push(results);
                                                         });
                                                         return res.status(200).send({
