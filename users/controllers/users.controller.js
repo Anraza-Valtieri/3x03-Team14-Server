@@ -714,32 +714,32 @@ exports.payMerchant = (req, res) => {
                     if (detail !== undefined){
                         console.log("DETAILS: " +detail); // blueberries
                         let counts = [];
-                        for(let i = 0; i <= a.length; i++) {
-                            if(counts[a[i]] === undefined) {
-                                counts[a[i]] = 1;
-                            } else {
-                                return res.status(200).send({
-                                    "error": true,
-                                    "message": 'Multiple same numbers.'
-                                });
-                            }
-                            if (i === a.length-1){
-                                if(req.body.splitBetween != null && req.body.splitBetween.length > 0) {
-                                    if(req.body.splitAmount != null && req.body.splitAmount.length > 0) {
+                        if(req.body.splitBetween != null && req.body.splitBetween.length > 0) {
+                            for (let i = 0; i <= req.body.splitBetween.length; i++) {
+                                if (counts[req.body.splitBetween[i]] === undefined) {
+                                    counts[req.body.splitBetween[i]] = 1;
+                                } else {
+                                    return res.status(200).send({
+                                        "error": true,
+                                        "message": 'Multiple same numbers.'
+                                    });
+                                }
+                                if (i === req.body.splitBetween.length - 1) {
+                                    if (req.body.splitAmount != null && req.body.splitAmount.length > 0) {
                                         let sum = req.body.splitAmount.reduce((a, b) => Number(a) + Number(b), 0);
-                                        console.log("SUM: " +sum); // blueberries
+                                        console.log("SUM: " + sum); // blueberries
                                         if (parseFloat(sum) === parseFloat(detail.cost)) {
                                             req.body.splitAmount.pop();
-                                            if (Number(jwtResult.balanceAmount) > Number(sum)){
+                                            if (Number(jwtResult.balanceAmount) > Number(sum)) {
                                                 let transArray = [];
                                                 console.log("jwtResult.balanceAmount > sum");
-                                                if (req.body.splitBetween.includes(jwtResult.phoneNo.toString())){
+                                                if (req.body.splitBetween.includes(jwtResult.phoneNo.toString())) {
                                                     console.log("req.body.splitBetween.includes(jwtResult.phoneNo.toString() TRUE");
                                                     return res.status(200).send({
                                                         "error": true,
                                                         "message": 'You cannot have your own number in request.'
                                                     });
-                                                }else {
+                                                } else {
                                                     console.log("req.body.splitBetween.includes(jwtResult.phoneNo.toString() FALSE");
                                                     for (let z = 0; z < req.body.splitBetween.length; z++) {
                                                         console.log(z);
@@ -776,19 +776,19 @@ exports.payMerchant = (req, res) => {
                                                         }
                                                     }
                                                 }
-                                            }else{
+                                            } else {
                                                 return res.status(200).send({
                                                     "error": true,
                                                     "message": "You do not have enough to cover the whole price!"
                                                 });
                                             }
-                                        }else{
+                                        } else {
                                             return res.status(200).send({
                                                 "error": true,
                                                 "message": "Total amount is invalid!"
                                             });
                                         }
-                                    } else{
+                                    } else {
                                         return res.status(200).send({
                                             "error": true,
                                             "message": 'Split amount error'
