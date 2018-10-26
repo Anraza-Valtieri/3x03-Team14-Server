@@ -690,7 +690,8 @@ exports.payMerchant = (req, res) => {
                             let totalAmt = parseFloat(Number(jwtResult.balanceAmount).toFixed(2)) - parseFloat(detail.cost.toFixed(2));
                             UserModel.patchUser(jwtResult.id, {balanceAmount: totalAmt});
                             let pointsGained = parseFloat(detail.cost)/5;
-                            pointsGained = Number(pointsGained);
+                            pointsGained = Math.round(pointsGained);
+                            // pointsGained = Number(pointsGained).toFixed();
                             console.log("pointsGained: "+pointsGained);
                             let totalPoints = Number(jwtResult.points) + pointsGained;
                             console.log("totalPoints: "+ totalPoints +" points: "+jwtResult.points +" pointsGained: "+pointsGained);
