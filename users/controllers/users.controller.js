@@ -691,7 +691,9 @@ exports.payMerchant = (req, res) => {
                             UserModel.patchUser(jwtResult.id, {balanceAmount: totalAmt});
                             let pointsGained = parseFloat(detail.cost)/5;
                             pointsGained = Number(pointsGained);
+                            console.log("pointsGained: "+pointsGained);
                             let totalPoints = Number(jwtResult.points) + pointsGained;
+                            console.log("totalPoints: "+ totalPoints +" points: "+jwtResult.points +" pointsGained: "+pointsGained);
                             UserModel.patchUser(jwtResult.id, {points: totalPoints});
                             return res.status(200).send({
                                 "error": false
