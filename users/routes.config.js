@@ -8,9 +8,19 @@ const ADV = config.permissionLevels.ADVANCED_USER;
 const FREE = config.permissionLevels.NORMAL_USER;
 
 exports.routesConfig = function (app) {
-    app.get('/admin', function(req, res) {
+    app.get('/', function(req, res) {
         res.writeHead(200, {"Content-Type": "text/plain"});
         res.end("The hunt is on.. - Anraza-Valtieri\n");
+    });
+
+    app.get('/root', function(req, res) {
+        res.writeHead(200, {"Content-Type": "text/plain"});
+        res.end("Nothing but dead roots here.. - Anraza-Valtieri\n");
+    });
+
+    app.get('/admin', function(req, res) {
+        res.writeHead(200, {"Content-Type": "text/plain"});
+        res.end("Nothing here - Anraza-Valtieri\n");
     });
 
     app.get('/.well-known/acme-challenge/llM7LhDy0hEh2qeffEBFSUWubJa197t6FTiDZxOin98', function(req, res) {
