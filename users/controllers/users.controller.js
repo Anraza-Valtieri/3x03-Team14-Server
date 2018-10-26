@@ -260,9 +260,9 @@ exports.billConfirm = (req, res) => {
                 if (req.body.request === "0") {
                     console.log("In Zero");
                     UserModel.findTransFromWithType(jwtResult.phoneNo, 4).then((trans) => {
+                        let list = [];
+                        let amt = [];
                         if (trans != null) {
-                            let list = [];
-                            let amt = [];
                             for (let i = 0; i < trans.length; i++) {
                                 list.push(trans.toId);
                                 amt.push(trans.amount);
@@ -274,12 +274,15 @@ exports.billConfirm = (req, res) => {
                                     });
                                 }
                             }
+
+                        }else{
                             return res.status(200).send({
                                 "error": false,
-                                "message": 'Not enough in balance to make payment.'
+                                "accepted": list,
+                                "splitAmount": amt
                             });
                         }
-                    })
+                    });
                 }
                 // CLIENT -> SERVER (cancel payment)
                 if (req.body.request === "2") {
@@ -317,6 +320,11 @@ exports.billConfirm = (req, res) => {
                                         }
                                     });
                                 });
+                        } else {
+                            return res.status(200).send({
+                                "error": true,
+                                "message": "No transactions"
+                            });
                         }
                     });
                 }
@@ -364,6 +372,11 @@ exports.billConfirm = (req, res) => {
                                             }
                                         });
                                     });
+                            });
+                        }else {
+                            return res.status(200).send({
+                                "error": true,
+                                "message": "No transactions"
                             });
                         }
                     })
