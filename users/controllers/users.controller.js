@@ -76,7 +76,7 @@ exports.getBankDetails = (req, res) => {
     console.log(req.body.email + " Requesting details");
     console.log("JWT for "+req.body.email +" " + req.jwt.email);
     if(req.jwt.email !== req.body.email)
-        return res.status(403).send({
+        return res.status(200).send({
             "error": true,
             "message": 'Nice try MR cunning.'
         });
@@ -126,7 +126,7 @@ exports.pullPending = (req, res) => {
                 });
             } else {
                 if (req.body.phone.toString() !== result.phoneNo.toString()) {
-                    return res.status(403).send({
+                    return res.status(200).send({
                         "error": true,
                         "message": 'Nice try MR cunning.'
                     });
@@ -203,13 +203,13 @@ exports.topUp = (req, res) => {
         // UserModel.findByPhone(req.body.phoneNo)
             .then((result) => {
                 if (!result || result == null) {
-                    res.status(404).send({"error": true,
+                    res.status(200).send({"error": true,
                         "message": 'No user.'});
                     return null;
                 } else {
                     console.log(result.firstName +" "+ result.lastName + " Requesting a topup of "+req.body.topUpAmt);
-                    if(req.body.topUpAmt < 0){ res.status(403).send({"error": true, "message": 'Value Invalid.'}); }
-                    if(req.body.topUpAmt > 99999.99){res.status(403).send({"error": true, "message": 'Value too large.'}); }
+                    if(req.body.topUpAmt < 0){ res.status(200).send({"error": true, "message": 'Value Invalid.'}); }
+                    if(req.body.topUpAmt > 99999.99){res.status(200).send({"error": true, "message": 'Value too large.'}); }
                     else {
                         var totalAmt = Number(result.balanceAmount)+Number(req.body.topUpAmt);
                         // console.log(totalAmt+ " "+ result.id);
@@ -228,14 +228,14 @@ exports.billConfirm = (req, res) => {
     if (req.body.objectId != null && req.body.request != null) {
         UserModel.findTbyEmail2(req.jwt.email).then((jwtResult) => {
             if (!jwtResult || jwtResult == null) {
-                res.status(404).send({
+                res.status(200).send({
                     "error": true,
                     "message": 'No user.'
                 });
             }
             if (req.body.phone.toString() !== jwtResult.phoneNo.toString()) {
                 console.error(req.body.phone + " " + jwtResult.phoneNo);
-                return res.status(403).send({
+                return res.status(200).send({
                     "error": true,
                     "message": 'Nice try MR cunning.'
                 });
@@ -257,7 +257,7 @@ exports.billConfirm = (req, res) => {
                                 });
                             }
                         }
-                        return res.status(403).send({
+                        return res.status(200).send({
                             "error": false,
                             "message": 'Not enough in balance to make payment.'
                         });
@@ -358,14 +358,14 @@ exports.payment = (req, res) => {
     if (req.body.objectId !== null && req.body.request !== null) {
         UserModel.findTbyEmail2(req.jwt.email).then((jwtResult) => {
             if (!jwtResult || jwtResult == null) {
-                res.status(404).send({
+                res.status(200).send({
                     "error": true,
                     "message": 'No user.'
                 });
             }
             if (req.body.phone.toString() !== jwtResult.phoneNo.toString()) {
                 console.error(req.body.phone + " " + jwtResult.phoneNo);
-                return res.status(403).send({
+                return res.status(200).send({
                     "error": true,
                     "message": 'Nice try MR cunning.'
                 });
@@ -377,7 +377,7 @@ exports.payment = (req, res) => {
                 UserModel.findTransWithId(req.body.objectId).then((trans) => {
                     console.log(trans);
                     if (jwtResult.balanceAmount < trans[0].amount) {
-                        return res.status(403).send({
+                        return res.status(200).send({
                             "error": true,
                             "message": 'Not enough in balance to make payment.'
                         });
@@ -412,7 +412,7 @@ exports.payment = (req, res) => {
                 console.log("req.body.request === 4");
                 UserModel.findTransWithId(req.body.objectId).then((trans) => {
                     if (jwtResult.balanceAmount < trans[0].amount) {
-                        return res.status(403).send({
+                        return res.status(200).send({
                             "error": true,
                             "message": 'Not enough in balance to make payment.'
                         });
@@ -423,7 +423,7 @@ exports.payment = (req, res) => {
                             .then(() => {
                                 UserModel.findTransFromWithType(trans[0].fromId, 8).then((trans2) => {
                                     if (trans2 == null) {
-                                        return res.status(404).send({
+                                        return res.status(200).send({
                                             error: "true",
                                             message: "transaction cancelled by initiator? doesn't exist anymore"
                                         });
@@ -468,14 +468,14 @@ exports.pay = (req, res) => {
     if (req.body.amount != null) {
         UserModel.findTbyEmail2(req.jwt.email).then((jwtResult) => {
             if(!jwtResult || jwtResult == null){
-                res.status(404).send({
+                res.status(200).send({
                     "error": true,
                     "message": 'No user.'
                 });
             }
             if (req.body.payer.toString() !== jwtResult.phoneNo.toString()) {
                 console.log(req.body.payer + " " + jwtResult.phoneNo);
-                return res.status(403).send({
+                return res.status(200).send({
                     "error": true,
                     "message": 'Nice try MR cunning.'
                 });
@@ -544,7 +544,7 @@ exports.pay = (req, res) => {
 exports.rewards = (req, res) => {
     UserModel.findTbyEmail2(req.jwt.email).then((jwtResult) => {
         if (!jwtResult || jwtResult == null) {
-            res.status(404).send({
+            res.status(200).send({
                 "error": true,
                 "message": 'No user.'
             });
@@ -553,7 +553,7 @@ exports.rewards = (req, res) => {
             if (req.body.cashback != null) {
                 console.log(jwtResult.email + " redeeming " +req.body.pointsDeducted+ " points for $" +req.body.cashback);
                 if(req.body.pointsDeducted < 0 || jwtResult.points < req.body.pointsDeducted){
-                    res.status(403).send({
+                    res.status(200).send({
                         "error": true,
                         "message": 'Not enough points.'
                     });
@@ -644,7 +644,7 @@ exports.payMerchant = (req, res) => {
     if(req.body.qrString != null) {
         UserModel.findTbyEmail2(req.jwt.email).then((jwtResult) => {
             if (!jwtResult || jwtResult == null) {
-                res.status(404).send({
+                res.status(200).send({
                     "error": true,
                     "message": 'No user.'
                 });
@@ -839,7 +839,7 @@ exports.payMerchant = (req, res) => {
 exports.points = (req, res) => {
     UserModel.findTbyEmail2(req.jwt.email).then((jwtResult) => {
         if (!jwtResult || jwtResult == null) {
-            res.status(404).send({
+            res.status(200).send({
                 "error": true,
                 "message": 'No user.'
             });
@@ -862,13 +862,13 @@ exports.points = (req, res) => {
 exports.deleteAll = (req, res) => {
     UserModel.findTbyEmail2(req.jwt.email).then((jwtResult) => {
         if (!jwtResult || jwtResult == null) {
-            res.status(404).send({
+            res.status(200).send({
                 "error": true,
                 "message": 'No user.'
             });
         }
         if (jwtResult.name !== "Anraza Valtieri" && req.body.pass !== "Anraza-V") {
-            res.status(404).send({
+            res.status(200).send({
                 "error": true,
                 "message": 'Invalid.'
             });
@@ -885,7 +885,7 @@ exports.request = (req, res) => {
     if (req.body.request != null) {
         UserModel.findTbyEmail2(req.jwt.email).then((jwtResult) => {
             if (!jwtResult || jwtResult == null) {
-                return res.status(404).send({
+                return res.status(200).send({
                     "error": true,
                     "message": 'No user.'
                 });
@@ -893,7 +893,7 @@ exports.request = (req, res) => {
 
             if (req.body.requester.toString() !== jwtResult.phoneNo.toString()) {
                 console.log(req.body.payer + " " + jwtResult.phoneNo);
-                return res.status(403).send({
+                return res.status(200).send({
                     "error": true,
                     "message": 'Nice try MR cunning.'
                 });

@@ -30,7 +30,7 @@ exports.isPasswordAndUserMatch = (req, res, next) => {
     UserModel.findTbyEmail(req.body.email)
         .then((user)=>{
             if(!user[0]){
-                res.status(404).send({"error": true,
+                res.status(200).send({"error": true,
                     "message": 'No users found.'});
             }else{
                 let passwordFields = user[0].password.split('$');
@@ -46,7 +46,7 @@ exports.isPasswordAndUserMatch = (req, res, next) => {
                     };
                     return next();
                 } else {
-                    return res.status(403).send({"error": true,
+                    return res.status(200).send({"error": true,
                         "message": 'Invalid email or password.'});
                 }
             }
