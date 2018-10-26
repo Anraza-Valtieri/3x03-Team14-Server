@@ -254,83 +254,40 @@ exports.billConfirm = (req, res) => {
                     "error": true,
                     "message": 'No user.'
                 });
-            }
-            // CLIENT -> SERVER (pull details of those who accepted the split)
-            if (req.body.request === 0) {
-                UserModel.findTransFromWithType(jwtResult.phoneNo, 4).then((trans) => {
-                    if (trans != null) {
-                        var list = [];
-                        var amt = [];
-                        for (var i = 0; i < trans.length; i++) {
-                            list.push(trans.toId);
-                            amt.push(trans.amount);
-                            if (i === trans.length - 1) {
-                                return res.status(200).send({
-                                    "error": false,
-                                    "accepted": list,
-                                    "splitAmount": amt
-                                });
+            }else {
+                // CLIENT -> SERVER (pull details of those who accepted the split)
+                if (req.body.request === 0) {
+                    UserModel.findTransFromWithType(jwtResult.phoneNo, 4).then((trans) => {
+                        if (trans != null) {
+                            let list = [];
+                            let amt = [];
+                            for (let i = 0; i < trans.length; i++) {
+                                list.push(trans.toId);
+                                amt.push(trans.amount);
+                                if (i === trans.length - 1) {
+                                    return res.status(200).send({
+                                        "error": false,
+                                        "accepted": list,
+                                        "splitAmount": amt
+                                    });
+                                }
                             }
-                        }
-                        return res.status(200).send({
-                            "error": false,
-                            "message": 'Not enough in balance to make payment.'
-                        });
-                    }
-                })
-            }
-            // CLIENT -> SERVER (cancel payment)
-            if (req.body.request === 2){
-                console.log("CLIENT -> SERVER (cancel payment)");
-                UserModel.findTransFromWithType(jwtResult.phoneNo, 4).then((trans) => {
-                    if (trans != null) {
-                        let newAmt = Number(jwtResult.balanceAmount) + Number(trans.amount);
-                        UserModel.patchUser(jwtResult.id, {balanceAmount: newAmt})
-                            .then(() => {
-                                UserModel.patchTransaction(trans._id, {type: 7});
-                                UserModel.Pending.remove({"fromId": jwtResult.id, "type": 8}, (err) => {
-                                    if (err) {
-                                        console.error("SOMETHING WENT WRONG WHEN DELETING a type 8!");
-                                        return res.status(200).send({
-                                            "error": true,
-                                            "message": 'SOMETHING WENT WRONG WHEN DELETING a type 8!'
-                                        });
-                                    } else {
-                                        console.log("Deleted a type 8!");
-                                        UserModel.Pending.remove({"fromId": jwtResult.id, "type": 0}, (err2) => {
-                                            if(err2){
-                                                console.error("SOMETHING WENT WRON WHEN DELETING a type 0!");
-                                                return res.status(200).send({
-                                                    "error": true,
-                                                    "message": 'SOMETHING WENT WRONG WHEN DELETING a type 0!'
-                                                });
-                                            }else{
-                                                console.log("Transaction success!");
-                                                return res.status(200).send({
-                                                    "error": false
-                                                });
-                                            }
-                                        });
-                                    }
-                                });
+                            return res.status(200).send({
+                                "error": false,
+                                "message": 'Not enough in balance to make payment.'
                             });
-                    }
-                });
-            }
-            // CLIENT -> SERVER (proceed to pay merchant)
-            if (req.body.request === 1) {
-                console.log("CLIENT -> SERVER (proceed to pay merchant)");
-                UserModel.findTransFromWithType(jwtResult.phoneNo, 4).then((trans) => {
-                    if (trans != null) {
-                        console.log(jwtResult.phoneNo + " " + 4 + " : " + trans);
-                        UserModel.findTransFromWithType(jwtResult.phoneNo, 8).then((trans2) => {
-                            console.log(jwtResult.phoneNo + " " + 8 + " : " + trans2);
-                            UserModel.patchTransaction(trans._id, {type: 6});
-                            console.log("Setting " + trans._id + " as type 6");
-                            let deductedAmt = Number(jwtResult.balanceAmount) - Number(trans2.amount);
-                            UserModel.patchUser(jwtResult.id, {balanceAmount: deductedAmt})
+                        }
+                    })
+                }
+                // CLIENT -> SERVER (cancel payment)
+                if (req.body.request === 2) {
+                    console.log("CLIENT -> SERVER (cancel payment)");
+                    UserModel.findTransFromWithType(jwtResult.phoneNo, 4).then((trans) => {
+                        if (trans != null) {
+                            let newAmt = Number(jwtResult.balanceAmount) + Number(trans.amount);
+                            UserModel.patchUser(jwtResult.id, {balanceAmount: newAmt})
                                 .then(() => {
-                                    console.log("Deducted " + trans2.amount + " from " + jwtResult.phoneNo);
+                                    UserModel.patchTransaction(trans._id, {type: 7});
                                     UserModel.Pending.remove({"fromId": jwtResult.id, "type": 8}, (err) => {
                                         if (err) {
                                             console.error("SOMETHING WENT WRONG WHEN DELETING a type 8!");
@@ -341,13 +298,13 @@ exports.billConfirm = (req, res) => {
                                         } else {
                                             console.log("Deleted a type 8!");
                                             UserModel.Pending.remove({"fromId": jwtResult.id, "type": 0}, (err2) => {
-                                                if(err2){
+                                                if (err2) {
                                                     console.error("SOMETHING WENT WRON WHEN DELETING a type 0!");
                                                     return res.status(200).send({
                                                         "error": true,
                                                         "message": 'SOMETHING WENT WRONG WHEN DELETING a type 0!'
                                                     });
-                                                }else{
+                                                } else {
                                                     console.log("Transaction success!");
                                                     return res.status(200).send({
                                                         "error": false
@@ -357,9 +314,56 @@ exports.billConfirm = (req, res) => {
                                         }
                                     });
                                 });
-                        });
-                    }
-                })
+                        }
+                    });
+                }
+                // CLIENT -> SERVER (proceed to pay merchant)
+                if (req.body.request === 1) {
+                    console.log("CLIENT -> SERVER (proceed to pay merchant)");
+                    UserModel.findTransFromWithType(jwtResult.phoneNo, 4).then((trans) => {
+                        if (trans != null) {
+                            console.log(jwtResult.phoneNo + " " + 4 + " : " + trans);
+                            UserModel.findTransFromWithType(jwtResult.phoneNo, 8).then((trans2) => {
+                                console.log(jwtResult.phoneNo + " " + 8 + " : " + trans2);
+                                UserModel.patchTransaction(trans._id, {type: 6});
+                                console.log("Setting " + trans._id + " as type 6");
+                                let deductedAmt = Number(jwtResult.balanceAmount) - Number(trans2.amount);
+                                UserModel.patchUser(jwtResult.id, {balanceAmount: deductedAmt})
+                                    .then(() => {
+                                        console.log("Deducted " + trans2.amount + " from " + jwtResult.phoneNo);
+                                        UserModel.Pending.remove({"fromId": jwtResult.id, "type": 8}, (err) => {
+                                            if (err) {
+                                                console.error("SOMETHING WENT WRONG WHEN DELETING a type 8!");
+                                                return res.status(200).send({
+                                                    "error": true,
+                                                    "message": 'SOMETHING WENT WRONG WHEN DELETING a type 8!'
+                                                });
+                                            } else {
+                                                console.log("Deleted a type 8!");
+                                                UserModel.Pending.remove({
+                                                    "fromId": jwtResult.id,
+                                                    "type": 0
+                                                }, (err2) => {
+                                                    if (err2) {
+                                                        console.error("SOMETHING WENT WRON WHEN DELETING a type 0!");
+                                                        return res.status(200).send({
+                                                            "error": true,
+                                                            "message": 'SOMETHING WENT WRONG WHEN DELETING a type 0!'
+                                                        });
+                                                    } else {
+                                                        console.log("Transaction success!");
+                                                        return res.status(200).send({
+                                                            "error": false
+                                                        });
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    });
+                            });
+                        }
+                    })
+                }
             }
         });
     }
