@@ -588,9 +588,11 @@ exports.rewards = (req, res) => {
                         });
                     } else {
                         let totalAmt = Number(jwtResult.balanceAmount) + Number(prices[req.body.reward][0]);
+                        console.log("totalAmt: "+ totalAmt + " balanceAmount: "+ jwtResult.balanceAmount +" cost: " + prices[req.body.reward][0]);
                         UserModel.patchUser(jwtResult.id, {balanceAmount: totalAmt});
                         let totalPoints = Number(jwtResult.points) - Number(prices[req.body.reward][1]);
-                        UserModel.patchUser(jwtResult.id, {balanceAmount: totalPoints});
+                        console.log("Totalpoints: "+ totalPoints+ " points: "+ jwtResult.points +" cost: " + prices[req.body.reward][1]);
+                        UserModel.patchUser(jwtResult.id, {points: totalPoints});
                         res.status(200).send({
                             "error": false,
                             "message": 'Successful.'
