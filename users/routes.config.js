@@ -8,9 +8,13 @@ const ADV = config.permissionLevels.ADVANCED_USER;
 const FREE = config.permissionLevels.NORMAL_USER;
 
 exports.routesConfig = function (app) {
+    app.get('/', function(req, res) {
+        res.writeHead(200, {"Content-Type": "text/plain"});
+        res.end("The hunt is on.. - Anraza-Valtieri\n");
+    });
+
     app.get('/.well-known/acme-challenge/llM7LhDy0hEh2qeffEBFSUWubJa197t6FTiDZxOin98', function(req, res) {
         res.sendFile(__dirname+'/llM7LhDy0hEh2qeffEBFSUWubJa197t6FTiDZxOin98');
-
     });
     app.post('/bank', [
         // UsersController.insert
