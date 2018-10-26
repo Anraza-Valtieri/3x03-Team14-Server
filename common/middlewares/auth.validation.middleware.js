@@ -38,7 +38,7 @@ exports.validJWTNeeded = (req, res, next) => {
                         console.error("JWT invalid");
                         return res.status(403).send(err);
                     }else{
-                        if (req.headers['User-Agent'].contains("Dalvik/")) {
+                        if (req.headers['user-agent'].contains("Dalvik/")) {
                             req.jwt = jwt.verify(authorization[1], secret);
                             return next();
                         }else{
