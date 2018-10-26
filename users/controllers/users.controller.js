@@ -103,7 +103,7 @@ exports.getBankDetails = (req, res) => {
     console.log(req.body.email + " Requesting details");
     console.log("JWT for "+req.body.email +" " + req.jwt.email);
     if(req.jwt.email !== req.body.email)
-        return res.status(200).send({
+        return res.status(403).send({
             "error": true,
             "message": 'Nice try MR cunning.'
         });
@@ -153,7 +153,7 @@ exports.pullPending = (req, res) => {
                 });
             } else {
                 if (req.body.phone.toString() !== result.phoneNo.toString()) {
-                    return res.status(200).send({
+                    return res.status(403).send({
                         "error": true,
                         "message": 'Nice try MR cunning.'
                     });
@@ -187,7 +187,7 @@ exports.pullOthers = (req, res) => {
                 });
             } else {
                 if (req.body.phone.toString() !== result.phoneNo.toString()) {
-                    return res.status(200).send({
+                    return res.status(403).send({
                         "error": true,
                         "message": 'Nice try MR cunning.'
                     });
@@ -262,7 +262,7 @@ exports.billConfirm = (req, res) => {
             }
             if (req.body.phone.toString() !== jwtResult.phoneNo.toString()) {
                 console.error(req.body.phone + " " + jwtResult.phoneNo);
-                return res.status(200).send({
+                return res.status(403).send({
                     "error": true,
                     "message": 'Nice try MR cunning.'
                 });
@@ -392,7 +392,7 @@ exports.payment = (req, res) => {
             }
             if (req.body.phone.toString() !== jwtResult.phoneNo.toString()) {
                 console.error(req.body.phone + " " + jwtResult.phoneNo);
-                return res.status(200).send({
+                return res.status(403).send({
                     "error": true,
                     "message": 'Nice try MR cunning.'
                 });
@@ -502,7 +502,7 @@ exports.pay = (req, res) => {
             }
             if (req.body.payer.toString() !== jwtResult.phoneNo.toString()) {
                 console.log(req.body.payer + " " + jwtResult.phoneNo);
-                return res.status(200).send({
+                return res.status(403).send({
                     "error": true,
                     "message": 'Nice try MR cunning.'
                 });
@@ -920,7 +920,7 @@ exports.request = (req, res) => {
 
             if (req.body.requester.toString() !== jwtResult.phoneNo.toString()) {
                 console.log(req.body.payer + " " + jwtResult.phoneNo);
-                return res.status(200).send({
+                return res.status(403).send({
                     "error": true,
                     "message": 'Nice try MR cunning.'
                 });

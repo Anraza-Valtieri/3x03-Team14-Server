@@ -36,7 +36,7 @@ exports.validJWTNeeded = (req, res, next) => {
                 jwt.verify(authorization[1], secret, function (err, decoded) {
                     if (err) {
                         console.error("JWT invalid");
-                        return res.status(200).send(err);
+                        return res.status(403).send(err);
                     }else{
                         req.jwt = jwt.verify(authorization[1], secret);
                         return next();
@@ -44,13 +44,13 @@ exports.validJWTNeeded = (req, res, next) => {
                 });
             }
         } catch (err) {
-            return res.status(200).send({
+            return res.status(403).send({
                 "error": true,
                 "message": 'Token provided has errors.'
             });
         }
     } else {
-        return res.status(200).send({
+        return res.status(403).send({
             "error": true,
             "message": 'No token provided.'
         });
