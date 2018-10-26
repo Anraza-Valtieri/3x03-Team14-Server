@@ -202,19 +202,17 @@ exports.pullOthers = (req, res) => {
                         } else {
                             UserModel.findOtherTransFromToClear(result.phoneNo)
                                 .then((result3) => {
-                                    if (!result3 || result3 == null) {
-                                        
-                                    }else{
+                                    if (result3 || result3 !== null) {
                                         for(let i = 0; i < result3.length; i++){
                                             console.log("Setting "+result3[i]._id +" as read true");
                                             UserModel.patchTransaction(result3[i]._id, {read: true});
                                         }
                                     }
+                                    return res.status(200).send({
+                                        "error": false,
+                                        "pending": result2
+                                    });
                                 });
-                            res.status(200).send({
-                                "error": false,
-                                "pending": result2
-                            });
                         }
                     });
             }
