@@ -15,15 +15,43 @@ var async = require("async");
 
 exports.insert = (req, res) => {
     let salt = crypto.randomBytes(16).toString('base64');
+
+    if(/^([a-zA-Z]+([ /]?[a-zA-Z]+)*)+S/.test(req.body.firstName) === false){
+        console.log("CANNOT firstName pattern does not match pattern " + req.body.firstName);
+        res.status(200).send({error: true, message: "firstName fail"});
+    }
+
+    if(/^([a-zA-Z]+([ /]?[a-zA-Z]+)*)+S/.test(req.body.lastName) === false){
+        console.log("CANNOT lastName pattern does not match pattern " + req.body.lastName);
+        res.status(200).send({error: true, message: "lastName fail"});
+    }
+
+    if(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,6}$/.test(req.body.email) === false){
+        console.log("CANNOT email pattern does not match pattern " + req.body.email);
+        res.status(200).send({error: true, message: "email fail"});
+    }
+    if(/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[-!$%^&*()_+|~=`{}\[\]:";'<>?,.\/]).{8,50}$/.test(req.body.password) === false){
+        console.log("CANNOT Password pattern does not match pattern " + req.body.phoneNo);
+        res.status(200).send({error: true, message: "Password fail"});
+    }
+
+    if(/^([89][0-9]{7})$/.test(req.body.phoneNo) === false){
+        console.log("CANNOT Phone does not match pattern " + req.body.phoneNo);
+        res.status(200).send({error: true, message: "phone fail"});
+        return 0;
+    }
+
+    req.body.email = req.body.email.toLowerCase();
+
     let hash = crypto.createHmac('sha512', salt).update(req.body.password).digest("base64");
     req.body.password = salt + "$" + hash;
     req.body.permissionLevel = 1;
     UserModel.createUser(req.body)
         .then((result) => {
-            if(!result || result === 0){res.status(400).send({"error": true,
+            if(!result || result === 0){res.status(200).send({"error": true,
                 "message": 'Number already exist!'});}
             else{
-                res.status(201).send({id: result._id});
+                res.status(200).send({"error": false, id: result._id});
             }
         });
 };
