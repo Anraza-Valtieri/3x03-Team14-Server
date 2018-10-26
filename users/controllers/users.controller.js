@@ -258,6 +258,7 @@ exports.billConfirm = (req, res) => {
                 // CLIENT -> SERVER (pull details of those who accepted the split)
                 console.log("req.body.request: "+ req.body.request);
                 if (req.body.request === "0") {
+                    console.log("In Zero");
                     UserModel.findTransFromWithType(jwtResult.phoneNo, 4).then((trans) => {
                         if (trans != null) {
                             let list = [];
@@ -282,6 +283,7 @@ exports.billConfirm = (req, res) => {
                 }
                 // CLIENT -> SERVER (cancel payment)
                 if (req.body.request === "2") {
+                    console.log("In Two");
                     console.log("CLIENT -> SERVER (cancel payment)");
                     UserModel.findTransFromWithType(jwtResult.phoneNo, 4).then((trans) => {
                         if (trans != null) {
@@ -320,6 +322,7 @@ exports.billConfirm = (req, res) => {
                 }
                 // CLIENT -> SERVER (proceed to pay merchant)
                 if (req.body.request === "1") {
+                    console.log("In One");
                     console.log("CLIENT -> SERVER (proceed to pay merchant)");
                     UserModel.findTransFromWithType(jwtResult.phoneNo, 4).then((trans) => {
                         if (trans != null) {
