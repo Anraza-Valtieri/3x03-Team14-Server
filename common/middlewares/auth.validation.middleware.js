@@ -38,16 +38,8 @@ exports.validJWTNeeded = (req, res, next) => {
                         console.error("JWT invalid");
                         return res.status(403).send(err);
                     }else{
-                        if (req.headers['User-Agent'].contains("Dalvik/")) {
-                            req.jwt = jwt.verify(authorization[1], secret);
-                            return next();
-                        }else{
-                            console.error("Client invalid");
-                            return res.status(401).send({
-                                "error": true,
-                                "message": 'Wrong client.'
-                            });
-                        }
+                        req.jwt = jwt.verify(authorization[1], secret);
+                        return next();
                     }
                 });
             }
