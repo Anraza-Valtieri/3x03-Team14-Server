@@ -714,7 +714,7 @@ exports.payMerchant = (req, res) => {
                                 let sum = req.body.splitAmount.reduce((a, b) => Number(a) + Number(b), 0);
                                 console.log("SUM: " +sum); // blueberries
                                 if (parseFloat(sum) === parseFloat(detail.cost)) {
-                                    if (jwtResult.balanceAmount > sum){
+                                    if (Number(jwtResult.balanceAmount) > Number(sum)){
                                         let transArray = [];
                                         console.log("jwtResult.balanceAmount > sum");
                                         if (req.body.splitBetween.includes(jwtResult.phoneNo.toString())){
