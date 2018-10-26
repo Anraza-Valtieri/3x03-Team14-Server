@@ -18,27 +18,26 @@ exports.insert = (req, res) => {
 
     if(/^([a-zA-Z]+([ /]?[a-zA-Z]+)*)+S/.test(req.body.firstName) === false){
         console.log("CANNOT firstName pattern does not match pattern " + req.body.firstName);
-        res.status(200).send({error: true, message: "firstName fail"});
+        return res.status(200).send({error: true, message: "firstName fail"});
     }
 
     if(/^([a-zA-Z]+([ /]?[a-zA-Z]+)*)+S/.test(req.body.lastName) === false){
         console.log("CANNOT lastName pattern does not match pattern " + req.body.lastName);
-        res.status(200).send({error: true, message: "lastName fail"});
+        return res.status(200).send({error: true, message: "lastName fail"});
     }
 
     if(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,6}$/.test(req.body.email) === false){
         console.log("CANNOT email pattern does not match pattern " + req.body.email);
-        res.status(200).send({error: true, message: "email fail"});
+        return res.status(200).send({error: true, message: "email fail"});
     }
     if(/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[-!$%^&*()_+|~=`{}\[\]:";'<>?,.\/]).{8,50}$/.test(req.body.password) === false){
         console.log("CANNOT Password pattern does not match pattern " + req.body.phoneNo);
-        res.status(200).send({error: true, message: "Password fail"});
+        return res.status(200).send({error: true, message: "Password fail"});
     }
 
     if(/^([89][0-9]{7})$/.test(req.body.phoneNo) === false){
         console.log("CANNOT Phone does not match pattern " + req.body.phoneNo);
-        res.status(200).send({error: true, message: "phone fail"});
-        return 0;
+        return res.status(200).send({error: true, message: "phone fail"});
     }
 
     req.body.email = req.body.email.toLowerCase();
