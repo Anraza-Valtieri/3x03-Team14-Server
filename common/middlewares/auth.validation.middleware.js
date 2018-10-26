@@ -24,7 +24,7 @@ exports.validRefreshNeeded = (req, res, next) => {
 
 
 exports.validJWTNeeded = (req, res, next) => {
-    if (req.headers['user-agent'].toString().contains("Dalvik") && req.headers['user-agent'].toString().contains("Android")) {
+    // if (req.headers['user-agent'].toString().contains("Dalvik") && req.headers['user-agent'].toString().contains("Android")) {
         if (req.headers['authorization']) {
             try {
                 let authorization = req.headers['authorization'].split(' ');
@@ -56,10 +56,11 @@ exports.validJWTNeeded = (req, res, next) => {
                 "message": 'No token provided.'
             });
         }
-    }else{
-        return res.status(401).send({
-            "error": true,
-            "message": 'Auth error.'
-        });
-    }
+    // }
+    // else{
+    //     return res.status(401).send({
+    //         "error": true,
+    //         "message": 'Auth error.'
+    //     });
+    // }
 };
