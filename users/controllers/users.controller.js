@@ -263,17 +263,30 @@ exports.billConfirm = (req, res) => {
                         let list = [];
                         let amt = [];
                         if (trans != null) {
-                            for (let i = 0; i < trans.length; i++) {
+                            async.every(trans, function(filePath, callback) {
+                                // fs.access(filePath, function(err) {
                                 list.push(trans.toId);
                                 amt.push(trans.amount);
-                                if (i === trans.length - 1) {
-                                    return res.status(200).send({
-                                        "error": false,
-                                        "accepted": list,
-                                        "splitAmount": amt
-                                    });
-                                }
-                            }
+                                callback()
+                                // });
+                            }, function(err, result) {
+                                return res.status(200).send({
+                                    "error": false,
+                                    "accepted": list,
+                                    "splitAmount": amt
+                                });
+                            });
+                            // for (let i = 0; i < trans.length; i++) {
+                            //     list.push(trans.toId);
+                            //     amt.push(trans.amount);
+                            //     if (i === trans.length - 1) {
+                            //         return res.status(200).send({
+                            //             "error": false,
+                            //             "accepted": list,
+                            //             "splitAmount": amt
+                            //         });
+                            //     }
+                            // }
 
                         }else{
                             return res.status(200).send({
@@ -729,7 +742,6 @@ exports.payMerchant = (req, res) => {
                         console.log("DETAILS: " +detail); // blueberries
                         let LINQ = require('node-linq').LINQ;
                         if(req.body.splitBetween != null && req.body.splitBetween.length > 0) {
-
                             if(req.body.splitAmount != null && req.body.splitAmount.length > 0) {
                                 let sum = req.body.splitAmount.reduce((a, b) => Number(a) + Number(b), 0);
                                 console.log("SUM: " +sum); // blueberries
@@ -769,8 +781,9 @@ exports.payMerchant = (req, res) => {
                                                             jwtResult.phoneNo, sum, 8, detail.name);
                                                         let transArray2 = [];
                                                         let createTrans = new LINQ(req.body.splitBetween).Any(function (row2) {
+                                                            let costperpax = Number(sum)/(Number(req.body.splitBetween.length)+1);
                                                             var results = UserModel.createTransaction(row2,
-                                                                jwtResult.phoneNo,  Number(sum)/Number(req.body.splitBetween.length), 1, detail.name);
+                                                                jwtResult.phoneNo, costperpax , 1, detail.name);
                                                             transArray2.push(results);
                                                         });
                                                         return res.status(200).send({
