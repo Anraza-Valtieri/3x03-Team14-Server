@@ -713,81 +713,94 @@ exports.payMerchant = (req, res) => {
                     let detail = ArrShop.find(p=>p.identifier===req.body.qrString);
                     if (detail !== undefined){
                         console.log("DETAILS: " +detail); // blueberries
-                        let LINQ = require('node-linq').LINQ;
-                        if(req.body.splitBetween != null && req.body.splitBetween.length > 0) {
-                            if(req.body.splitAmount != null && req.body.splitAmount.length > 0) {
-                                let sum = req.body.splitAmount.reduce((a, b) => Number(a) + Number(b), 0);
-                                console.log("SUM: " +sum); // blueberries
-                                if (parseFloat(sum) === parseFloat(detail.cost)) {
-                                    req.body.splitAmount.pop();
-                                    if (Number(jwtResult.balanceAmount) > Number(sum)){
-                                        let transArray = [];
-                                        console.log("jwtResult.balanceAmount > sum");
-                                        if (req.body.splitBetween.includes(jwtResult.phoneNo.toString())){
-                                            console.log("req.body.splitBetween.includes(jwtResult.phoneNo.toString() TRUE");
-                                            return res.status(200).send({
-                                                "error": true,
-                                                "message": 'You cannot have your own number in request.'
-                                            });
-                                        }else {
-                                            console.log("req.body.splitBetween.includes(jwtResult.phoneNo.toString() FALSE");
-                                            for (let z = 0; z < req.body.splitBetween.length; z++) {
-                                                console.log(z);
-                                                UserModel.findByPhone(req.body.splitBetween[z]).then((result) => {
-                                                    if (result == null) {
-                                                        console.log("We are missing this number " + req.body.splitBetween[z]);
-                                                        transArray.push(req.body.splitBetween[z]);
-                                                        // callback();
-                                                    }
-                                                });
-                                                if (z === req.body.splitBetween.length - 1) {
-                                                    console.log("Z-1");
-                                                    if (transArray.length > 0) {
-                                                        return res.status(200).send({
-                                                            "error": true,
-                                                            "message": 'Some phone numbers does not exist.',
-                                                            "numbers": transArray
-                                                        });
-                                                    } else {
-                                                        console.log("Checking transaction 8s");
-                                                        var results = UserModel.createTransaction(jwtResult.phoneNo,
-                                                            jwtResult.phoneNo, sum, 8, detail.name);
-                                                        let transArray2 = [];
-                                                        let createTrans = new LINQ(req.body.splitBetween).Any(function (row2) {
-                                                            var results = UserModel.createTransaction(row2,
-                                                                jwtResult.phoneNo, req.body.splitAmount[0], 1, detail.name);
-                                                            transArray2.push(results);
-                                                        });
-                                                        return res.status(200).send({
-                                                            "error": false
-                                                        });
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }else{
-                                        return res.status(200).send({
-                                            "error": true,
-                                            "message": "You do not have enough to cover the whole price!"
-                                        });
-                                    }
-                                }else{
-                                    return res.status(200).send({
-                                        "error": true,
-                                        "message": "Total amount is invalid!"
-                                    });
-                                }
-                            } else{
+                        let counts = [];
+                        for(let i = 0; i <= a.length; i++) {
+                            if(counts[a[i]] === undefined) {
+                                counts[a[i]] = 1;
+                            } else {
                                 return res.status(200).send({
                                     "error": true,
-                                    "message": 'Split amount error'
+                                    "message": 'Multiple same numbers.'
                                 });
                             }
-                        } else {
-                            return res.status(200).send({
-                                "error": true,
-                                "message": 'Split between error'
-                            });
+                            if (i === a.length-1){
+                                if(req.body.splitBetween != null && req.body.splitBetween.length > 0) {
+                                    if(req.body.splitAmount != null && req.body.splitAmount.length > 0) {
+                                        let sum = req.body.splitAmount.reduce((a, b) => Number(a) + Number(b), 0);
+                                        console.log("SUM: " +sum); // blueberries
+                                        if (parseFloat(sum) === parseFloat(detail.cost)) {
+                                            req.body.splitAmount.pop();
+                                            if (Number(jwtResult.balanceAmount) > Number(sum)){
+                                                let transArray = [];
+                                                console.log("jwtResult.balanceAmount > sum");
+                                                if (req.body.splitBetween.includes(jwtResult.phoneNo.toString())){
+                                                    console.log("req.body.splitBetween.includes(jwtResult.phoneNo.toString() TRUE");
+                                                    return res.status(200).send({
+                                                        "error": true,
+                                                        "message": 'You cannot have your own number in request.'
+                                                    });
+                                                }else {
+                                                    console.log("req.body.splitBetween.includes(jwtResult.phoneNo.toString() FALSE");
+                                                    for (let z = 0; z < req.body.splitBetween.length; z++) {
+                                                        console.log(z);
+                                                        UserModel.findByPhone(req.body.splitBetween[z]).then((result) => {
+                                                            if (result == null) {
+                                                                console.log("We are missing this number " + req.body.splitBetween[z]);
+                                                                transArray.push(req.body.splitBetween[z]);
+                                                                // callback();
+                                                            }
+                                                        });
+                                                        if (z === req.body.splitBetween.length - 1) {
+                                                            console.log("Z-1");
+                                                            if (transArray.length > 0) {
+                                                                return res.status(200).send({
+                                                                    "error": true,
+                                                                    "message": 'Some phone numbers does not exist.',
+                                                                    "numbers": transArray
+                                                                });
+                                                            } else {
+                                                                console.log("Checking transaction 8s");
+                                                                var results = UserModel.createTransaction(jwtResult.phoneNo,
+                                                                    jwtResult.phoneNo, sum, 8, detail.name);
+                                                                let transArray2 = [];
+                                                                let LINQ = require('node-linq').LINQ;
+                                                                let createTrans = new LINQ(req.body.splitBetween).Any(function (row2) {
+                                                                    var results = UserModel.createTransaction(row2,
+                                                                        jwtResult.phoneNo, req.body.splitAmount[0], 1, detail.name);
+                                                                    transArray2.push(results);
+                                                                });
+                                                                return res.status(200).send({
+                                                                    "error": false
+                                                                });
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }else{
+                                                return res.status(200).send({
+                                                    "error": true,
+                                                    "message": "You do not have enough to cover the whole price!"
+                                                });
+                                            }
+                                        }else{
+                                            return res.status(200).send({
+                                                "error": true,
+                                                "message": "Total amount is invalid!"
+                                            });
+                                        }
+                                    } else{
+                                        return res.status(200).send({
+                                            "error": true,
+                                            "message": 'Split amount error'
+                                        });
+                                    }
+                                } else {
+                                    return res.status(200).send({
+                                        "error": true,
+                                        "message": 'Split between error'
+                                    });
+                                }
+                            }
                         }
                     }
                 }
