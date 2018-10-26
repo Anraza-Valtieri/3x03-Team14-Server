@@ -255,13 +255,6 @@ exports.billConfirm = (req, res) => {
                     "message": 'No user.'
                 });
             }
-            if (req.body.phone.toString() !== jwtResult.phoneNo.toString()) {
-                console.error(req.body.phone + " " + jwtResult.phoneNo);
-                return res.status(403).send({
-                    "error": true,
-                    "message": 'Nice try MR cunning.'
-                });
-            }
             // CLIENT -> SERVER (pull details of those who accepted the split)
             if (req.body.request === 0) {
                 UserModel.findTransFromWithType(jwtResult.phoneNo, 4).then((trans) => {
@@ -715,6 +708,7 @@ exports.payMerchant = (req, res) => {
                         console.log("DETAILS: " +detail); // blueberries
                         let LINQ = require('node-linq').LINQ;
                         if(req.body.splitBetween != null && req.body.splitBetween.length > 0) {
+
                             if(req.body.splitAmount != null && req.body.splitAmount.length > 0) {
                                 let sum = req.body.splitAmount.reduce((a, b) => Number(a) + Number(b), 0);
                                 console.log("SUM: " +sum); // blueberries
