@@ -43,12 +43,12 @@ app.set('port', process.env.PORT || 3000);
 // app.set('host', process.env.HOST || '0.0.0.0');
 app.set('host', process.env.HOST || '0.0.0.0');
 
-// var httpServer = http.createServer(app);
-var httpsServer = https.createServer(options, app);
+var httpServer = http.createServer(app);
+// var httpsServer = https.createServer(options, app);
 
 // For http
-// httpServer.listen(8080);
+httpServer.listen(80);
 // For https
-httpsServer.listen(app.get('port'), app.get('host'), function(){
-    console.log("Express server listening on port " + app.get('port'));
-});
+// httpsServer.listen(app.get('port'), app.get('host'), function(){
+//     console.log("Express server listening on port " + app.get('port'));
+// });
