@@ -252,7 +252,7 @@ exports.topUp = (req, res) => {
     }
 };
 exports.billConfirm = (req, res) => {
-    if (req.body.objectId != null && req.body.request != null) {
+    if (req.body.fromId != null && req.body.request != null) {
         UserModel.findTbyEmail2(req.jwt.email).then((jwtResult) => {
             if (!jwtResult || jwtResult == null) {
                 res.status(200).send({
