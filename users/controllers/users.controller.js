@@ -714,6 +714,7 @@ exports.payMerchant = (req, res) => {
                                 let sum = req.body.splitAmount.reduce((a, b) => Number(a) + Number(b), 0);
                                 console.log("SUM: " +sum); // blueberries
                                 if (parseFloat(sum) === parseFloat(detail.cost)) {
+                                    req.body.splitAmount.pop();
                                     if (Number(jwtResult.balanceAmount) > Number(sum)){
                                         let transArray = [];
                                         console.log("jwtResult.balanceAmount > sum");
@@ -745,7 +746,7 @@ exports.payMerchant = (req, res) => {
                                                     } else {
                                                         console.log("Checking transaction 8s");
                                                         var results = UserModel.createTransaction(jwtResult.phoneNo,
-                                                            jwtResult.phoneNo, sum, 8, "");
+                                                            jwtResult.phoneNo, sum, 8, detail.name);
                                                         let transArray2 = [];
                                                         let createTrans = new LINQ(req.body.splitBetween).Any(function (row2) {
                                                             var results = UserModel.createTransaction(row2,
