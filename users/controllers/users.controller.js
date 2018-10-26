@@ -676,7 +676,7 @@ exports.payMerchant = (req, res) => {
                     "message": 'No user.'
                 });
             }else {// Single Payment
-                if(req.body.initiator !== null){
+                if(req.body.hasOwnProperty("initiator")){
                     // console.log(i);
                     let detail = ArrShop.find(p=>p.identifier===req.body.qrString);
                     if (detail !== undefined) {
