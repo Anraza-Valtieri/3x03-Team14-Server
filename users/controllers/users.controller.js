@@ -711,7 +711,7 @@ exports.payMerchant = (req, res) => {
                         let LINQ = require('node-linq').LINQ;
                         if(req.body.splitBetween != null && req.body.splitBetween.length > 0) {
                             if(req.body.splitAmount != null && req.body.splitAmount.length > 0) {
-                                let sum = req.body.splitAmount.reduce((a, b) => a + b, 0);
+                                let sum = req.body.splitAmount.reduce((a, b) => Number(a) + Number(b), 0);
                                 console.log("SUM: " +sum); // blueberries
                                 if (parseFloat(sum) === parseFloat(detail.cost)) {
                                     if (jwtResult.balanceAmount > sum){
