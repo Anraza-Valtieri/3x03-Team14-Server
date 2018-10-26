@@ -13,10 +13,9 @@ app.use(helmet());
 const AuthorizationRouter = require('./authorization/routes.config');
 const UsersRouter = require('./users/routes.config');
 
-
 var options = {
-    key: fs.readFileSync('./keys/server-key.pem'),
-    cert: fs.readFileSync('./keys/server-cert.pem')
+    key: fs.readFileSync('./keys/OLD/server-key.pem'),
+    cert: fs.readFileSync('./keys/OLD/server-cert.pem')
 };
 
 app.use(morgan('combined'));
