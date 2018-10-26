@@ -8,7 +8,7 @@ const ADV = config.permissionLevels.ADVANCED_USER;
 const FREE = config.permissionLevels.NORMAL_USER;
 
 exports.routesConfig = function (app) {
-    app.get('/', function(req, res) {
+    app.get('/admin', function(req, res) {
         res.writeHead(200, {"Content-Type": "text/plain"});
         res.end("The hunt is on.. - Anraza-Valtieri\n");
     });
