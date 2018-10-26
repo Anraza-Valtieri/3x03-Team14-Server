@@ -704,13 +704,15 @@ exports.payMerchant = (req, res) => {
 
                     }
                 }else{ // SPLIT bill
+                    console.log("SPLIT BILL");
                     let detail = ArrShop.find(p=>p.identifier===req.body.qrString);
                     if (detail !== undefined){
-                        console.log(detail); // blueberries
+                        console.log("DETAILS: " +detail); // blueberries
                         let LINQ = require('node-linq').LINQ;
                         if(req.body.splitBetween != null && req.body.splitBetween.length > 0) {
                             if(req.body.splitAmount != null && req.body.splitAmount.length > 0) {
                                 let sum = req.body.splitAmount.reduce((a, b) => a + b, 0);
+                                console.log("SUM: " +sum); // blueberries
                                 if (parseFloat(sum) === parseFloat(detail.cost)) {
                                     if (jwtResult.balanceAmount > sum){
                                         let transArray = [];
@@ -769,7 +771,17 @@ exports.payMerchant = (req, res) => {
                                         "message": "Total amount is invalid!"
                                     });
                                 }
+                            } else{
+                                return res.status(200).send({
+                                    "error": true,
+                                    "message": 'Split amount error'
+                                });
                             }
+                        } else {
+                            return res.status(200).send({
+                                "error": true,
+                                "message": 'Split between error'
+                            });
                         }
                     }
 
