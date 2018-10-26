@@ -473,7 +473,7 @@ exports.payment = (req, res) => {
             // CLIENT -> SERVER (Reject splitting bills)
             if(req.body.request === 5) {
                 console.log("req.body.request === 5");
-                UserModel.findTransWithId(res.body.objectId).then((trans3) => {
+                UserModel.findTransWithId(req.body.objectId).then((trans3) => {
                     if (trans3 == null) {
                         return res.status(200).send({
                             error: "true",
