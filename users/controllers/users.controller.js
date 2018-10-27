@@ -383,7 +383,7 @@ exports.billConfirm = (req, res) => {
                                 console.log("Setting " + trans[i]._id + " as type 6");
                                 let deductedAmt = Number(jwtResult.balanceAmount) - Number(trans[i].amount);
                                 let pointsGained = parseFloat(trans[0].amount) / 5;
-                                pointsGained = Math.round(pointsGained);
+                                pointsGained = Math.round(pointsGained).toFixed(0);
                                 let totalPoints = Number(jwtResult.points) - Number(pointsGained);
                                 UserModel.patchUser(jwtResult.id, {balanceAmount: deductedAmt, points: totalPoints});
                             }
@@ -771,12 +771,12 @@ exports.payMerchant = (req, res) => {
                             let totalAmt = parseFloat(Number(jwtResult.balanceAmount).toFixed(2)) - parseFloat(detail.cost.toFixed(2));
                             UserModel.patchUser(jwtResult.id, {balanceAmount: totalAmt});
                             let pointsGained = parseFloat(detail.cost)/5;
-                            pointsGained = Math.round(pointsGained);
+                            pointsGained = Math.round(pointsGained).toFixed(0);
                             // pointsGained = Number(pointsGained).toFixed();
                             console.log("pointsGained: "+pointsGained);
                             let totalPoints = Number(jwtResult.points) + pointsGained;
                             console.log("totalPoints: "+ totalPoints +" points: "+jwtResult.points +" pointsGained: "+pointsGained);
-                            totalPoints = Math.round(totalPoints);
+                            totalPoints = Math.round(totalPoints).toFixed(0);
                             UserModel.patchUser(jwtResult.id, {points: totalPoints});
                             return res.status(200).send({
                                 "error": false
