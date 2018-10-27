@@ -369,7 +369,7 @@ exports.billConfirm = (req, res) => {
                         console.log("PAY MERCH " + trans);
                         if (trans != null) {
                             for (var i = 0; i < trans.length; i++) {
-                                UserModel.patchTransaction(trans[i]._id, {type: 6});
+                                UserModel.patchTransaction(trans[i]._id, {type: 6, read: false});
                                 console.log("Setting " + trans[i]._id + " as type 6");
                                 let deductedAmt = Number(jwtResult.balanceAmount) - Number(trans[i].amount);
                                 let pointsGained = parseFloat(trans[0].amount) / 5;
