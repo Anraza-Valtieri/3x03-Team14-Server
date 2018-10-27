@@ -117,7 +117,8 @@ exports.getBankDetails = (req, res) => {
                 console.log(result.firstName +" "+ result.lastName + " Requesting details");
                 UserModel.findTransFromWithType(req.jwt.phoneNo, 8).then((trans) => {
                     if (trans != null) {
-                        res.status(200).send({
+                        console.log(trans);
+                        return res.status(200).send({
                             firstName: result.firstName,
                             lastName: result.lastName,
                             email: result.email,
@@ -128,7 +129,8 @@ exports.getBankDetails = (req, res) => {
                             ongoingSplit: true
                         });
                     } else {
-                        res.status(200).send({
+                        console.log("No Type 8");
+                        return res.status(200).send({
                             firstName: result.firstName,
                             lastName: result.lastName,
                             email: result.email,
