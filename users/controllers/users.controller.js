@@ -267,13 +267,15 @@ exports.billConfirm = (req, res) => {
                     UserModel.findTransFromWithType(jwtResult.phoneNo, 4).then((trans) => {
                         let list = [];
                         let amt = [];
+                        UserModel.findTransFromWithType(jwtResult.phoneNo, 8).then((trans2) => {
                         if (trans != null) {
-                            console.log("Length: "+ trans.length);
+
+                            // console.log("Length: "+ trans.length);
                             let i = trans.length;
-                            console.log("i is : "+ i);
+                            // console.log("i is : "+ i);
                             while ( i != -1){
                                 i = i-1;
-                                console.log("i now : "+ i);
+                                // console.log("i now : "+ i);
                                 if(i != -1){
                                     console.log("Adding Accepted: "+ trans[i].toId +" splitAmount: "+ trans[i].amount);
                                     list.push(trans[i].toId);
@@ -284,7 +286,8 @@ exports.billConfirm = (req, res) => {
                                     return res.status(200).send({
                                         "error": false,
                                         "accepted": list,
-                                        "splitAmount": amt
+                                        "splitAmount": amt,
+                                        "receipt": trans2
                                     });
                                 }
                             }
@@ -311,6 +314,7 @@ exports.billConfirm = (req, res) => {
                                 "splitAmount": []
                             });
                         }
+                        });
                     });
                 }
                 // CLIENT -> SERVER (cancel payment)
@@ -363,7 +367,7 @@ exports.billConfirm = (req, res) => {
                     console.log("CLIENT -> SERVER (proceed to pay merchant)");
                     UserModel.findTransFromWithType(jwtResult.phoneNo, 4).then((trans) => {
                         console.log("PAY MERCH " + trans);
-                        let transId = trans.__id;
+                        let transId = trans._doc._id;
                         console.log(transId);
                         if (trans != null && transId != null) {
                             console.log(jwtResult.phoneNo + " " + 4 + " : " + trans);
