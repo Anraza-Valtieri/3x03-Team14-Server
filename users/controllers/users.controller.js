@@ -266,22 +266,38 @@ exports.billConfirm = (req, res) => {
                         let amt = [];
                         if (trans != null) {
                             console.log("Length: "+ trans.length);
-                            for (var i = trans.length; i > 0 ; i--) {
-                                console.log("NOW Length: "+ trans.length);
-                                if (i == 0) {
+                            let i = trans.length;
+                            while ( i != -1){
+                                console.log("trans: "+ trans);
+                                list.push(trans[i-1].toId);
+                                amt.push(trans[i-1].amount);
+                                console.log("Adding Accepted: "+ list +" splitAmount: "+ amt);
+                                i--;
+                                if( i == -1){
                                     console.log("Send Accepted: "+ list +" splitAmount: "+ amt);
                                     return res.status(200).send({
                                         "error": false,
                                         "accepted": list,
                                         "splitAmount": amt
                                     });
-                                }else{
-                                    console.log("trans: "+ trans);
-                                    list.push(trans[i-1].toId);
-                                    amt.push(trans[i-1].amount);
-                                    console.log("Adding Accepted: "+ list +" splitAmount: "+ amt);
                                 }
                             }
+                            // for (var i = trans.length; i > 0 ; i--) {
+                            //     console.log("NOW Length: "+ trans.length);
+                            //     if (i == 0) {
+                            //         console.log("Send Accepted: "+ list +" splitAmount: "+ amt);
+                            //         return res.status(200).send({
+                            //             "error": false,
+                            //             "accepted": list,
+                            //             "splitAmount": amt
+                            //         });
+                            //     }else{
+                            //         console.log("trans: "+ trans);
+                            //         list.push(trans[i-1].toId);
+                            //         amt.push(trans[i-1].amount);
+                            //         console.log("Adding Accepted: "+ list +" splitAmount: "+ amt);
+                            //     }
+                            // }
                         }else{
                             return res.status(200).send({
                                 "error": false,
