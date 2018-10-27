@@ -375,7 +375,7 @@ exports.billConfirm = (req, res) => {
                                 console.log(jwtResult.phoneNo + " " + 8 + " : " + trans2);
                                 UserModel.patchTransaction(transId, {type: 6});
                                 console.log("Setting " + transId + " as type 6");
-                                let deductedAmt = Number(jwtResult.balanceAmount) - Number(trans2.amount);
+                                let deductedAmt = Number(jwtResult.balanceAmount) - Number(trans2[0].amount);
                                 UserModel.patchUser(jwtResult.id, {balanceAmount: deductedAmt})
                                     .then(() => {
                                         console.log("Deducted " + trans2.amount + " from " + jwtResult.phoneNo);
