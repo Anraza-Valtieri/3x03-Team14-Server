@@ -277,8 +277,8 @@ exports.billConfirm = (req, res) => {
                                     });
                                 }else{
                                     console.log("trans: "+ trans);
-                                    list.push(trans[i].toId);
-                                    amt.push(trans[i].amount);
+                                    list.push(trans[i-1].toId);
+                                    amt.push(trans[i-1].amount);
                                     console.log("Adding Accepted: "+ list +" splitAmount: "+ amt);
                                 }
                             }
