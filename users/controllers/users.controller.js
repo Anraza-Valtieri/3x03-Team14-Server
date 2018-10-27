@@ -263,35 +263,19 @@ exports.billConfirm = (req, res) => {
                         let list = [];
                         let amt = [];
                         if (trans != null) {
-                            for (var numbers in trans) {
-                                // if(numbers.hasOwnProperty("toId"))
-                                list.push(numbers.toId);
-                                amt.push(numbers.amount);
+                            console.log(trans.length);
+                            for (var i = 0; i < trans.length; i++) {
+                                if (i === trans.length - 1) {
+                                    return res.status(200).send({
+                                        "error": false,
+                                        "accepted": list,
+                                        "splitAmount": amt
+                                    });
+                                }else{
+                                    list.push(trans.toId);
+                                    amt.push(trans.amount);
+                                }
                             }
-
-                            return res.status(200).send({
-                                "error": false,
-                                "accepted": list,
-                                "splitAmount": amt
-                            });
-                            // for (var i = 0; i < trans.length; i++) {
-                            //     list.push(trans.toId);
-                            //     amt.push(trans.amount);
-                            //     if (trans.length > 1 && i === trans.length - 1) {
-                            //         return res.status(200).send({
-                            //             "error": false,
-                            //             "accepted": list,
-                            //             "splitAmount": amt
-                            //         });
-                            //     }else{
-                            //         return res.status(200).send({
-                            //             "error": false,
-                            //             "accepted": trans.toId,
-                            //             "splitAmount": trans.amount
-                            //         });
-                            //     }
-                            // }
-
                         }else{
                             return res.status(200).send({
                                 "error": false,
