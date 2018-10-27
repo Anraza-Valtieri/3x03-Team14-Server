@@ -432,11 +432,6 @@ exports.billConfirm = (req, res) => {
                         //                 });
                         //             });
                     });
-                } else {
-                    return res.status(200).send({
-                        "error": true,
-                        "message": "No transactions"
-                    });
                 }
             }
         });
