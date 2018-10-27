@@ -272,7 +272,7 @@ exports.billConfirm = (req, res) => {
                                 i = i-1;
                                 console.log("i now : "+ i);
                                 if(i != -1){
-                                    console.log("Adding Accepted: "+ list +" splitAmount: "+ amt);
+                                    console.log("Adding Accepted: "+ trans[i].toId +" splitAmount: "+ trans[i].amount);
                                     list.push(trans[i].toId);
                                     amt.push(trans[i].amount);
                                 }
