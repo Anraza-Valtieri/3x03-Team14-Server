@@ -792,13 +792,20 @@ exports.payMerchant = (req, res) => {
                                                         console.log("Checking transaction 8s");
                                                         var results = UserModel.createTransaction(jwtResult.phoneNo,
                                                             jwtResult.phoneNo, sum, 8, detail.name);
-                                                        let transArray2 = [];
-                                                        let createTrans = new LINQ(req.body.splitBetween).Any(function (row2) {
-                                                            let costPerPax = Number(sum)/(Number(req.body.splitBetween.length)).toPrecision(2);
-                                                            var results = UserModel.createTransaction(row2,
-                                                                jwtResult.phoneNo, costPerPax , 1, detail.name);
-                                                            transArray2.push(results);
-                                                        });
+                                                        // let transArray2 = [];
+                                                        console.log("Splitbetween Length: "+req.body.splitBetween.length);
+                                                        // let createTrans = new LINQ(req.body.splitBetween).Any(function (row2) {
+                                                        //     let costPerPax = Number(sum)/(Number(req.body.splitBetween.length)).toPrecision(2);
+                                                        //     // let costPerPax = req.body.splitAmount[]
+                                                        //     var results = UserModel.createTransaction(row2,
+                                                        //         jwtResult.phoneNo, costPerPax , 1, detail.name);
+                                                        //     transArray2.push(results);
+                                                        // });
+
+                                                        for (var q = 0; q < req.body.splitBetween; q++){
+                                                            UserModel.createTransaction(req.body.splitBetween[q],
+                                                                jwtResult.phoneNo, req.body.splitAmount[q] , 1, detail.name);
+                                                        }
                                                         return res.status(200).send({
                                                             "error": false
                                                         });
