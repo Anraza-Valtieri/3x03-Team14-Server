@@ -267,11 +267,13 @@ exports.billConfirm = (req, res) => {
                         if (trans != null) {
                             console.log("Length: "+ trans.length);
                             let i = trans.length;
+                            console.log("i is : "+ i);
                             while ( i != -1){
-                                console.log("trans: "+ trans);
-                                i--;
-                                list.push(trans[i].toId);
-                                amt.push(trans[i].amount);
+                                console.log("i now : "+ i);
+                                if(i != -1){
+                                    list.push(trans[i].toId);
+                                    amt.push(trans[i].amount);
+                                }
                                 console.log("Adding Accepted: "+ list +" splitAmount: "+ amt);
                                 if( i == -1){
                                     console.log("Send Accepted: "+ list +" splitAmount: "+ amt);
@@ -281,6 +283,7 @@ exports.billConfirm = (req, res) => {
                                         "splitAmount": amt
                                     });
                                 }
+                                i--;
                             }
                             // for (var i = trans.length; i > 0 ; i--) {
                             //     console.log("NOW Length: "+ trans.length);
