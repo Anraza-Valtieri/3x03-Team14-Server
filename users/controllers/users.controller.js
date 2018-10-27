@@ -369,6 +369,7 @@ exports.billConfirm = (req, res) => {
                         console.log("PAY MERCH " + trans);
                         // trans = trans.toObject();
                         trans = JSON.stringify(trans);
+                        console.log("PAY MERCH JSON " + trans);
                         let transId = trans.id;
                         console.log(transId);
                         if (trans != null && transId != null) {
