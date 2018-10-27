@@ -330,7 +330,7 @@ exports.findByPhone = (phone) => {
             }else {
                 // console.log("result: %j", result);
                 result = result.toJSON();
-                delete result._id;
+                // delete result._id;
                 delete result.__v;
                 return result;
             }
