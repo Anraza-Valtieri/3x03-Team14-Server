@@ -794,9 +794,9 @@ exports.payMerchant = (req, res) => {
                                                             jwtResult.phoneNo, sum, 8, detail.name);
                                                         let transArray2 = [];
                                                         let createTrans = new LINQ(req.body.splitBetween).Any(function (row2) {
-                                                            let costperpax = Number(sum)/(Number(req.body.splitBetween.length)+1);
+                                                            let costPerPax = Number(sum)/(Number(req.body.splitBetween.length)).toPrecision(2);
                                                             var results = UserModel.createTransaction(row2,
-                                                                jwtResult.phoneNo, costperpax , 1, detail.name);
+                                                                jwtResult.phoneNo, costPerPax , 1, detail.name);
                                                             transArray2.push(results);
                                                         });
                                                         return res.status(200).send({
