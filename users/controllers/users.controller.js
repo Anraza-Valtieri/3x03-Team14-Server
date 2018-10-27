@@ -115,7 +115,7 @@ exports.getBankDetails = (req, res) => {
                     "message": 'No user.'});
             } else {
                 console.log(result.firstName +" "+ result.lastName + " Requesting details");
-                UserModel.findTransFromWithType(req.jwt.phoneNo.toString(), 8).then((trans) => {
+                UserModel.findTransFromWithType(result.phoneNo.toString(), 8).then((trans) => {
                     if (trans != null) {
                         console.log(trans);
                         return res.status(200).send({
