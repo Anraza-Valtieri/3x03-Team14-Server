@@ -13,6 +13,9 @@ var async = require("async");
 //     balanceAmount: Number
 // });
 
+let knownNumbers = [];
+
+
 exports.insert = (req, res) => {
     let salt = crypto.randomBytes(16).toString('base64');
 
@@ -359,11 +362,12 @@ exports.billConfirm = (req, res) => {
                     console.log("In One");
                     console.log("CLIENT -> SERVER (proceed to pay merchant)");
                     UserModel.findTransFromWithType(jwtResult.phoneNo.toString(), 4).then((trans) => {
-                        if (trans != null) {
+                        console.log("PAY MERCH " + trans);
+                        if (trans != null && trans._id != null) {
                             console.log(jwtResult.phoneNo + " " + 4 + " : " + trans);
                             UserModel.findTransFromWithType(jwtResult.phoneNo.toString(), 8).then((trans2) => {
                                 console.log(jwtResult.phoneNo + " " + 8 + " : " + trans2);
-                                UserModel.patchTransaction(trans.id, {type: 6});
+                                UserModel.patchTransaction(trans._id, {type: 6});
                                 console.log("Setting " + trans.id + " as type 6");
                                 let deductedAmt = Number(jwtResult.balanceAmount) - Number(trans2.amount);
                                 UserModel.patchUser(jwtResult.id, {balanceAmount: deductedAmt})
