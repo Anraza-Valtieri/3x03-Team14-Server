@@ -259,7 +259,7 @@ exports.billConfirm = (req, res) => {
                 console.log("req.body.request: "+ req.body.request);
                 if (req.body.request === "0") {
                     console.log("In Zero");
-                    UserModel. (jwtResult.phoneNo, 4).then((trans) => {
+                    UserModel.findTransFromWithType(jwtResult.phoneNo, 4).then((trans) => {
                         let list = [];
                         let amt = [];
                         if (trans != null) {
