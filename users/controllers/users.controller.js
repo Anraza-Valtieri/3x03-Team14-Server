@@ -318,8 +318,9 @@ exports.billConfirm = (req, res) => {
                     UserModel.findTransFromWithType(jwtResult.phoneNo, 4).then((trans) => {
                         if (trans != null) {
                             for (var i = 0; i < trans.length; i++) {
+                                let amt = Number(trans[i].amount);
                                 UserModel.findByPhone(trans[i].toId).then((result) => {
-                                    let amt = Number(trans[i].amount)+Number(result.balanceAmount);
+                                    amt = Number(amt)+Number(result.balanceAmount);
                                     UserModel.patchUser(result._id, {balanceAmount: amt});
                                 });
                             }
