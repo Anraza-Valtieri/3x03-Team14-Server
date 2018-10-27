@@ -115,7 +115,7 @@ exports.getBankDetails = (req, res) => {
                     "message": 'No user.'});
             } else {
                 console.log(result.firstName +" "+ result.lastName + " Requesting details");
-                UserModel.findTransFromWithType(req.jwt.phoneNo, "8").then((trans) => {
+                UserModel.findTransFromWithType(req.jwt.phoneNo, 8).then((trans) => {
                     if (trans != null) {
                         console.log(trans);
                         return res.status(200).send({
@@ -261,7 +261,7 @@ exports.billConfirm = (req, res) => {
                 console.log("req.body.request: "+ req.body.request);
                 if (req.body.request === "0") {
                     console.log("In Zero");
-                    UserModel.findTransFromWithType(jwtResult.phoneNo, "4").then((trans) => {
+                    UserModel.findTransFromWithType(jwtResult.phoneNo, 4).then((trans) => {
                         let list = [];
                         let amt = [];
                         if (trans != null) {
@@ -297,12 +297,12 @@ exports.billConfirm = (req, res) => {
                 if (req.body.request === "2") {
                     console.log("In Two");
                     console.log("CLIENT -> SERVER (cancel payment)");
-                    UserModel.findTransFromWithType(jwtResult.phoneNo, "4").then((trans) => {
+                    UserModel.findTransFromWithType(jwtResult.phoneNo, 4).then((trans) => {
                         if (trans != null) {
                             let newAmt = Number(jwtResult.balanceAmount) + Number(trans.amount);
                             UserModel.patchUser(jwtResult.id, {balanceAmount: newAmt})
                                 .then(() => {
-                                    UserModel.patchTransaction(trans._id, {type: "7"});
+                                    UserModel.patchTransaction(trans._id, {type: 7});
                                     UserModel.Pending.remove({"fromId": jwtResult.id, "type": 8}, (err) => {
                                         if (err) {
                                             console.error("SOMETHING WENT WRONG WHEN DELETING a type 8!");
@@ -341,12 +341,12 @@ exports.billConfirm = (req, res) => {
                 if (req.body.request === "1") {
                     console.log("In One");
                     console.log("CLIENT -> SERVER (proceed to pay merchant)");
-                    UserModel.findTransFromWithType(jwtResult.phoneNo, "4").then((trans) => {
+                    UserModel.findTransFromWithType(jwtResult.phoneNo, 4).then((trans) => {
                         if (trans != null) {
                             console.log(jwtResult.phoneNo + " " + 4 + " : " + trans);
-                            UserModel.findTransFromWithType(jwtResult.phoneNo, "8").then((trans2) => {
+                            UserModel.findTransFromWithType(jwtResult.phoneNo, 8).then((trans2) => {
                                 console.log(jwtResult.phoneNo + " " + 8 + " : " + trans2);
-                                UserModel.patchTransaction(trans._id, {type: "6"});
+                                UserModel.patchTransaction(trans._id, {type: 6});
                                 console.log("Setting " + trans._id + " as type 6");
                                 let deductedAmt = Number(jwtResult.balanceAmount) - Number(trans2.amount);
                                 UserModel.patchUser(jwtResult.id, {balanceAmount: deductedAmt})
@@ -433,7 +433,7 @@ exports.payment = (req, res) => {
                             .then(() => {
                                 // UserModel.patchTransaction(req.body.objectId, {type: req.body.request, read: true});
                                 console.log("Transaction success!");
-                                UserModel.patchTransaction(req.body.objectId, {type: "2"});
+                                UserModel.patchTransaction(req.body.objectId, {type: 2});
                                 return res.status(200).send({
                                     "error": false,
                                     "message": 'Transaction success.'
@@ -445,7 +445,7 @@ exports.payment = (req, res) => {
             //// CLIENT -> SERVER (Reject payment)
             if(req.body.request == 3) {
                 console.log("req.body.request === 3");
-                UserModel.patchTransaction(req.body.objectId, {type: req.body.request.toString()});
+                UserModel.patchTransaction(req.body.objectId, {type: req.body.request});
                 console.log("Transaction success!");
                 return res.status(200).send({
                     "error": false,
@@ -466,7 +466,7 @@ exports.payment = (req, res) => {
 
                         UserModel.patchUser(jwtResult.id, {balanceAmount: deductedAmt})
                             .then(() => {
-                                UserModel.findTransFromWithType(trans[0].fromId, "8").then((trans2) => {
+                                UserModel.findTransFromWithType(trans[0].fromId, 8).then((trans2) => {
                                     if (trans2 == null) {
                                         return res.status(200).send({
                                             error: "true",
@@ -475,7 +475,7 @@ exports.payment = (req, res) => {
                                     }else {
                                         var remainingAmt = Number(trans2[0].amount) - Number(trans[0].amount);
                                         UserModel.patchTransaction(trans2[0]._id, {amount: remainingAmt});
-                                        UserModel.patchTransaction(trans[0]._id, {type: "4", read: true});
+                                        UserModel.patchTransaction(trans[0]._id, {type: 4, read: true});
                                     }
                                 });
                                 // UserModel.patchTransaction((req.body.objectId, {type: req.body.request}));
@@ -498,7 +498,7 @@ exports.payment = (req, res) => {
                             message: "(transaction cancelled by initiator? doesnt exist anymore)"
                         });
                     }else {
-                        UserModel.patchTransaction(trans3[0]._id, {type: "5"});
+                        UserModel.patchTransaction(trans3[0]._id, {type: 5});
                         return res.status(200).send({
                             "error": false,
                             "message": 'Transaction success.'
