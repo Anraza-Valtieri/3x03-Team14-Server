@@ -370,7 +370,7 @@ exports.billConfirm = (req, res) => {
                         // trans = trans.toObject();
                         trans = JSON.stringify(trans);
                         console.log("PAY MERCH JSON " + trans);
-                        let transId = trans[0]._id;
+                        let transId = trans[0].fromId;
                         console.log(transId);
                         if (trans != null && transId != null) {
                             console.log(jwtResult.phoneNo + " " + 4 + " : " + trans);
