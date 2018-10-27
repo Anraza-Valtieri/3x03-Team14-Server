@@ -118,7 +118,7 @@ exports.getBankDetails = (req, res) => {
                     "message": 'No user.'});
             } else {
                 console.log(result.firstName +" "+ result.lastName + " Requesting details");
-                UserModel.findTransFromWithType(result.phoneNo.toString(), 8).then((trans) => {
+                UserModel.findTransFromWithType(result.phoneNo, 8).then((trans) => {
                     if (trans != null) {
                         // console.log(trans);
                         return res.status(200).send({
@@ -317,7 +317,7 @@ exports.billConfirm = (req, res) => {
                 if (req.body.request == 2) {
                     console.log("In Two");
                     console.log("CLIENT -> SERVER (cancel payment)");
-                    UserModel.findTransFromWithType(jwtResult.phoneNo.toString(), 4).then((trans) => {
+                    UserModel.findTransFromWithType(jwtResult.phoneNo, 4).then((trans) => {
                         if (trans != null) {
                             let newAmt = Number(jwtResult.balanceAmount) + Number(trans.amount);
                             UserModel.patchUser(jwtResult.id, {balanceAmount: newAmt})
@@ -361,12 +361,11 @@ exports.billConfirm = (req, res) => {
                 if (req.body.request == 1) {
                     console.log("In One");
                     console.log("CLIENT -> SERVER (proceed to pay merchant)");
-                    UserModel.findTransFromWithType(jwtResult.phoneNo.toString(), 4).then((trans) => {
-                        console.log("PAY ID " + trans.id);
+                    UserModel.findTransFromWithType(jwtResult.phoneNo, 4).then((trans) => {
                         console.log("PAY MERCH " + trans);
                         if (trans != null && trans._id != null) {
                             console.log(jwtResult.phoneNo + " " + 4 + " : " + trans);
-                            UserModel.findTransFromWithType(jwtResult.phoneNo.toString(), 8).then((trans2) => {
+                            UserModel.findTransFromWithType(jwtResult.phoneNo, 8).then((trans2) => {
                                 console.log(jwtResult.phoneNo + " " + 8 + " : " + trans2);
                                 UserModel.patchTransaction(trans._id, {type: 6});
                                 console.log("Setting " + trans.id + " as type 6");
@@ -488,7 +487,7 @@ exports.payment = (req, res) => {
 
                         UserModel.patchUser(jwtResult.id, {balanceAmount: deductedAmt})
                             .then(() => {
-                                UserModel.findTransFromWithType(trans[0].fromId.toString(), 8).then((trans2) => {
+                                UserModel.findTransFromWithType(trans[0].fromId, 8).then((trans2) => {
                                     if (trans2 == null) {
                                         return res.status(200).send({
                                             error: "true",
