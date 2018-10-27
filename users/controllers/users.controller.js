@@ -120,7 +120,7 @@ exports.getBankDetails = (req, res) => {
                 console.log(result.firstName +" "+ result.lastName + " Requesting details");
                 UserModel.findTransFromWithType(result.phoneNo.toString(), 8).then((trans) => {
                     if (trans != null) {
-                        console.log(trans);
+                        // console.log(trans);
                         return res.status(200).send({
                             firstName: result.firstName,
                             lastName: result.lastName,
@@ -362,6 +362,7 @@ exports.billConfirm = (req, res) => {
                     console.log("In One");
                     console.log("CLIENT -> SERVER (proceed to pay merchant)");
                     UserModel.findTransFromWithType(jwtResult.phoneNo.toString(), 4).then((trans) => {
+                        console.log("PAY ID " + trans.id);
                         console.log("PAY MERCH " + trans);
                         if (trans != null && trans._id != null) {
                             console.log(jwtResult.phoneNo + " " + 4 + " : " + trans);
