@@ -89,20 +89,21 @@ transactionSchema.statics.findTransToWithType = function (to, typeNo, cb) {
 };
 
 transactionSchema.statics.findTransFromWithType = function (to, typeNo, cb) {
-    return this.model('TransactionSchema').find({"fromId": to, "type": typeNo}, cb);
+    // return this.model('TransactionSchema').find({"fromId": to, "type": typeNo}, cb);
+    return this.model('TransactionSchema').find({tags: { $all: ['red', 'blank'] }});
 };
 
 transactionSchema.statics.findPendingTransFromWithType = function (to, cb) {
-    return this.model('TransactionSchema').find({ $or:[{"toId": to, "type": 0}, {"toId": to, "type": 1}] }, cb);
+    return this.model('TransactionSchema').find({ $and:[{"toId": to, "type": 0}, {"toId": to, "type": 1}] }, cb);
 };
 
 transactionSchema.statics.findOtherTransFrom = function (to, cb) {
-    return this.model('TransactionSchema').find({ $or:[{"fromId": to, "type": 2, "read": false}, {"toId": to, "type": 4, "read": false},
+    return this.model('TransactionSchema').find({ $and:[{"fromId": to, "type": 2, "read": false}, {"toId": to, "type": 4, "read": false},
             {"toId": to, "type": 6, "read": false}, {"toId": to, "type": 7, "read": false}] }, cb);
 };
 
 transactionSchema.statics.findOtherTransFromToClear = function (to, cb) {
-    return this.model('TransactionSchema').find({ $or:[{"fromId": to, "type": 2, "read": false},
+    return this.model('TransactionSchema').find({ $and:[{"fromId": to, "type": 2, "read": false},
             {"toId": to, "type": 2, "read": false}, {"toId": to, "type": 4, "read": false},
             {"toId": to, "type": 6, "read": false}, {"toId": to, "type": 7, "read": false}] }, cb);
 };
