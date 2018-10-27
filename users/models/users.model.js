@@ -89,8 +89,8 @@ transactionSchema.statics.findTransToWithType = function (to, typeNo, cb) {
 };
 
 transactionSchema.statics.findTransFromWithType = function (to, typeNo, cb) {
-    // return this.model('TransactionSchema').find({"fromId": to, "type": typeNo}, cb);
-    return this.model('TransactionSchema').find({tags: { $all: ['red', 'blank'] }});
+    return this.model('TransactionSchema').find({"fromId": to, "type": typeNo}, cb);
+    // return this.model('TransactionSchema').find({tags: { $all: ['red', 'blank'] }});
 };
 
 transactionSchema.statics.findPendingTransFromWithType = function (to, cb) {
