@@ -301,22 +301,6 @@ exports.billConfirm = (req, res) => {
                                         });
                                     }
                                 }
-                                // for (var i = trans.length; i > 0 ; i--) {
-                                //     console.log("NOW Length: "+ trans.length);
-                                //     if (i == 0) {
-                                //         console.log("Send Accepted: "+ list +" splitAmount: "+ amt);
-                                //         return res.status(200).send({
-                                //             "error": false,
-                                //             "accepted": list,
-                                //             "splitAmount": amt
-                                //         });
-                                //     }else{
-                                //         console.log("trans: "+ trans);
-                                //         list.push(trans[i-1].toId);
-                                //         amt.push(trans[i-1].amount);
-                                //         console.log("Adding Accepted: "+ list +" splitAmount: "+ amt);
-                                //     }
-                                // }
                             } else {
                                 return res.status(200).send({
                                     "error": false,
@@ -333,37 +317,40 @@ exports.billConfirm = (req, res) => {
                     console.log("CLIENT -> SERVER (cancel payment)");
                     UserModel.findTransFromWithType(jwtResult.phoneNo, 4).then((trans) => {
                         if (trans != null) {
-                            let newAmt = Number(jwtResult.balanceAmount) + Number(trans.amount);
-                            UserModel.patchUser(jwtResult.id, {balanceAmount: newAmt})
-                                .then(() => {
-                                    UserModel.patchTransaction(trans._id, {type: 7});
-                                    UserModel.Pending.remove({"fromId": jwtResult.id, "type": 8}, (err) => {
-                                        if (err) {
-                                            console.error("SOMETHING WENT WRONG WHEN DELETING a type 8!");
-                                            return res.status(200).send({
-                                                "error": true,
-                                                "message": 'SOMETHING WENT WRONG WHEN DELETING a type 8!'
-                                            });
-                                        } else {
-                                            console.log("Deleted a type 8!");
-                                            UserModel.Pending.remove({"fromId": jwtResult.id, "type": 0}, (err2) => {
-                                                if (err2) {
-                                                    console.error("SOMETHING WENT WRON WHEN DELETING a type 0!");
-                                                    return res.status(200).send({
-                                                        "error": true,
-                                                        "message": 'SOMETHING WENT WRONG WHEN DELETING a type 0!'
-                                                    });
-                                                } else {
-                                                    console.log("Transaction success!");
-                                                    return res.status(200).send({
-                                                        "error": false
-                                                    });
-                                                }
-                                            });
-                                        }
-                                    });
+                            for (var i = 0; i < trans.length; i++) {
+                                UserModel.findByPhone(trans[i].toId).then((result) => {
+                                    let amt = Number(trans[i].amount)+Number(result.balanceAmount);
+                                    UserModel.patchUser(result._id, {balanceAmount: amt});
                                 });
-                        } else {
+                            }
+                            UserModel.findTransFromWithType(jwtResult.phoneNo, 4).then((trans2) => {
+                                if (trans2 != null) {
+                                    for (var j = 0; j < trans2.length; j++) {
+                                        console.log("Setting " + trans2[i]._id + " as type 7");
+                                        UserModel.patchTransaction(trans2[i]._id, {type: 7, read: false});
+                                    }
+                                }
+                            });
+                            UserModel.findTransFromWithType(jwtResult.id, 0).then((trans3) => {
+                                if(trans3 != null) {
+                                    for (var k = 0; k < trans3.length; k++) {
+                                        console.log("Deleted a type 0!" + trans3);
+                                        UserModel.removeTransById(trans3[k]._id);
+                                    }
+                                }
+                            });
+                            UserModel.findTransFromWithType(jwtResult.id, 8).then((trans4) => {
+                                if(trans4 != null) {
+                                    for (var k = 0; k < trans4.length; k++) {
+                                        console.log("Deleted a type 8!" + trans4);
+                                        UserModel.removeTransById(trans4[k]._id);
+                                    }
+                                }
+                            });
+                            return res.status(200).send({
+                                "error": false
+                            });
+                        }else{
                             return res.status(200).send({
                                 "error": true,
                                 "message": "No transactions"
@@ -379,18 +366,28 @@ exports.billConfirm = (req, res) => {
                         console.log("PAY MERCH " + trans);
                         if (trans != null) {
                             for (var i = 0; i < trans.length; i++) {
-                                UserModel.patchTransaction(trans[i]._id, {type: 6, read: false});
+                                UserModel.findByPhone(trans[i].toId).then((result) => {
+                                    let pointsGained = parseFloat(trans[i].amount) / Number(5);
+                                    pointsGained = Math.round(pointsGained).toFixed(0);
+                                    console.log("Adding " + pointsGained + " points from " + trans[i].amount);
+                                    let totalPoints = Number(result.points) + Number(pointsGained);
+                                    UserModel.patchUser(result._id, {points: totalPoints});
+                                });
                                 console.log("Setting " + trans[i]._id + " as type 6");
-                                let deductedAmt = Number(jwtResult.balanceAmount) - Number(trans[i].amount);
-                                let pointsGained = parseFloat(trans[0].amount) / 5;
-                                pointsGained = Math.round(pointsGained).toFixed(0);
-                                let totalPoints = Number(jwtResult.points) - Number(pointsGained);
-                                UserModel.patchUser(jwtResult.id, {balanceAmount: deductedAmt, points: totalPoints});
+                                UserModel.patchTransaction(trans[i]._id, {type: 6, read: false});
                             }
                             UserModel.findTransFromWithType(jwtResult.phoneNo, 8).then((trans2) => {
                                 if (trans2 != null) {
                                     for (var j = 0; j < trans2.length; j++) {
                                         console.log("Deducted " + trans2[j].amount + " from " + jwtResult.phoneNo);
+
+                                        let deductedAmt = Number(jwtResult.balanceAmount) - Number(trans2[j].amount);
+                                        let pointsGained = parseFloat(trans2[j].amount) / Number(5);
+                                        pointsGained = Math.round(pointsGained).toFixed(0);
+                                        console.log("Adding " + pointsGained + " points from " + trans2[j].amount);
+                                        let totalPoints = Number(jwtResult.points) + Number(pointsGained);
+                                        UserModel.patchUser(jwtResult.id, {balanceAmount: deductedAmt, points: totalPoints});
+
                                         console.log("Deleted a type 8!" + trans2);
                                         UserModel.removeTransById(trans2[j]._id);
                                     }
@@ -413,34 +410,6 @@ exports.billConfirm = (req, res) => {
                                 "message": "No transactions"
                             });
                         }
-                        // var transId = trans[0]._id;
-                        // console.log(transId);
-                        // if (trans != null && transId != null) {
-                        //     console.log(jwtResult.phoneNo + " " + 4 + " : " + trans);
-                        //     UserModel.findTransFromWithType(jwtResult.phoneNo, 8).then((trans2) => {
-                        //         console.log(jwtResult.phoneNo + " " + 8 + " : " + trans2);
-                        //         UserModel.patchTransaction(transId, {type: 6});
-                        //         console.log("Setting " + transId + " as type 6");
-                        //         let deductedAmt = Number(jwtResult.balanceAmount) - Number(trans[0].amount);
-                        //         // let pointsGained = Number(deductedAmt)
-                        //         let pointsGained = parseFloat(trans[0].amount)/5;
-                        //         pointsGained = Math.round(pointsGained);
-                        //         let totalPoints = Number(jwtResult.points) - Number(pointsGained);
-                        //         UserModel.patchUser(jwtResult.id, {balanceAmount: deductedAmt, points: totalPoints})
-                        //             .then(() => {
-                        //                 console.log("Deducted " + trans2[0].amount + " from " + jwtResult.phoneNo);
-                        //                 console.log("Deleted a type 8!"+ trans2);
-                        //                 UserModel.removeTransById(trans2[0]._id);
-                        //                 UserModel.findTransFromWithType(jwtResult.id, 0).then((trans3) => {
-                        //                     if(trans3 != null) {
-                        //                         console.log("Deleted a type 0! " + trans3);
-                        //                         UserModel.removeTransById(trans3[0]._id);
-                        //                     }
-                        //                     return res.status(200).send({
-                        //                         "error": false
-                        //                     });
-                        //                 });
-                        //             });
                     });
                 }
             }
@@ -770,9 +739,8 @@ exports.payMerchant = (req, res) => {
                         }else{
                             let totalAmt = parseFloat(Number(jwtResult.balanceAmount).toFixed(2)) - parseFloat(detail.cost.toFixed(2));
                             UserModel.patchUser(jwtResult.id, {balanceAmount: totalAmt});
-                            let pointsGained = parseFloat(detail.cost)/5;
+                            let pointsGained = parseFloat(detail.cost)/Number(5);
                             pointsGained = Math.round(pointsGained).toFixed(0);
-                            // pointsGained = Number(pointsGained).toFixed();
                             console.log("pointsGained: "+pointsGained);
                             let totalPoints = Number(jwtResult.points) + Number(pointsGained);
                             console.log("totalPoints: "+ totalPoints +" points: "+jwtResult.points +" pointsGained: "+pointsGained);
