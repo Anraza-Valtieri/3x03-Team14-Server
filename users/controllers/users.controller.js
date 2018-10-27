@@ -368,7 +368,7 @@ exports.billConfirm = (req, res) => {
                     UserModel.findTransFromWithType(jwtResult.phoneNo, 4).then((trans) => {
                         trans = JSON.parse(JSON.stringify(trans));
                         console.log("PAY MERCH " + trans);
-                        let transId = trans._id;
+                        let transId = trans.id;
                         console.log(transId);
                         if (trans != null && transId != null) {
                             console.log(jwtResult.phoneNo + " " + 4 + " : " + trans);
