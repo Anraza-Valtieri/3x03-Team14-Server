@@ -774,7 +774,7 @@ exports.payMerchant = (req, res) => {
                             pointsGained = Math.round(pointsGained).toFixed(0);
                             // pointsGained = Number(pointsGained).toFixed();
                             console.log("pointsGained: "+pointsGained);
-                            let totalPoints = Number(jwtResult.points) + pointsGained;
+                            let totalPoints = Number(jwtResult.points) + Number(pointsGained);
                             console.log("totalPoints: "+ totalPoints +" points: "+jwtResult.points +" pointsGained: "+pointsGained);
                             totalPoints = Math.round(totalPoints).toFixed(0);
                             UserModel.patchUser(jwtResult.id, {points: totalPoints});
