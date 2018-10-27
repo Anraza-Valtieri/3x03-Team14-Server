@@ -793,7 +793,7 @@ exports.payMerchant = (req, res) => {
                         if(req.body.splitBetween != null && req.body.splitBetween.length > 0) {
                             if(req.body.splitAmount != null && req.body.splitAmount.length > 0) {
                                 let sum = req.body.splitAmount.reduce((a, b) => Number(a) + Number(b), 0);
-                                sum = sum.toPrecision(2);
+                                sum = sum.toFixed(2);
                                 console.log("SUM: " +sum);
                                 if (parseFloat(sum) === parseFloat(detail.cost)) {
                                     req.body.splitAmount.pop();
