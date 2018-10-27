@@ -259,15 +259,15 @@ exports.billConfirm = (req, res) => {
             }else {
                 // CLIENT -> SERVER (pull details of those who accepted the split)
                 console.log("req.body.request: "+ req.body.request);
-                if (req.body.request === "0") {
+                if (req.body.request == 0) {
                     console.log("In Zero");
                     UserModel.findTransFromWithType(jwtResult.phoneNo, 4).then((trans) => {
                         let list = [];
                         let amt = [];
                         if (trans != null) {
                             console.log(trans.length);
-                            for (var i = 0; i < trans.length; i++) {
-                                if (i === trans.length - 1) {
+                            for (var i = trans.length; i > 0 ; i--) {
+                                if (i == 0) {
                                     console.log("Send Accepted: "+ list +" splitAmount: "+ amt);
                                     return res.status(200).send({
                                         "error": false,
@@ -276,8 +276,8 @@ exports.billConfirm = (req, res) => {
                                     });
                                 }else{
                                     console.log("Adding Accepted: "+ list +" splitAmount: "+ amt);
-                                    list.push(trans.toId);
-                                    amt.push(trans.amount);
+                                    list.push(trans[i].toId);
+                                    amt.push(trans[i].amount);
                                 }
                             }
                         }else{
@@ -290,7 +290,7 @@ exports.billConfirm = (req, res) => {
                     });
                 }
                 // CLIENT -> SERVER (cancel payment)
-                if (req.body.request === "2") {
+                if (req.body.request == 2) {
                     console.log("In Two");
                     console.log("CLIENT -> SERVER (cancel payment)");
                     UserModel.findTransFromWithType(jwtResult.phoneNo, 4).then((trans) => {
@@ -334,7 +334,7 @@ exports.billConfirm = (req, res) => {
                     });
                 }
                 // CLIENT -> SERVER (proceed to pay merchant)
-                if (req.body.request === "1") {
+                if (req.body.request == 2) {
                     console.log("In One");
                     console.log("CLIENT -> SERVER (proceed to pay merchant)");
                     UserModel.findTransFromWithType(jwtResult.phoneNo, 4).then((trans) => {
