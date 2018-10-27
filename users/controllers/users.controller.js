@@ -265,8 +265,9 @@ exports.billConfirm = (req, res) => {
                         let list = [];
                         let amt = [];
                         if (trans != null) {
-                            console.log(trans.length);
+                            console.log("Length: "+ trans.length);
                             for (var i = trans.length; i > 0 ; i--) {
+                                console.log("NOW Length: "+ trans.length);
                                 if (i == 0) {
                                     console.log("Send Accepted: "+ list +" splitAmount: "+ amt);
                                     return res.status(200).send({
@@ -275,9 +276,10 @@ exports.billConfirm = (req, res) => {
                                         "splitAmount": amt
                                     });
                                 }else{
-                                    console.log("Adding Accepted: "+ list +" splitAmount: "+ amt);
+                                    console.log("trans: "+ trans);
                                     list.push(trans[i].toId);
                                     amt.push(trans[i].amount);
+                                    console.log("Adding Accepted: "+ list +" splitAmount: "+ amt);
                                 }
                             }
                         }else{
