@@ -326,8 +326,8 @@ exports.billConfirm = (req, res) => {
                             UserModel.findTransFromWithType(jwtResult.phoneNo, 4).then((trans2) => {
                                 if (trans2 != null) {
                                     for (var j = 0; j < trans2.length; j++) {
-                                        console.log("Setting " + trans2[i]._id + " as type 7");
-                                        UserModel.patchTransaction(trans2[i]._id, {type: 7, read: false});
+                                        console.log("Setting " + trans2[j]._id + " as type 7");
+                                        UserModel.patchTransaction(trans2[j]._id, {type: 7, read: false});
                                     }
                                 }
                             });
