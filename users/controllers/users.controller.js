@@ -269,10 +269,10 @@ exports.billConfirm = (req, res) => {
                             let i = trans.length;
                             while ( i != -1){
                                 console.log("trans: "+ trans);
-                                list.push(trans[i-1].toId);
-                                amt.push(trans[i-1].amount);
-                                console.log("Adding Accepted: "+ list +" splitAmount: "+ amt);
                                 i--;
+                                list.push(trans[i].toId);
+                                amt.push(trans[i].amount);
+                                console.log("Adding Accepted: "+ list +" splitAmount: "+ amt);
                                 if( i == -1){
                                     console.log("Send Accepted: "+ list +" splitAmount: "+ amt);
                                     return res.status(200).send({
