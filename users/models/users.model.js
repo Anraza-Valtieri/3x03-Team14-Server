@@ -73,39 +73,39 @@ transactionSchema.findById = function (cb) {
     return this.model('TransactionSchema').find({"_id": this.id}, cb);
 };
 transactionSchema.statics.findTransFromByPhone = function (res, cb) {
-    return this.model('TransactionSchema').find({"fromId": res}, cb);
+    return this.model('TransactionSchema').find({"fromId": res.toString()}, cb);
 };
 
 transactionSchema.statics.findTransToByPhone2 = function (res, cb) {
-    return this.model('TransactionSchema').find({"toId": res}, cb);
+    return this.model('TransactionSchema').find({"toId": res.toString()}, cb);
 };
 
 transactionSchema.statics.findTByDetails = function (to, from, amt,cb) {
-    return this.model('TransactionSchema').findOne({"toId": to, "fromId": from, "amount": amt, "completed": false}, cb);
+    return this.model('TransactionSchema').findOne({"toId": to.toString(), "fromId": from.toString(), "amount": amt, "completed": false}, cb);
 };
 
 transactionSchema.statics.findTransToWithType = function (to, typeNo, cb) {
-    return this.model('TransactionSchema').find({"toId": to, "type": typeNo}, cb);
+    return this.model('TransactionSchema').find({"toId": to.toString(), "type": typeNo}, cb);
 };
 
 transactionSchema.statics.findTransFromWithType = function (to, typeNo, cb) {
-    return this.model('TransactionSchema').find({"fromId": to, "type": typeNo}, cb);
+    return this.model('TransactionSchema').find({"fromId": to.toString(), "type": typeNo}, cb);
     // return this.model('TransactionSchema').find({tags: { $all: ['red', 'blank'] }});
 };
 
 transactionSchema.statics.findPendingTransFromWithType = function (to, cb) {
-    return this.model('TransactionSchema').find({ $and:[{"toId": to, "type": 0}, {"toId": to, "type": 1}] }, cb);
+    return this.model('TransactionSchema').find({ $and:[{"toId": to.toString(), "type": 0}, {"toId": to.toString(), "type": 1}] }, cb);
 };
 
 transactionSchema.statics.findOtherTransFrom = function (to, cb) {
-    return this.model('TransactionSchema').find({ $and:[{"fromId": to, "type": 2, "read": false}, {"toId": to, "type": 4, "read": false},
-            {"toId": to, "type": 6, "read": false}, {"toId": to, "type": 7, "read": false}] }, cb);
+    return this.model('TransactionSchema').find({ $and:[{"fromId": to.toString(), "type": 2, "read": false}, {"toId": to.toString(), "type": 4, "read": false},
+            {"toId": to.toString(), "type": 6, "read": false}, {"toId": to.toString(), "type": 7, "read": false}] }, cb);
 };
 
 transactionSchema.statics.findOtherTransFromToClear = function (to, cb) {
-    return this.model('TransactionSchema').find({ $and:[{"fromId": to, "type": 2, "read": false},
-            {"toId": to, "type": 2, "read": false}, {"toId": to, "type": 4, "read": false},
-            {"toId": to, "type": 6, "read": false}, {"toId": to, "type": 7, "read": false}] }, cb);
+    return this.model('TransactionSchema').find({ $and:[{"fromId": to.toString(), "type": 2, "read": false},
+            {"toId": to.toString(), "type": 2, "read": false}, {"toId": to.toString(), "type": 4, "read": false},
+            {"toId": to.toString(), "type": 6, "read": false}, {"toId": to.toString(), "type": 7, "read": false}] }, cb);
 };
 
 transactionSchema.statics.findTransWithId = function (id, cb) {
