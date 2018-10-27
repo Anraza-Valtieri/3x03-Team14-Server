@@ -266,7 +266,7 @@ exports.billConfirm = (req, res) => {
                         let amt = [];
                         if (trans != null) {
                             console.log(trans.length);
-                            for (var i = trans.length; i > -1; i--) {
+                            for (var i = 0; i < trans.length; i++) {
                                 if (i === trans.length - 1) {
                                     console.log("Send Accepted: "+ list +" splitAmount: "+ amt);
                                     return res.status(200).send({
@@ -276,13 +276,10 @@ exports.billConfirm = (req, res) => {
                                     });
                                 }else{
                                     console.log("Adding Accepted: "+ list +" splitAmount: "+ amt);
-                                    list.push(trans[i].toId);
-                                    amt.push(trans[i].amount);
+                                    list.push(trans.toId);
+                                    amt.push(trans.amount);
                                 }
                             }
-                            // while(list.length !== trans.length){
-                            //
-                            // }
                         }else{
                             return res.status(200).send({
                                 "error": false,
@@ -773,12 +770,12 @@ exports.payMerchant = (req, res) => {
                                                     } else {
                                                         console.log("Checking transaction 8s");
                                                         var results = UserModel.createTransaction(jwtResult.phoneNo,
-                                                            jwtResult.phoneNo, sum, "8", detail.name);
+                                                            jwtResult.phoneNo, sum, 8, detail.name);
                                                         let transArray2 = [];
                                                         let createTrans = new LINQ(req.body.splitBetween).Any(function (row2) {
                                                             let costperpax = Number(sum)/(Number(req.body.splitBetween.length)+1);
                                                             var results = UserModel.createTransaction(row2,
-                                                                jwtResult.phoneNo, costperpax , "1", detail.name);
+                                                                jwtResult.phoneNo, costperpax , 1, detail.name);
                                                             transArray2.push(results);
                                                         });
                                                         return res.status(200).send({
