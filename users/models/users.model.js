@@ -291,7 +291,7 @@ exports.createTransaction = (to, from, amount, type, merch) => {
     transactions.dateTime = new Date;
     transactions.merchantName = merch;
     transactions.read = false;
-    transactions.type = type.toString();
+    transactions.type = type;
     transactions.save();
     transArray.push(transactions);
     console.log("Created transaction("+type+") for "+to+" from "+from+ " amt: "+amount);

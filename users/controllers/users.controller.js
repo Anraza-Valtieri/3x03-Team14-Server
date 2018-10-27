@@ -267,7 +267,7 @@ exports.billConfirm = (req, res) => {
                         if (trans != null) {
                             console.log(trans.length);
                             for (var i = trans.length; i > -1; i--) {
-                                if (i == 0) {
+                                if (i === 0) {
                                     console.log("Send Accepted: "+ list +" splitAmount: "+ amt);
                                     return res.status(200).send({
                                         "error": false,
@@ -417,7 +417,7 @@ exports.payment = (req, res) => {
             }
             // CLIENT -> SERVER (Accept payment)
             // Process payments here
-            if (req.body.request == 2) {
+            if (req.body.request === 2) {
                 console.log("req.body.request === 2");
                 UserModel.findTransWithId(req.body.objectId).then((trans) => {
                     console.log(trans);
@@ -443,7 +443,7 @@ exports.payment = (req, res) => {
                 });
             }
             //// CLIENT -> SERVER (Reject payment)
-            if(req.body.request == 3) {
+            if(req.body.request === 3) {
                 console.log("req.body.request === 3");
                 UserModel.patchTransaction(req.body.objectId, {type: req.body.request.toString()});
                 console.log("Transaction success!");
@@ -453,7 +453,7 @@ exports.payment = (req, res) => {
                 });
             }
             // CLIENT -> SERVER (Accept splitting bills)
-            if(req.body.request == 4) {
+            if(req.body.request === 4) {
                 console.log("req.body.request === 4");
                 UserModel.findTransWithId(req.body.objectId).then((trans) => {
                     if (jwtResult.balanceAmount < trans[0].amount) {
@@ -489,7 +489,7 @@ exports.payment = (req, res) => {
                 });
             }
             // CLIENT -> SERVER (Reject splitting bills)
-            if(req.body.request == 5) {
+            if(req.body.request === 5) {
                 console.log("req.body.request === 5");
                 UserModel.findTransWithId(req.body.objectId).then((trans3) => {
                     if (trans3 == null) {
