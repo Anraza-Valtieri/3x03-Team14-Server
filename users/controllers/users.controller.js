@@ -334,7 +334,7 @@ exports.billConfirm = (req, res) => {
                     });
                 }
                 // CLIENT -> SERVER (proceed to pay merchant)
-                if (req.body.request == 2) {
+                if (req.body.request == 1) {
                     console.log("In One");
                     console.log("CLIENT -> SERVER (proceed to pay merchant)");
                     UserModel.findTransFromWithType(jwtResult.phoneNo, 4).then((trans) => {
