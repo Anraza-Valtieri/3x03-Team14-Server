@@ -382,7 +382,7 @@ exports.billConfirm = (req, res) => {
                                         console.log("Deleted a type 8!"+ trans2);
                                         UserModel.removeTransById(trans2[0]._id);
                                         UserModel.findTransFromWithType(jwtResult.id, 0).then((trans3) => {
-                                            if(trans3.length > 0) {
+                                            if(trans3 != null) {
                                                 console.log("Deleted a type 0! " + trans3);
                                                 UserModel.removeTransById(trans3[0]._id);
                                             }
