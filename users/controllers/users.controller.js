@@ -802,7 +802,7 @@ exports.payMerchant = (req, res) => {
                                                         //     transArray2.push(results);
                                                         // });
 
-                                                        for (var q = 0; q < req.body.splitBetween; q++){
+                                                        for (var q = 0; q < req.body.splitBetween.length; q++){
                                                             UserModel.createTransaction(req.body.splitBetween[q],
                                                                 jwtResult.phoneNo, req.body.splitAmount[q] , 1, detail.name);
                                                         }
