@@ -284,6 +284,7 @@ exports.billConfirm = (req, res) => {
                             //
                             // }
                         }else{
+                            console.log("NO type 4 ");
                             return res.status(200).send({
                                 "error": false,
                                 "accepted": [],
