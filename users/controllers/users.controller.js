@@ -363,8 +363,8 @@ exports.billConfirm = (req, res) => {
                             console.log(jwtResult.phoneNo + " " + 4 + " : " + trans);
                             UserModel.findTransFromWithType(jwtResult.phoneNo.toString(), 8).then((trans2) => {
                                 console.log(jwtResult.phoneNo + " " + 8 + " : " + trans2);
-                                UserModel.patchTransaction(trans._id, {type: 6});
-                                console.log("Setting " + trans._id + " as type 6");
+                                UserModel.patchTransaction(trans.id, {type: 6});
+                                console.log("Setting " + trans.id + " as type 6");
                                 let deductedAmt = Number(jwtResult.balanceAmount) - Number(trans2.amount);
                                 UserModel.patchUser(jwtResult.id, {balanceAmount: deductedAmt})
                                     .then(() => {
@@ -799,13 +799,6 @@ exports.payMerchant = (req, res) => {
                                                             jwtResult.phoneNo, sum, 8, detail.name);
                                                         // let transArray2 = [];
                                                         console.log("Splitbetween Length: "+req.body.splitBetween.length);
-                                                        // let createTrans = new LINQ(req.body.splitBetween).Any(function (row2) {
-                                                        //     let costPerPax = Number(sum)/(Number(req.body.splitBetween.length)).toPrecision(2);
-                                                        //     // let costPerPax = req.body.splitAmount[]
-                                                        //     var results = UserModel.createTransaction(row2,
-                                                        //         jwtResult.phoneNo, costPerPax , 1, detail.name);
-                                                        //     transArray2.push(results);
-                                                        // });
 
                                                         for (var q = 0; q < req.body.splitBetween.length; q++){
                                                             UserModel.createTransaction(req.body.splitBetween[q],
