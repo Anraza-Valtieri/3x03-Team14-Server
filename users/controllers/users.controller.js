@@ -259,19 +259,21 @@ exports.billConfirm = (req, res) => {
                 console.log("req.body.request: "+ req.body.request);
                 if (req.body.request === "0") {
                     console.log("In Zero");
-                    UserModel.findTransFromWithType(jwtResult.phoneNo, 4).then((trans) => {
+                    UserModel. (jwtResult.phoneNo, 4).then((trans) => {
                         let list = [];
                         let amt = [];
                         if (trans != null) {
                             console.log(trans.length);
                             for (var i = 0; i < trans.length; i++) {
                                 if (i === trans.length - 1) {
+                                    console.log("Send Accepted: "+ list +" splitAmount: "+ amt);
                                     return res.status(200).send({
                                         "error": false,
                                         "accepted": list,
                                         "splitAmount": amt
                                     });
                                 }else{
+                                    console.log("Adding Accepted: "+ list +" splitAmount: "+ amt);
                                     list.push(trans.toId);
                                     amt.push(trans.amount);
                                 }
