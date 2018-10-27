@@ -419,6 +419,18 @@ exports.removeById = (userId) => {
     });
 };
 
+exports.removeTransById = (userId) => {
+    return new Promise((resolve, reject) => {
+        Pending.remove({_id: userId}, (err) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(err);
+            }
+        });
+    });
+};
+
 exports.delAll = () => {
     return new Promise((resolve, reject) => {
         User.remove({}, (err) => {

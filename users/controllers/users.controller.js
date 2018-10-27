@@ -379,34 +379,41 @@ exports.billConfirm = (req, res) => {
                                 UserModel.patchUser(jwtResult.id, {balanceAmount: deductedAmt})
                                     .then(() => {
                                         console.log("Deducted " + trans2.amount + " from " + jwtResult.phoneNo);
-                                        UserModel.Pending.remove({"fromId": jwtResult.id, "type": 8}, (err) => {
-                                            if (err) {
-                                                console.error("SOMETHING WENT WRONG WHEN DELETING a type 8!");
-                                                return res.status(200).send({
-                                                    "error": true,
-                                                    "message": 'SOMETHING WENT WRONG WHEN DELETING a type 8!'
-                                                });
-                                            } else {
-                                                console.log("Deleted a type 8!");
-                                                UserModel.Pending.remove({
-                                                    "fromId": jwtResult.id,
-                                                    "type": 0
-                                                }, (err2) => {
-                                                    if (err2) {
-                                                        console.error("SOMETHING WENT WRON WHEN DELETING a type 0!");
-                                                        return res.status(200).send({
-                                                            "error": true,
-                                                            "message": 'SOMETHING WENT WRONG WHEN DELETING a type 0!'
-                                                        });
-                                                    } else {
-                                                        console.log("Transaction success!");
-                                                        return res.status(200).send({
-                                                            "error": false
-                                                        });
-                                                    }
-                                                });
-                                            }
+
+                                        console.log("Deleted a type 8!"+ trans2);
+                                        UserModel.removeTransById(trans2[0]._id);
+                                        UserModel.findTransFromWithType(jwtResult.id, 0).then((trans3) => {
+                                            console.log("Deleted a type 0! "+trans3);
+                                            UserModel.removeTransById(trans3[0]._id);
                                         });
+                                        // UserModel.Pending.remove({"fromId": jwtResult.id, "type": 8}, (err) => {
+                                        //     if (err) {
+                                        //         console.error("SOMETHING WENT WRONG WHEN DELETING a type 8!");
+                                        //         return res.status(200).send({
+                                        //             "error": true,
+                                        //             "message": 'SOMETHING WENT WRONG WHEN DELETING a type 8!'
+                                        //         });
+                                        //     } else {
+                                        //         console.log("Deleted a type 8!");
+                                        //         UserModel.Pending.remove({
+                                        //             "fromId": jwtResult.id,
+                                        //             "type": 0
+                                        //         }, (err2) => {
+                                        //             if (err2) {
+                                        //                 console.error("SOMETHING WENT WRON WHEN DELETING a type 0!");
+                                        //                 return res.status(200).send({
+                                        //                     "error": true,
+                                        //                     "message": 'SOMETHING WENT WRONG WHEN DELETING a type 0!'
+                                        //                 });
+                                        //             } else {
+                                        //                 console.log("Transaction success!");
+                                        //                 return res.status(200).send({
+                                        //                     "error": false
+                                        //                 });
+                                        //             }
+                                        //         });
+                                        //     }
+                                        // });
                                     });
                             });
                         }else {
