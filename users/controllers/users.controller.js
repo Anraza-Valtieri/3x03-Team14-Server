@@ -1,4 +1,4 @@
-const UserModel = a('../models/users.model');
+const UserModel = ('../models/users.model');
 const crypto = require('crypto');
 const jwtSecret = require('../../common/config/env.config.js').jwt_secret,
     jwt = require('jsonwebtoken');
