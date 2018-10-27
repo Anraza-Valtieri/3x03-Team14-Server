@@ -363,12 +363,13 @@ exports.billConfirm = (req, res) => {
                     console.log("CLIENT -> SERVER (proceed to pay merchant)");
                     UserModel.findTransFromWithType(jwtResult.phoneNo, 4).then((trans) => {
                         console.log("PAY MERCH " + trans);
-                        if (trans != null && trans._id != null) {
+                        let transId = trans._id;
+                        if (trans != null && transId != null) {
                             console.log(jwtResult.phoneNo + " " + 4 + " : " + trans);
                             UserModel.findTransFromWithType(jwtResult.phoneNo, 8).then((trans2) => {
                                 console.log(jwtResult.phoneNo + " " + 8 + " : " + trans2);
-                                UserModel.patchTransaction(trans._id, {type: 6});
-                                console.log("Setting " + trans.id + " as type 6");
+                                UserModel.patchTransaction(transId, {type: 6});
+                                console.log("Setting " + transId + " as type 6");
                                 let deductedAmt = Number(jwtResult.balanceAmount) - Number(trans2.amount);
                                 UserModel.patchUser(jwtResult.id, {balanceAmount: deductedAmt})
                                     .then(() => {
