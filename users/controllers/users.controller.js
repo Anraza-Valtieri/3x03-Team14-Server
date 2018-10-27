@@ -267,7 +267,7 @@ exports.billConfirm = (req, res) => {
                         if (trans != null) {
                             console.log(trans.length);
                             for (var i = trans.length; i > -1; i--) {
-                                if (i === trans.length - 1) {
+                                if (i === 0) {
                                     console.log("Send Accepted: "+ list +" splitAmount: "+ amt);
                                     return res.status(200).send({
                                         "error": false,
