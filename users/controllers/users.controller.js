@@ -469,16 +469,6 @@ exports.payment = (req, res) => {
                                         "message": 'Requester not found.'
                                     });
                                 }
-
-                                var addedAmt = (Number(result.balanceAmount) + Number(req.body.amount)).toFixed(2);
-                                UserModel.patchUser(result.id, {"balanceAmount": addedAmt}).then(() => {
-                                    console.log("Transaction success!");
-                                    UserModel.patchTransaction(req.body.objectId, {type: 2});
-                                    return res.status(200).send({
-                                        "error": false,
-                                        "message": 'Transaction success.'
-                                    });
-                                });
                             }
                         });
                     }
