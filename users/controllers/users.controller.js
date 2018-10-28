@@ -460,29 +460,27 @@ exports.payment = (req, res) => {
                     }else {
                         let deductedAmt = parseFloat(jwtResult.balanceAmount).toFixed(2) - parseFloat(trans[0].amount).toFixed(2);
                         console.log(deductedAmt + " "+ jwtResult.balanceAmount + " "+trans[0].amount );
-                        UserModel.patchUser(jwtResult.id, {"balanceAmount": deductedAmt})
-                            .then(() => {
-                                // UserModel.patchTransaction(req.body.objectId, {type: req.body.request, read: true});
 
-                                UserModel.findByPhone(trans[0].fromId).then((result) => {
-                                    if (!result || result == null) {
-                                        res.status(200).send({
-                                            "error": true,
-                                            "message": 'Requester not found.'
-                                        });
-                                    }
-
-                                    var addedAmt = (Number(result.balanceAmount) + Number(req.body.amount)).toFixed(2);
-                                    UserModel.patchUser(result.id, {"balanceAmount": addedAmt}).then(() => {
-                                        console.log("Transaction success!");
-                                        UserModel.patchTransaction(req.body.objectId, {type: 2});
-                                        return res.status(200).send({
-                                            "error": false,
-                                            "message": 'Transaction success.'
-                                        });
+                        UserModel.patchUser(jwtResult.id, {"balanceAmount": deductedAmt}) .then(() => {
+                            UserModel.findByPhone(trans[0].fromId).then((result) => {
+                                if (!result || result == null) {
+                                    res.status(200).send({
+                                        "error": true,
+                                        "message": 'Requester not found.'
                                     });
                                 }
-                            });
+
+                                var addedAmt = (Number(result.balanceAmount) + Number(req.body.amount)).toFixed(2);
+                                UserModel.patchUser(result.id, {"balanceAmount": addedAmt}).then(() => {
+                                    console.log("Transaction success!");
+                                    UserModel.patchTransaction(req.body.objectId, {type: 2});
+                                    return res.status(200).send({
+                                        "error": false,
+                                        "message": 'Transaction success.'
+                                    });
+                                });
+                            }
+                        });
                     }
                 });
             }
