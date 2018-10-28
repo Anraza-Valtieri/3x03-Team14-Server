@@ -248,7 +248,7 @@ exports.topUp = (req, res) => {
                     if(req.body.topUpAmt < 0){ res.status(200).send({"error": true, "message": 'Value Invalid.'}); }
                     if(req.body.topUpAmt > 99999.99){res.status(200).send({"error": true, "message": 'Value too large.'}); }
                     else {
-                        var totalAmt = Number(result.balanceAmount)+Number(req.body.topUpAmt);
+                        var totalAmt = (Number(result.balanceAmount)+Number(req.body.topUpAmt)).toFixed(2);
                         // console.log(totalAmt+ " "+ result.id);
                         UserModel.patchUser(result.id, {balanceAmount: totalAmt})
                             .then(() => {
@@ -328,7 +328,7 @@ exports.billConfirm = (req, res) => {
                                     for (var i = 0; i < trans.length; i++) {
                                         let amt = Number(trans[i].amount);
                                         UserModel.findByPhone(trans[i].toId).then((result) => {
-                                            amt = Number(amt) + Number(result.balanceAmount);
+                                            amt = (Number(amt) + Number(result.balanceAmount)).toFixed(2);
                                             UserModel.patchUser(result._id, {balanceAmount: amt});
                                         });
                                     }
@@ -341,7 +341,7 @@ exports.billConfirm = (req, res) => {
                                             UserModel.patchTransaction(trans2[j]._id, {type: 7, read: false});
                                         }
                                     }
-                                    UserModel.findTransFromWithType(jwtResult.id, 0).then((trans3) => {
+                                    UserModel.findTransFromWithType(jwtResult.id, 1).then((trans3) => {
                                         if (trans3 != null) {
                                             console.log("trans3: " + trans3);
                                             for (var k = 0; k < trans3.length; k++) {
@@ -386,7 +386,7 @@ exports.billConfirm = (req, res) => {
                                     for (var j = 0; j < trans2.length; j++) {
                                         console.log("Deducted " + trans2[j].amount + " from " + jwtResult.phoneNo);
 
-                                        let deductedAmt = Number(jwtResult.balanceAmount) - Number(trans2[j].amount);
+                                        let deductedAmt = (Number(jwtResult.balanceAmount) - Number(trans2[j].amount)).toFixed(2);
                                         let pointsGained = parseFloat(trans2[j].amount) / Number(5);
                                         pointsGained = Math.round(pointsGained).toFixed(0);
                                         console.log("Adding " + pointsGained + " points from " + trans2[j].amount);
