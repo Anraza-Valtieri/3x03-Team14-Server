@@ -28,7 +28,7 @@ exports.insert = (req, res) => {
 
     // if(/^([a-zA-Z]+([ /]?[a-zA-Z]+)*)+S/.test(req.body.lastName) == false){
     let lastNameReg = /^([a-zA-Z]+([ /]?[a-zA-Z]+)*)+$/;
-    if(!req.body.lastName.match(lastNameReg) || req.body.lastName.length > 50){
+    if(!req.body.lastName.match(lastNameReg)){
         console.log("CANNOT lastName pattern does not match pattern " + req.body.lastName);
         return res.status(200).send({error: true, message: "lastName fail"});
     }
@@ -460,17 +460,16 @@ exports.payment = (req, res) => {
                     }else {
                         let deductedAmt = parseFloat(jwtResult.balanceAmount).toFixed(2) - parseFloat(trans[0].amount).toFixed(2);
                         console.log(deductedAmt + " "+ jwtResult.balanceAmount + " "+trans[0].amount );
-
-                        UserModel.patchUser(jwtResult.id, {"balanceAmount": deductedAmt}) .then(() => {
-                            UserModel.findByPhone(trans[0].fromId).then((result) => {
-                                if (!result || result == null) {
-                                    res.status(200).send({
-                                        "error": true,
-                                        "message": 'Requester not found.'
-                                    });
-                                }
-                            }
-                        });
+                        UserModel.patchUser(jwtResult.id, {"balanceAmount": deductedAmt})
+                            .then(() => {
+                                // UserModel.patchTransaction(req.body.objectId, {type: req.body.request, read: true});
+                                console.log("Transaction success!");
+                                UserModel.patchTransaction(req.body.objectId, {type: 2});
+                                return res.status(200).send({
+                                    "error": false,
+                                    "message": 'Transaction success.'
+                                });
+                            });
                     }
                 });
             }
@@ -720,10 +719,10 @@ exports.qrFunction = (req, res) => {
 }
 
 {
-	qrString: "asdasdasdas",
-	initiator: "91234567",
-	splitBetween: ["91234567", "anotherNumber1", "anotherNumber2"]
-	splitAmount: ["amount", "amount1", "amount2"]
+    qrString: "asdasdasdas",
+    initiator: "91234567",
+    splitBetween: ["91234567", "anotherNumber1", "anotherNumber2"]
+    splitAmount: ["amount", "amount1", "amount2"]
 }
  */
 exports.payMerchant = (req, res) => {
@@ -960,6 +959,5 @@ exports.request = (req, res) => {
         });
     }
 };
-
 
 
