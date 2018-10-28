@@ -468,6 +468,10 @@ exports.payment = (req, res) => {
                                         console.log("1: " + result.balanceAmount);
                                         var addedAmt = (parseFloat(result.balanceAmount) + parseFloat(trans[0].amount)).toFixed(2);
                                         console.log("2: addedAmt: " + addedAmt);
+                                        UserModel.patchUser(result.id, {"balanceAmount": addedAmt}).then(() => {
+                                            console.log("3: patched");
+                                            
+                                        });
                                     }
                                 });
 
