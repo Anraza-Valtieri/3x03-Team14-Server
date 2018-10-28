@@ -333,7 +333,7 @@ exports.findAll = () => {
                 return null;
             }else {
                 // console.log("result: %j", result);
-                result = result.toJSON();
+                // result = result.toJSON();
                 delete result._id;
                 delete result.__v;
                 return result;
