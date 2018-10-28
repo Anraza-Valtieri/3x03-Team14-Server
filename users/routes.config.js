@@ -23,6 +23,39 @@ exports.routesConfig = function (app) {
         res.end("Nothing here - Anraza-Valtieri\n");
     });
 
+    app.get('/mongo', function(req, res) {
+        res.writeHead(200, {"Content-Type": "text/plain"});
+        res.end("Here have a mango - Anraza-Valtieri\n");
+    });
+
+    app.get('/mongodb', function(req, res) {
+        res.writeHead(200, {"Content-Type": "text/plain"});
+        res.end("Only Mangos in DB here - Anraza-Valtieri\n");
+    });
+
+    app.get('/delete', function(req, res) {
+        res.writeHead(200, {"Content-Type": "text/plain"});
+        res.end("Ooo Why... - Anraza-Valtieri\n");
+    });
+
+    app.get('/junwei', function(req, res) {
+        res.writeHead(200, {"Content-Type": "text/plain"});
+        response.writeHead(301,
+            {Location: 'https://www.youtube.com/watch?v=ikBrfCUbkfs'}
+        );
+        res.end("He is such a fair god - Anraza-Valtieri\n");
+
+    });
+
+    app.get('/woof', function(req, res) {
+        response.writeHead(301,
+            {Location: 'https://corgiorgy.com/'}
+        );
+        response.end();
+        // res.writeHead(200, {"Content-Type": "text/plain"});
+        // res.end("He is such a fair god - Anraza-Valtieri\n");
+    });
+
     app.get('/.well-known/acme-challenge/llM7LhDy0hEh2qeffEBFSUWubJa197t6FTiDZxOin98', function(req, res) {
         res.sendFile(__dirname+'/llM7LhDy0hEh2qeffEBFSUWubJa197t6FTiDZxOin98');
     });
@@ -104,12 +137,7 @@ exports.routesConfig = function (app) {
         UsersController.insert
     ]);
 
-    app.post('/resetAll', [
-        ValidationMiddleware.validJWTNeeded,
-        // PermissionMiddleware.minimumPermissionLevelRequired(ADMIN),
-        UsersController.deleteAll
-    ]);
-    app.get('/users', [
+    /*app.get('/users', [
         ValidationMiddleware.validJWTNeeded,
         PermissionMiddleware.minimumPermissionLevelRequired(ADMIN),
         UsersController.list
@@ -130,5 +158,5 @@ exports.routesConfig = function (app) {
         ValidationMiddleware.validJWTNeeded,
         PermissionMiddleware.minimumPermissionLevelRequired(ADMIN),
         UsersController.removeById
-    ]);
+    ]);*/
 };
