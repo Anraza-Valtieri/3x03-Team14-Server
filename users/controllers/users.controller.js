@@ -269,7 +269,7 @@ exports.billConfirm = (req, res) => {
                     "error": true,
                     "message": 'No user.'
                 });
-            }else {
+            } else {
                 // CLIENT -> SERVER (pull details of those who accepted the split)
                 console.log("req.body.request: " + req.body.request);
                 if (req.body.request == 0) {
@@ -315,38 +315,38 @@ exports.billConfirm = (req, res) => {
                 if (req.body.request == 2) {
                     console.log("In Two");
                     console.log("CLIENT -> SERVER (cancel payment)");
-                    UserModel.findTransFromWithType(jwtResult.phoneNo, 4).then((trans) => {
-                        if (trans != null) {
-                            console.log("trans: "+trans);
-                            for (var i = 0; i < trans.length; i++) {
-                                let amt = Number(trans[i].amount);
-                                UserModel.findByPhone(trans[i].toId).then((result) => {
-                                    amt = Number(amt)+Number(result.balanceAmount);
-                                    UserModel.patchUser(result._id, {balanceAmount: amt});
-                                });
+                    UserModel.findTransFromWithType(jwtResult.id, 8).then((trans4) => {
+                        if (trans4 != null) {
+                            console.log("trans4: " + trans4);
+                            for (var k = 0; k < trans4.length; k++) {
+                                console.log("Deleted a type 8!" + trans4);
+                                UserModel.removeTransById(trans4[k]._id);
                             }
-                            UserModel.findTransFromWithType(jwtResult.phoneNo, 4).then((trans2) => {
-                                if (trans2 != null) {
-                                    console.log("trans2: "+trans2);
-                                    for (var j = 0; j < trans2.length; j++) {
-                                        console.log("Setting " + trans2[j]._id + " as type 7");
-                                        UserModel.patchTransaction(trans2[j]._id, {type: 7, read: false});
+                            UserModel.findTransFromWithType(jwtResult.phoneNo, 4).then((trans) => {
+                                if (trans != null) {
+                                    console.log("trans: " + trans);
+                                    for (var i = 0; i < trans.length; i++) {
+                                        let amt = Number(trans[i].amount);
+                                        UserModel.findByPhone(trans[i].toId).then((result) => {
+                                            amt = Number(amt) + Number(result.balanceAmount);
+                                            UserModel.patchUser(result._id, {balanceAmount: amt});
+                                        });
                                     }
                                 }
-                                UserModel.findTransFromWithType(jwtResult.id, 0).then((trans3) => {
-                                    if(trans3 != null) {
-                                        console.log("trans3: "+trans3);
-                                        for (var k = 0; k < trans3.length; k++) {
-                                            console.log("Deleted a type 0!" + trans3);
-                                            UserModel.removeTransById(trans3[k]._id);
+                                UserModel.findTransFromWithType(jwtResult.phoneNo, 4).then((trans2) => {
+                                    if (trans2 != null) {
+                                        console.log("trans2: " + trans2);
+                                        for (var j = 0; j < trans2.length; j++) {
+                                            console.log("Setting " + trans2[j]._id + " as type 7");
+                                            UserModel.patchTransaction(trans2[j]._id, {type: 7, read: false});
                                         }
                                     }
-                                    UserModel.findTransFromWithType(jwtResult.id, 8).then((trans4) => {
-                                        if(trans4 != null) {
-                                            console.log("trans4: "+trans4);
-                                            for (var k = 0; k < trans4.length; k++) {
-                                                console.log("Deleted a type 8!" + trans4);
-                                                UserModel.removeTransById(trans4[k]._id);
+                                    UserModel.findTransFromWithType(jwtResult.id, 0).then((trans3) => {
+                                        if (trans3 != null) {
+                                            console.log("trans3: " + trans3);
+                                            for (var k = 0; k < trans3.length; k++) {
+                                                console.log("Deleted a type 0!" + trans3);
+                                                UserModel.removeTransById(trans3[k]._id);
                                             }
                                         }
                                         return res.status(200).send({
@@ -355,9 +355,6 @@ exports.billConfirm = (req, res) => {
                                     });
                                 });
                             });
-
-
-
                         }else{
                             return res.status(200).send({
                                 "error": true,
