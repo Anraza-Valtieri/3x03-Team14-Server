@@ -341,7 +341,7 @@ exports.billConfirm = (req, res) => {
                                             UserModel.patchTransaction(trans2[j]._id, {type: 7, read: false});
                                         }
                                     }
-                                    UserModel.findTransFromWithType(jwtResult.id, 1).then((trans3) => {
+                                    UserModel.findTransFromWithType(jwtResult.phoneNo, 1).then((trans3) => {
                                         if (trans3 != null) {
                                             console.log("trans3: " + trans3);
                                             for (var k = 0; k < trans3.length; k++) {
@@ -371,10 +371,11 @@ exports.billConfirm = (req, res) => {
                         console.log("PAY MERCH " + trans);
                         if (trans != null) {
                             for (var i = 0; i < trans.length; i++) {
+                                var amountCost = trans[i].amount;
+                                let pointsGained = parseFloat(amountCost) / Number(5);
+                                pointsGained = Math.round(pointsGained).toFixed(0);
                                 UserModel.findByPhone(trans[i].toId).then((result) => {
-                                    let pointsGained = parseFloat(trans[i].amount) / Number(5);
-                                    pointsGained = Math.round(pointsGained).toFixed(0);
-                                    console.log("Adding " + pointsGained + " points from " + trans[i].amount);
+                                    console.log("Adding " + pointsGained + " points from " + amountCost);
                                     let totalPoints = Number(result.points) + Number(pointsGained);
                                     UserModel.patchUser(result._id, {points: totalPoints});
                                 });
@@ -894,10 +895,10 @@ exports.deleteAll = (req, res) => {
                 "message": 'Invalid.'
             });
         } else
-            UserModel.delAll();
+            // UserModel.delAll();
             res.status(200).send({
                 "error": false,
-                "message": 'IT IS SNAPPED.'
+                "message": 'IT IS SNAPPED. But you are not thanos'
             });
     });
 };
