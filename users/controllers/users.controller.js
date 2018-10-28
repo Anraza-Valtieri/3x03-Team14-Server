@@ -463,7 +463,10 @@ exports.payment = (req, res) => {
                         UserModel.patchUser(jwtResult.id, {"balanceAmount": deductedAmt}).then(() => {
                                 // UserModel.patchTransaction(req.body.objectId, {type: req.body.request, read: true});
                                 UserModel.findByPhone(trans[0].fromId).then((result) => {
-                                    
+                                    console.log("0: " + result.id);
+                                    if (!result || result == null) {
+                                        console.log("1: " + result.balanceAmount);
+                                    }
                                 });
 
                                 console.log("Transaction success!");
