@@ -463,14 +463,17 @@ exports.payment = (req, res) => {
                         UserModel.patchUser(jwtResult.id, {"balanceAmount": deductedAmt}).then(() => {
                             // UserModel.patchTransaction(req.body.objectId, {type: req.body.request, read: true});
                             UserModel.findByPhone(trans[0].fromId).then((result) => {
+                                console.log("------ 1");
                                 if (!result || result == null) {
+                                    console.log("------ 2");
                                     res.status(200).send({
                                         "error": true,
                                         "message": 'Requester not found.'
                                     });
                                 }
-
+                                console.log("------ 3");
                                 var addedAmt = (Number(result.balanceAmount) + Number(req.body.amount)).toFixed(2);
+                                console.log("------ 4");
                                 UserModel.patchUser(result.id, {"balanceAmount": addedAmt}).then(() => {
                                     console.log("Transaction success!");
                                     UserModel.patchTransaction(req.body.objectId, {type: 2});
