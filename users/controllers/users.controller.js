@@ -41,7 +41,7 @@ exports.insert = (req, res) => {
     }
     // if(/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[-!$%^&*()_+|~=`{}\[\]:";'<>?,.\/]).{8,50}$/.test(req.body.password) == false){
     let passReg = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[-!$%^&*()_+|~=`{}\[\]:";'<>?,.\/]).{8,50}$/;
-    if(!req.body.phoneNo.match(passReg)){
+    if(!req.body.password.match(passReg)){
         console.log("CANNOT Password pattern does not match pattern " + req.body.password);
         return res.status(200).send({error: true, message: "Password fail"});
     }
