@@ -40,7 +40,7 @@ exports.routesConfig = function (app) {
 
     app.get('/junwei', function(req, res) {
         res.writeHead(200, {"Content-Type": "text/plain"});
-        response.writeHead(301,
+        res.writeHead(301,
             {Location: 'https://www.youtube.com/watch?v=ikBrfCUbkfs'}
         );
         res.end("He is such a fair god - Anraza-Valtieri\n");
@@ -48,10 +48,10 @@ exports.routesConfig = function (app) {
     });
 
     app.get('/woof', function(req, res) {
-        response.writeHead(301,
+        res.writeHead(301,
             {Location: 'https://corgiorgy.com/'}
         );
-        response.end();
+        res.end();
         // res.writeHead(200, {"Content-Type": "text/plain"});
         // res.end("He is such a fair god - Anraza-Valtieri\n");
     });
