@@ -14,6 +14,16 @@ var async = require("async");
 // });
 
 let knownNumbers = [];
+UserModel.findAll().then((scanned) => {
+    console.log("Loading user accounts");
+    if(scanned != null){
+        for(let i = 0; i < scanned.length; i++){
+            knownNumbers.push(scanned[i].phoneNo);
+        }
+        console.log("Loaded "+scanned.length+" user accounts");
+    }
+
+});
 
 
 exports.insert = (req, res) => {
@@ -63,6 +73,8 @@ exports.insert = (req, res) => {
             if(!result || result === 0){res.status(200).send({"error": true,
                 "message": 'Number already exist!'});}
             else{
+                knownNumbers.push(req.body.phoneNo);
+                console.log("Adding "+ req.body.phoneNo + " to knownNumbers");
                 res.status(200).send({"error": false, id: result._id});
             }
         });
@@ -794,18 +806,25 @@ exports.payMerchant = (req, res) => {
                                             console.log("req.body.splitBetween.includes(jwtResult.phoneNo.toString() FALSE");
                                             for (let z = 0; z < req.body.splitBetween.length; z++) {
                                                 console.log(z);
-                                                UserModel.findByPhone(req.body.splitBetween[z]).then((result) => {
-                                                    if (result == null) {
-                                                        console.log("We are missing this number " + req.body.splitBetween[z]);
-                                                        // transArray.push(req.body.splitBetween[z]);
-                                                        // callback();
-                                                        return res.status(200).send({
-                                                            "error": true,
-                                                            "message": 'Some phone numbers does not exist.',
-                                                            "numbers": req.body.splitBetween[z]
-                                                        });
-                                                    }
-                                                });
+                                                if (knownNumbers.includes(req.body.splitBetween[z])){
+                                                    return res.status(200).send({
+                                                        "error": true,
+                                                        "message": 'Some phone numbers does not exist.',
+                                                        "numbers": req.body.splitBetween[z]
+                                                    });
+                                                }
+                                                // UserModel.findByPhone(req.body.splitBetween[z]).then((result) => {
+                                                //     if (result == null) {
+                                                //         console.log("We are missing this number " + req.body.splitBetween[z]);
+                                                //         // transArray.push(req.body.splitBetween[z]);
+                                                //         // callback();
+                                                //         return res.status(200).send({
+                                                //             "error": true,
+                                                //             "message": 'Some phone numbers does not exist.',
+                                                //             "numbers": req.body.splitBetween[z]
+                                                //         });
+                                                //     }
+                                                // });
                                                 if (z == req.body.splitBetween.length - 1) {
                                                     console.log("Z-1");
                                                     if (transArray.length > 0) {
