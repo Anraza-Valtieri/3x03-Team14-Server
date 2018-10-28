@@ -400,7 +400,7 @@ exports.billConfirm = (req, res) => {
                                 }
                             }
                         });
-                        UserModel.findTransFromWithType(jwtResult.id, 1).then((trans3) => {
+                        UserModel.findTransFromWithType(jwtResult.phoneNo, 1).then((trans3) => {
                             if(trans3 != null) {
                                 for (var k = 0; k < trans3.length; k++) {
                                     console.log("Deleted a type 1!" + trans3);
