@@ -800,11 +800,11 @@ exports.payMerchant = (req, res) => {
                                                         console.log("We are missing this number " + req.body.splitBetween[n]);
                                                         transArray.push(req.body.splitBetween[n]);
                                                         // callback();
-                                                        return res.status(200).send({
-                                                            "error": true,
-                                                            "message": 'Some phone numbers does not exist.',
-                                                            "numbers": req.body.splitBetween[n]
-                                                        });
+                                                        // return res.status(200).send({
+                                                        //     "error": true,
+                                                        //     "message": 'Some phone numbers does not exist.',
+                                                        //     "numbers": req.body.splitBetween[n]
+                                                        // });
                                                     }
                                                 });
                                             }, function() {
