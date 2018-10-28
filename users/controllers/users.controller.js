@@ -34,7 +34,7 @@ exports.insert = (req, res) => {
     }
 
     // if(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,6}$/.test(req.body.email) == false){
-    let emailReg = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,6}$/;
+    let emailReg = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
     if(!req.body.email.match(emailReg)){
         console.log("CANNOT email pattern does not match pattern " + req.body.email);
         return res.status(200).send({error: true, message: "email fail"});
