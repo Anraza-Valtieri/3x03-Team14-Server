@@ -21,34 +21,34 @@ exports.insert = (req, res) => {
 
     // if(/^([a-zA-Z]+([ /]?[a-zA-Z]+)*)+S/.test(req.body.firstName) == true){
     var firstNameReg = /^([a-zA-Z]+([ /]?[a-zA-Z]+)*)+$/;
-    if(req.body.firstName.match(firstNameReg)){
+    if(!req.body.firstName.match(firstNameReg)){
         console.log("CANNOT firstName pattern does not match pattern " + req.body.firstName);
         return res.status(200).send({error: true, message: "firstName fail"});
     }
 
     // if(/^([a-zA-Z]+([ /]?[a-zA-Z]+)*)+S/.test(req.body.lastName) == false){
     let lastNameReg = /^([a-zA-Z]+([ /]?[a-zA-Z]+)*)+$/;
-    if(req.body.lastName.match(lastNameReg)){
+    if(!req.body.lastName.match(lastNameReg)){
         console.log("CANNOT lastName pattern does not match pattern " + req.body.lastName);
         return res.status(200).send({error: true, message: "lastName fail"});
     }
 
     // if(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,6}$/.test(req.body.email) == false){
-    let emailReg = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,6}$/;
+    let! emailReg = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,6}$/;
     if(req.body.email.match(emailReg)){
         console.log("CANNOT email pattern does not match pattern " + req.body.email);
         return res.status(200).send({error: true, message: "email fail"});
     }
     // if(/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[-!$%^&*()_+|~=`{}\[\]:";'<>?,.\/]).{8,50}$/.test(req.body.password) == false){
     let passReg = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[-!$%^&*()_+|~=`{}\[\]:";'<>?,.\/]).{8,50}$/;
-    if(req.body.phoneNo.match(passReg)){
+    if(!req.body.phoneNo.match(passReg)){
         console.log("CANNOT Password pattern does not match pattern " + req.body.password);
         return res.status(200).send({error: true, message: "Password fail"});
     }
 
     // if(/^([89][0-9]{7})$/.test(req.body.phoneNo) == false){
     let phoneReg = /^([89][0-9]{7})$/;
-    if(req.body.phoneNo.match(phoneReg) == false){
+    if(!req.body.phoneNo.match(phoneReg) == false){
         console.log("CANNOT Phone does not match pattern " + req.body.phoneNo);
         return res.status(200).send({error: true, message: "phone fail"});
     }
