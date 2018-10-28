@@ -48,7 +48,7 @@ exports.insert = (req, res) => {
 
     // if(/^([89][0-9]{7})$/.test(req.body.phoneNo) == false){
     let phoneReg = /^([89][0-9]{7})$/;
-    if(!req.body.phoneNo.match(phoneReg) == false){
+    if(!req.body.phoneNo.match(phoneReg)){
         console.log("CANNOT Phone does not match pattern " + req.body.phoneNo);
         return res.status(200).send({error: true, message: "phone fail"});
     }
