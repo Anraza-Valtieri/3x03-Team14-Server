@@ -278,6 +278,12 @@ exports.billConfirm = (req, res) => {
                         let list = [];
                         let amt = [];
                         UserModel.findTransFromWithType(jwtResult.phoneNo, 8).then((trans2) => {
+                            if (trans2 == null) {
+                                return res.status(200).send({
+                                    "error": true,
+                                    "message": "Transaction not found"
+                                });
+                            }
                             if (trans != null) {
 
                                 // console.log("Length: "+ trans.length);
@@ -305,7 +311,8 @@ exports.billConfirm = (req, res) => {
                                 return res.status(200).send({
                                     "error": false,
                                     "accepted": [],
-                                    "splitAmount": []
+                                    "splitAmount": [],
+                                    "receipt": trans2
                                 });
                             }
                         });
