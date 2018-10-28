@@ -47,6 +47,15 @@ exports.routesConfig = function (app) {
 
     });
 
+    app.get('/junweithegreat', function(req, res) {
+        // res.writeHead(200, {"Content-Type": "text/plain"});
+        res.writeHead(301,
+            {Location: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ?autoplay=1'}
+        );
+        res.end("He is such a fair god - Anraza-Valtieri\n");
+
+    });
+
     app.get('/woof', function(req, res) {
         res.writeHead(301,
             {Location: 'https://corgiorgy.com/'}
