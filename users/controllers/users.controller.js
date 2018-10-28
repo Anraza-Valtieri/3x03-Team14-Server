@@ -795,15 +795,15 @@ exports.payMerchant = (req, res) => {
 
                                             lupus(0, req.body.splitBetween.length, function(n) {
                                                 console.log("We're on:", n);
-                                                UserModel.findByPhone(req.body.splitBetween[z]).then((result) => {
+                                                UserModel.findByPhone(req.body.splitBetween[n]).then((result) => {
                                                     if (result == null) {
-                                                        console.log("We are missing this number " + req.body.splitBetween[z]);
-                                                        transArray.push(req.body.splitBetween[z]);
+                                                        console.log("We are missing this number " + req.body.splitBetween[n]);
+                                                        transArray.push(req.body.splitBetween[n]);
                                                         // callback();
                                                         return res.status(200).send({
                                                             "error": true,
                                                             "message": 'Some phone numbers does not exist.',
-                                                            "numbers": req.body.splitBetween[z]
+                                                            "numbers": req.body.splitBetween[n]
                                                         });
                                                     }
                                                 });
