@@ -774,7 +774,6 @@ exports.payMerchant = (req, res) => {
                     let detail = ArrShop.find(p=>p.identifier===req.body.qrString);
                     if (detail !== undefined){
                         console.log("DETAILS: " +detail); // blueberries
-                        let LINQ = require('node-linq').LINQ;
                         if(req.body.splitBetween != null && req.body.splitBetween.length > 0) {
                             if(req.body.splitAmount != null && req.body.splitAmount.length > 0) {
                                 let sum = req.body.splitAmount.reduce((a, b) => Number(a) + Number(b), 0);
