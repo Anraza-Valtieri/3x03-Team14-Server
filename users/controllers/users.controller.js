@@ -21,7 +21,7 @@ exports.insert = (req, res) => {
 
     // if(/^([a-zA-Z]+([ /]?[a-zA-Z]+)*)+S/.test(req.body.firstName) == true){
     var firstNameReg = /^([a-zA-Z]+([ /]?[a-zA-Z]+)*)+$/;
-    if(!req.body.firstName.match(firstNameReg)){
+    if(!"kWn".match(firstNameReg)){
         console.log("CANNOT firstName pattern does not match pattern " + req.body.firstName);
         return res.status(200).send({error: true, message: "firstName fail"});
     }
