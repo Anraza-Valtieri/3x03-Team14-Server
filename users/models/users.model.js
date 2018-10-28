@@ -42,10 +42,6 @@ userSchema.findById = function (cb) {
     return this.model('Users').find({id: this.id}, cb);
 };
 
-userSchema.statics.findAll = function (cb) {
-    return this.model('Users').find({}, cb);
-};
-
 userSchema.statics.findByPhone = function (res,cb) {
     return this.model('Users').findOne({"phoneNo": res}, cb);
 };
@@ -313,21 +309,6 @@ exports.findTbyEmail2 = (email) => {
 
 exports.findById = (id) => {
     return User.findById(id)
-        .then((result) => {
-            if(result == null || !result || result.length <= 0){
-                return null;
-            }else {
-                // console.log("result: %j", result);
-                result = result.toJSON();
-                delete result._id;
-                delete result.__v;
-                return result;
-            }
-        });
-};
-
-exports.findAll = () => {
-    return User.findAll()
         .then((result) => {
             if(result == null || !result || result.length <= 0){
                 return null;
