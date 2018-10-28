@@ -581,7 +581,7 @@ exports.pay = (req, res) => {
                                 }
                                 else {
                                     if (req.body.amount > result.balanceAmount) {
-                                        res.status(500).send({
+                                        res.status(200).send({
                                             "error": true,
                                             "message": 'Amount too high.'
                                         });
