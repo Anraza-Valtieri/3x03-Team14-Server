@@ -21,14 +21,14 @@ exports.insert = (req, res) => {
 
     // if(/^([a-zA-Z]+([ /]?[a-zA-Z]+)*)+S/.test(req.body.firstName) == true){
     var firstNameReg = /^([a-zA-Z]+([ /]?[a-zA-Z]+)*)+$/;
-    if(!req.body.firstName.match(firstNameReg)){
+    if(!req.body.firstName.match(firstNameReg) || req.body.firstName.length > 50){
         console.log("CANNOT firstName pattern does not match pattern " + req.body.firstName);
         return res.status(200).send({error: true, message: "firstName fail"});
     }
 
     // if(/^([a-zA-Z]+([ /]?[a-zA-Z]+)*)+S/.test(req.body.lastName) == false){
     let lastNameReg = /^([a-zA-Z]+([ /]?[a-zA-Z]+)*)+$/;
-    if(!req.body.lastName.match(lastNameReg)){
+    if(!req.body.lastName.match(lastNameReg) || req.body.firstName.length > 50){
         console.log("CANNOT lastName pattern does not match pattern " + req.body.lastName);
         return res.status(200).send({error: true, message: "lastName fail"});
     }
