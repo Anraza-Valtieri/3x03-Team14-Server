@@ -382,40 +382,36 @@ exports.billConfirm = (req, res) => {
                                 console.log("Setting " + trans[i]._id + " as type 6");
                                 UserModel.patchTransaction(trans[i]._id, {type: 6, read: false});
                             }
-                            UserModel.findTransFromWithType(jwtResult.phoneNo, 8).then((trans2) => {
-                                if (trans2 != null) {
-                                    for (var j = 0; j < trans2.length; j++) {
-                                        console.log("Deducted " + trans2[j].amount + " from " + jwtResult.phoneNo);
-
-                                        let deductedAmt = (Number(jwtResult.balanceAmount) - Number(trans2[j].amount)).toFixed(2);
-                                        let pointsGained = parseFloat(trans2[j].amount) / Number(5);
-                                        pointsGained = Math.round(pointsGained).toFixed(0);
-                                        console.log("Adding " + pointsGained + " points from " + trans2[j].amount);
-                                        let totalPoints = Number(jwtResult.points) + Number(pointsGained);
-                                        UserModel.patchUser(jwtResult.id, {balanceAmount: deductedAmt, points: totalPoints});
-
-                                        console.log("Deleted a type 8!" + trans2);
-                                        UserModel.removeTransById(trans2[j]._id);
-                                    }
-                                }
-                            });
-                            UserModel.findTransFromWithType(jwtResult.id, 1).then((trans3) => {
-                                if(trans3 != null) {
-                                    for (var k = 0; k < trans3.length; k++) {
-                                        console.log("Deleted a type 1!" + trans3);
-                                        UserModel.removeTransById(trans3[k]._id);
-                                    }
-                                }
-                            });
-                            return res.status(200).send({
-                                "error": false
-                            });
-                        }else{
-                            return res.status(200).send({
-                                "error": true,
-                                "message": "No transactions"
-                            });
                         }
+                        UserModel.findTransFromWithType(jwtResult.phoneNo, 8).then((trans2) => {
+                            if (trans2 != null) {
+                                for (var j = 0; j < trans2.length; j++) {
+                                    console.log("Deducted " + trans2[j].amount + " from " + jwtResult.phoneNo);
+
+                                    let deductedAmt = (Number(jwtResult.balanceAmount) - Number(trans2[j].amount)).toFixed(2);
+                                    let pointsGained = parseFloat(trans2[j].amount) / Number(5);
+                                    pointsGained = Math.round(pointsGained).toFixed(0);
+                                    console.log("Adding " + pointsGained + " points from " + trans2[j].amount);
+                                    let totalPoints = Number(jwtResult.points) + Number(pointsGained);
+                                    UserModel.patchUser(jwtResult.id, {balanceAmount: deductedAmt, points: totalPoints});
+
+                                    console.log("Deleted a type 8!" + trans2);
+                                    UserModel.removeTransById(trans2[j]._id);
+                                }
+                            }
+                        });
+                        UserModel.findTransFromWithType(jwtResult.id, 1).then((trans3) => {
+                            if(trans3 != null) {
+                                for (var k = 0; k < trans3.length; k++) {
+                                    console.log("Deleted a type 1!" + trans3);
+                                    UserModel.removeTransById(trans3[k]._id);
+                                }
+                            }
+                        });
+                        return res.status(200).send({
+                            "error": false
+                        });
+                        
                     });
                 }
             }
