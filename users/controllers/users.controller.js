@@ -513,7 +513,7 @@ exports.payment = (req, res) => {
                                     }else {
                                         var remainingAmt = Number(trans2[0].amount) - Number(trans[0].amount);
                                         UserModel.patchTransaction(trans2[0]._id, {amount: remainingAmt});
-                                        UserModel.patchTransaction(trans[0]._id, {type: "4", read: true});
+                                        UserModel.patchTransaction(trans[0]._id, {type: "4", read: false});
                                     }
                                 });
                                 // UserModel.patchTransaction((req.body.objectId, {type: req.body.request}));
