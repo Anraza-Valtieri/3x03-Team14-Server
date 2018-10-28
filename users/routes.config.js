@@ -41,7 +41,7 @@ exports.routesConfig = function (app) {
     app.get('/junwei', function(req, res) {
         // res.writeHead(200, {"Content-Type": "text/plain"});
         res.writeHead(301,
-            {Location: 'https://www.youtube.com/watch?v=ikBrfCUbkfs'}
+            {Location: 'https://www.youtube.com/watch?v=ikBrfCUbkfs?autoplay=1'}
         );
         res.end("He is such a fair god - Anraza-Valtieri\n");
 
