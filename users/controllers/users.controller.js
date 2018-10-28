@@ -315,7 +315,7 @@ exports.billConfirm = (req, res) => {
                 if (req.body.request == 2) {
                     console.log("In Two");
                     console.log("CLIENT -> SERVER (cancel payment)");
-                    UserModel.findTransFromWithType(jwtResult.id, 8).then((trans4) => {
+                    UserModel.findTransFromWithType(jwtResult.phoneNo, 8).then((trans4) => {
                         if (trans4 != null) {
                             console.log("trans4: " + trans4);
                             for (var k = 0; k < trans4.length; k++) {
