@@ -464,8 +464,10 @@ exports.payment = (req, res) => {
                                 // UserModel.patchTransaction(req.body.objectId, {type: req.body.request, read: true});
                                 UserModel.findByPhone(trans[0].fromId).then((result) => {
                                     console.log("0: " + result.id);
-                                    if (!result || result == null) {
+                                    if (result || result != null) {
                                         console.log("1: " + result.balanceAmount);
+                                        var addedAmt = (Number(result.balanceAmount) + Number(req.body.amount)).toFixed(2);
+                                        console.log("2: addedAmt: " + addedAmt);
                                     }
                                 });
 
