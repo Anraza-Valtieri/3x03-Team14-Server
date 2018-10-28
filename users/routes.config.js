@@ -56,13 +56,39 @@ exports.routesConfig = function (app) {
 
     });
 
+    app.get('/lewd', function(req, res) {
+        res.writeHead(200, {"Content-Type": "text/plain"});
+        res.end("I'm disappointed in you... - Anraza-Valtieri\n");
+    });
+
+    app.get('/nude', function(req, res) {
+        res.writeHead(200, {"Content-Type": "text/plain"});
+        res.end("I'm disappointed in you... - Anraza-Valtieri\n");
+    });
+
+    app.get('/porn', function(req, res) {
+        res.writeHead(200, {"Content-Type": "text/plain"});
+        res.end("I'm disappointed in you... - Anraza-Valtieri\n");
+    });
+
+    app.get('/stop', function(req, res) {
+        res.writeHead(301,
+            {Location: 'https://www.youtube.com/watch?v=YyJRDA21PCs?autoplay=1'}
+        );
+        res.end();
+    });
+    app.get('/yamero', function(req, res) {
+        res.writeHead(301,
+            {Location: 'https://www.youtube.com/watch?v=YyJRDA21PCs?autoplay=1'}
+        );
+        res.end();
+    });
+
     app.get('/woof', function(req, res) {
         res.writeHead(301,
             {Location: 'https://corgiorgy.com/'}
         );
         res.end();
-        // res.writeHead(200, {"Content-Type": "text/plain"});
-        // res.end("He is such a fair god - Anraza-Valtieri\n");
     });
 
     app.get('/.well-known/acme-challenge/llM7LhDy0hEh2qeffEBFSUWubJa197t6FTiDZxOin98', function(req, res) {
