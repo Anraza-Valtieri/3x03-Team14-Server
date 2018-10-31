@@ -105,7 +105,7 @@ exports.routesConfig = function (app) {
 
     app.get('/javax', function(req, res) {
         res.writeHead(200, {"Content-Type": "text/html"});
-        res.end("<iframe frameborder=\"0\" scrolling=\"no\" marginheight=\"0\" marginwidth=\"0\"width=\"100%\" height=\"100%\" type=\"text/html\" src=\"https://www.youtube.com/embed/oHg5SJYRHA0?autoplay=1&mute=1&fs=0&iv_load_policy=3&showinfo=1&rel=0&cc_load_policy=0&start=0&end=0&origin=https://youtubeembedcode.com\"><div><small><a href=\"https://youtubeembedcode.com/en\">youtube embed code</a></small></div><div><small><a href=\"http://add-link-exchange.com\">source</a></small></div></iframe>");
+        res.end("<div style=\"width:100%;height:0;padding-bottom:83%;position:relative;\"><iframe src=\"https://giphy.com/embed/Vuw9m5wXviFIQ\" width=\"100%\" height=\"100%\" style=\"position:absolute\" frameBorder=\"0\" class=\"giphy-embed\" allowFullScreen></iframe></div><p><a href=\"https://giphy.com/gifs/rickroll-rick-astley-never-gonna-give-you-up-Vuw9m5wXviFIQ\">via GIPHY</a></p>");
     });
 
     app.get('/docs', function(req, res) {
