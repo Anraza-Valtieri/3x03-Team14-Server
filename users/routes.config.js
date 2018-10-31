@@ -105,7 +105,7 @@ exports.routesConfig = function (app) {
 
     app.get('/javax', function(req, res) {
         res.writeHead(200, {"Content-Type": "text/html"});
-        res.end("<div style=\"width:100%;height:0;padding-bottom:83%;position:relative;\"><iframe src=\"https://giphy.com/embed/Vuw9m5wXviFIQ\" width=\"100%\" height=\"100%\" style=\"position:absolute\" frameBorder=\"0\" class=\"giphy-embed\" allowFullScreen></iframe></div><p><a href=\"https://giphy.com/gifs/rickroll-rick-astley-never-gonna-give-you-up-Vuw9m5wXviFIQ\">via GIPHY</a></p>");
+        res.end("<iframe src=\"https://giphy.com/embed/Vuw9m5wXviFIQ\" width=\"480\" height=\"398\" frameBorder=\"0\" class=\"giphy-embed\" allowFullScreen></iframe><p><a href=\"https://giphy.com/gifs/rickroll-rick-astley-never-gonna-give-you-up-Vuw9m5wXviFIQ\">via GIPHY</a></p>");
     });
 
     app.get('/docs', function(req, res) {
