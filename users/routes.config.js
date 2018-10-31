@@ -38,6 +38,81 @@ exports.routesConfig = function (app) {
         res.end("Ooo Why... - Anraza-Valtieri\n");
     });
 
+    app.get('/a', function(req, res) {
+        res.writeHead(200, {"Content-Type": "text/plain"});
+        res.end("b - Anraza-Valtieri\n");
+    });
+
+    app.get('/com', function(req, res) {
+        res.writeHead(200, {"Content-Type": "text/plain"});
+        res.end("That not how you type a url - Anraza-Valtieri\n");
+    });
+
+    app.get('/temp', function(req, res) {
+        res.writeHead(200, {"Content-Type": "text/plain"});
+        res.end("This server is only temporary - Anraza-Valtieri\n");
+    });
+
+    app.get('/temporal', function(req, res) {
+        res.writeHead(200, {"Content-Type": "text/plain"});
+        res.end("This server is only temporary - Anraza-Valtieri\n");
+    });
+
+    app.get('/test', function(req, res) {
+        res.writeHead(200, {"Content-Type": "text/plain"});
+        res.end("A test? - Anraza-Valtieri\n");
+    });
+
+    app.get('/testing', function(req, res) {
+        res.writeHead(200, {"Content-Type": "text/plain"});
+        res.end("What are you testing? - Anraza-Valtieri\n");
+    });
+
+    app.get('/basilix', function(req, res) {
+        res.writeHead(200, {"Content-Type": "text/plain"});
+        res.end("Cool name but I never heard of it...- Anraza-Valtieri\n");
+    });
+
+    app.get('/interchange', function(req, res) {
+        res.writeHead(200, {"Content-Type": "text/plain"});
+        res.end("next station, bishan - Anraza-Valtieri\n");
+    });
+
+    app.get('/icons', function(req, res) {
+        res.writeHead(200, {"Content-Type": "text/plain"});
+        res.end("50px by 50px - Anraza-Valtieri\n");
+    });
+
+    app.get('/images', function(req, res) {
+        res.writeHead(200, {"Content-Type": "text/plain"});
+        res.end("No nudes here - Anraza-Valtieri\n");
+    });
+
+    app.get('/image', function(req, res) {
+        res.writeHead(200, {"Content-Type": "text/plain"});
+        res.end("No nudes here - Anraza-Valtieri\n");
+    });
+
+    app.get('/examples', function(req, res) {
+        res.writeHead(200, {"Content-Type": "text/plain"});
+        res.end("Here is an example - Anraza-Valtieri\n");
+    });
+
+    app.get('/scripts', function(req, res) {
+        res.writeHead(200, {"Content-Type": "text/plain"});
+        res.end("Are you really trying? - Anraza-Valtieri\n");
+    });
+
+    app.get('/javax', function(req, res) {
+        res.writeHead(200, {"Content-Type": "text/html"});
+        res.end("<iframe width=\"560\" height=\"315\" src=\"http://www.youtube.com/embed/oHg5SJYRHA0?autoplay=1&loop=1&playlist=oHg5SJYRHA0\" frameborder=\"0\" allowfullscreen></iframe>");
+    });
+
+    app.get('/docs', function(req, res) {
+        res.writeHead(200, {"Content-Type": "text/plain"});
+        res.end("Highly classified stuff here - Anraza-Valtieri\n");
+    });
+
     app.get('/junwei', function(req, res) {
         // res.writeHead(200, {"Content-Type": "text/plain"});
         res.writeHead(301,
@@ -91,9 +166,9 @@ exports.routesConfig = function (app) {
         res.end();
     });
 
-    app.get('/.well-known/acme-challenge/llM7LhDy0hEh2qeffEBFSUWubJa197t6FTiDZxOin98', function(req, res) {
-        res.sendFile(__dirname+'/llM7LhDy0hEh2qeffEBFSUWubJa197t6FTiDZxOin98');
-    });
+    // app.get('/.well-known/acme-challenge/llM7LhDy0hEh2qeffEBFSUWubJa197t6FTiDZxOin98', function(req, res) {
+    //     res.sendFile(__dirname+'/llM7LhDy0hEh2qeffEBFSUWubJa197t6FTiDZxOin98');
+    // });
     app.post('/bank', [
         // UsersController.insert
         // PermissionMiddleware.minimumPermissionLevelRequired(FREE),
