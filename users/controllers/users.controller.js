@@ -246,7 +246,7 @@ exports.topUp = (req, res) => {
                     return null;
                 } else {
                     console.log(result.firstName +" "+ result.lastName + " Requesting a topup of "+req.body.topUpAmt);
-                    if(req.body.topUpAmt < 0){ res.status(200).send({"error": true, "message": 'Value Invalid.'}); }
+                    if(req.body.topUpAmt < 0){ res.status(200).send({"error": true, "message": 'Value Invalid.'}); return null; }
                     if(req.body.topUpAmt > 99999.99){res.status(200).send({"error": true, "message": 'Value too large.'}); }
                     else {
                         var totalAmt = (Number(result.balanceAmount)+Number(req.body.topUpAmt)).toFixed(2);
