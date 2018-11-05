@@ -11,7 +11,8 @@ exports.login = (req, res) => {
     try {
         console.log("AUTH: "+req.body.email);
 
-        let token = jwt.sign(req.body, jwtSecret, { expiresIn: jwt_duration});
+        // let token = jwt.sign(req.body, jwtSecret, { expiresIn: jwt_duration});
+        let token = jwt.sign(req.body, new Buffer(jwtSecret, 'base64'), {expiresIn: jwt_duration});
         // console.log("AUTH SEND: " + token);
         arrayToken[req.body.email] = token;
         res.status(201).send({accessToken: token});
