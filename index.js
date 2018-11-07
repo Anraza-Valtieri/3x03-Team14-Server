@@ -4,7 +4,6 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
-var http = require('http');
 const https = require("https");
 const fs = require("fs");
 var helmet = require('helmet');
@@ -16,14 +15,15 @@ const UsersRouter = require('./users/routes.config');
 
 var options = {
     key: fs.readFileSync('./keys/privkey.pem'),
-    cert: fs.readFileSync('./keys/fullchain.pem')
+    cert: fs.readFileSync('./keys/fullchain.pem'),
+    ciphers: 'ECDHE-RSA-AES256-SHA:AES256-SHA:RC4-SHA:RC4:HIGH:!MD5:!aNULL:!EDH:!AESGCM',
+    honorCipherOrder: true
 };
 
 app.use(morgan('combined'));
 app.use(function (req, res, next){
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Credentials', 'true');
-    // res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DEconstE');
     res.header('Access-Control-Allow-Methods', 'GET,POST');
     res.header('Access-Control-Expose-Headers', 'Content-Length');
     res.header('Access-Control-Allow-Headers', 'Accept, Authorization, Content-Type, X-Requested-With, Range');

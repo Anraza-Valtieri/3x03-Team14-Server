@@ -2,8 +2,6 @@ const jwt = require('jsonwebtoken'),
     secret = require('../config/env.config.js').jwt_secret,
     crypto = require('crypto');
 
-const auth = require('../../authorization/controllers/authorization.controller').arrayToken;
-
 exports.verifyRefreshBodyField = (req, res, next) => {
     if (req.body && req.body.refresh_token) {
         return next();
@@ -42,12 +40,6 @@ exports.validJWTNeeded = (req, res, next) => {
                             console.error("JWT invalid");
                             return res.status(403).send(err);
                         } else {
-                            console.log(auth.arrayToken);
-                            // if(auth.arrayToken[decoded.email] != authorization[1]){
-                            //     console.error("MISMATCHING JWT USED");
-                            //     return res.status(403).send({"error": true,
-                            //         "message": 'Token provided invalid.'});
-                            // }
                             req.jwt = jwt.verify(authorization[1], new Buffer(secret, 'base64'));
                             return next();
                         }
