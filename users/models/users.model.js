@@ -349,16 +349,20 @@ exports.createUser = (userData) => {
                 if (result != null) {
                     console.log("CANNOT Account with Phone already exist " + userData.email);
                     return 0;
-                }});
-            const user = new User(userData);
-            // user._id = user.phoneNo;
-            user.balanceAmount = 0;
-            user.points = 0;
+                }
+                else{
+                    const user = new User(userData);
+                    // user._id = user.phoneNo;
+                    user.balanceAmount = 0;
+                    user.points = 0;
 
-            const nUser = user.save();
-            console.log("Create Account with Phone "+userData.phoneNo);
+                    const nUser = user.save();
+                    console.log("Create Account with Phone "+userData.phoneNo);
 
-            return nUser;
+                    return nUser;
+                }
+            });
+
         });
 };
 
