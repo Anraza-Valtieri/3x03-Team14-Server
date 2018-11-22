@@ -3,12 +3,12 @@ const jwtSecret = require('../../common/config/env.config.js').jwt_secret,
 const jwt_duration = require('../../common/config/env.config.js').jwt_expiration_in_seconds;
 const crypto = require('crypto');
 const UserModel = require('../../users/models/users.model');
-
 exports.login = (req, res) => {
     try {
         console.log("AUTH: "+req.body.email);
 
-        let token = jwt.sign(req.body, jwtSecret, { expiresIn: jwt_duration});
+        // let token = jwt.sign(req.body, jwtSecret, { expiresIn: jwt_duration});
+        let token = jwt.sign(req.body, new Buffer(jwtSecret, 'base64'), {expiresIn: jwt_duration});
         // console.log("AUTH SEND: " + token);
         res.status(201).send({accessToken: token});
     } catch (err) {

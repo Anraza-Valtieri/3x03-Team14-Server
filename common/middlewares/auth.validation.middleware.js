@@ -34,12 +34,13 @@ exports.validJWTNeeded = (req, res, next) => {
                         "message": 'Error.'
                     });
                 } else {
-                    jwt.verify(authorization[1], secret, function (err, decoded) {
+
+                    jwt.verify(authorization[1], new Buffer(secret, 'base64'), function (err, decoded) {
                         if (err) {
                             console.error("JWT invalid");
                             return res.status(403).send(err);
                         } else {
-                            req.jwt = jwt.verify(authorization[1], secret);
+                            req.jwt = jwt.verify(authorization[1], new Buffer(secret, 'base64'));
                             return next();
                         }
                     });
@@ -56,11 +57,4 @@ exports.validJWTNeeded = (req, res, next) => {
                 "message": 'No token provided.'
             });
         }
-    // }
-    // else{
-    //     return res.status(401).send({
-    //         "error": true,
-    //         "message": 'Auth error.'
-    //     });
-    // }
 };
